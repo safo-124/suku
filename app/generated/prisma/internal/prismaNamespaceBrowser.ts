@@ -58,6 +58,9 @@ export const ModelName = {
   StudentProfile: 'StudentProfile',
   ParentProfile: 'ParentProfile',
   ParentStudent: 'ParentStudent',
+  GradeDefinition: 'GradeDefinition',
+  SchoolLevel: 'SchoolLevel',
+  LevelSubject: 'LevelSubject',
   GradeScale: 'GradeScale',
   PromotionRule: 'PromotionRule',
   AcademicYear: 'AcademicYear',
@@ -219,6 +222,49 @@ export const ParentStudentScalarFieldEnum = {
 export type ParentStudentScalarFieldEnum = (typeof ParentStudentScalarFieldEnum)[keyof typeof ParentStudentScalarFieldEnum]
 
 
+export const GradeDefinitionScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  schoolId: 'schoolId',
+  name: 'name',
+  shortName: 'shortName',
+  description: 'description',
+  order: 'order',
+  schoolLevelId: 'schoolLevelId'
+} as const
+
+export type GradeDefinitionScalarFieldEnum = (typeof GradeDefinitionScalarFieldEnum)[keyof typeof GradeDefinitionScalarFieldEnum]
+
+
+export const SchoolLevelScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  schoolId: 'schoolId',
+  name: 'name',
+  shortName: 'shortName',
+  description: 'description',
+  order: 'order',
+  allowElectives: 'allowElectives'
+} as const
+
+export type SchoolLevelScalarFieldEnum = (typeof SchoolLevelScalarFieldEnum)[keyof typeof SchoolLevelScalarFieldEnum]
+
+
+export const LevelSubjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  levelId: 'levelId',
+  subjectId: 'subjectId',
+  subjectType: 'subjectType',
+  isCompulsory: 'isCompulsory'
+} as const
+
+export type LevelSubjectScalarFieldEnum = (typeof LevelSubjectScalarFieldEnum)[keyof typeof LevelSubjectScalarFieldEnum]
+
+
 export const GradeScaleScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
@@ -283,6 +329,8 @@ export const ClassScalarFieldEnum = {
   updatedAt: 'updatedAt',
   schoolId: 'schoolId',
   academicYearId: 'academicYearId',
+  schoolLevelId: 'schoolLevelId',
+  gradeDefinitionId: 'gradeDefinitionId',
   name: 'name',
   gradeLevel: 'gradeLevel',
   section: 'section',

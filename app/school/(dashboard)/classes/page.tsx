@@ -27,7 +27,7 @@ async function getSchoolData() {
 }
 
 async function getClassesData(schoolId: string) {
-  const [classes, teachers, academicYears] = await Promise.all([
+  const [classes, teachers, academicYears, schoolLevels, gradeDefinitions] = await Promise.all([
     prisma.class.findMany({
       where: { schoolId },
       include: {
@@ -42,6 +42,21 @@ async function getClassesData(schoolId: string) {
         academicYear: {
           select: { name: true },
         },
+        gradeDefinition: {
+          select: {
+            id: true,
+            name: true,
+            shortName: true,
+          },
+        },
+        schoolLevel: {
+          select: {
+            id: true,
+            name: true,
+            shortName: true,
+            allowElectives: true,
+          },
+        },
         _count: {
           select: {
             students: true,
@@ -49,7 +64,11 @@ async function getClassesData(schoolId: string) {
           },
         },
       },
-      orderBy: [{ gradeLevel: "asc" }, { section: "asc" }],
+      orderBy: [
+        { gradeDefinition: { order: "asc" } },
+        { section: "asc" },
+        { name: "asc" },
+      ],
     }),
     // Get users with Teacher role for class teacher assignment
     prisma.user.findMany({
@@ -70,11 +89,32 @@ async function getClassesData(schoolId: string) {
       where: { schoolId },
       orderBy: { startDate: "desc" },
     }),
+    prisma.schoolLevel.findMany({
+      where: { schoolId },
+      select: {
+        id: true,
+        name: true,
+        shortName: true,
+        allowElectives: true,
+      },
+      orderBy: { order: "asc" },
+    }),
+    prisma.gradeDefinition.findMany({
+      where: { schoolId },
+      select: {
+        id: true,
+        name: true,
+        shortName: true,
+        description: true,
+        order: true,
+      },
+      orderBy: { order: "asc" },
+    }),
   ])
 
   const currentAcademicYear = academicYears.find((y) => y.isCurrent) || null
 
-  return { classes, teachers, academicYears, currentAcademicYear }
+  return { classes, teachers, academicYears, currentAcademicYear, schoolLevels, gradeDefinitions }
 }
 
 export default async function ClassesPage() {
@@ -88,7 +128,7 @@ export default async function ClassesPage() {
     )
   }
 
-  const { classes, teachers, academicYears, currentAcademicYear } = 
+  const { classes, teachers, academicYears, currentAcademicYear, schoolLevels, gradeDefinitions } = 
     await getClassesData(school.id)
 
   return (
@@ -112,6 +152,8 @@ export default async function ClassesPage() {
         teachers={teachers}
         academicYears={academicYears}
         currentAcademicYear={currentAcademicYear}
+        schoolLevels={schoolLevels}
+        gradeDefinitions={gradeDefinitions}
       />
     </div>
   )

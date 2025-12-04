@@ -42,6 +42,8 @@ export type ClassMinAggregateOutputType = {
   updatedAt: Date | null
   schoolId: string | null
   academicYearId: string | null
+  schoolLevelId: string | null
+  gradeDefinitionId: string | null
   name: string | null
   gradeLevel: number | null
   section: string | null
@@ -56,6 +58,8 @@ export type ClassMaxAggregateOutputType = {
   updatedAt: Date | null
   schoolId: string | null
   academicYearId: string | null
+  schoolLevelId: string | null
+  gradeDefinitionId: string | null
   name: string | null
   gradeLevel: number | null
   section: string | null
@@ -70,6 +74,8 @@ export type ClassCountAggregateOutputType = {
   updatedAt: number
   schoolId: number
   academicYearId: number
+  schoolLevelId: number
+  gradeDefinitionId: number
   name: number
   gradeLevel: number
   section: number
@@ -96,6 +102,8 @@ export type ClassMinAggregateInputType = {
   updatedAt?: true
   schoolId?: true
   academicYearId?: true
+  schoolLevelId?: true
+  gradeDefinitionId?: true
   name?: true
   gradeLevel?: true
   section?: true
@@ -110,6 +118,8 @@ export type ClassMaxAggregateInputType = {
   updatedAt?: true
   schoolId?: true
   academicYearId?: true
+  schoolLevelId?: true
+  gradeDefinitionId?: true
   name?: true
   gradeLevel?: true
   section?: true
@@ -124,6 +134,8 @@ export type ClassCountAggregateInputType = {
   updatedAt?: true
   schoolId?: true
   academicYearId?: true
+  schoolLevelId?: true
+  gradeDefinitionId?: true
   name?: true
   gradeLevel?: true
   section?: true
@@ -225,8 +237,10 @@ export type ClassGroupByOutputType = {
   updatedAt: Date
   schoolId: string
   academicYearId: string
+  schoolLevelId: string | null
+  gradeDefinitionId: string | null
   name: string
-  gradeLevel: number
+  gradeLevel: number | null
   section: string | null
   capacity: number | null
   roomNumber: string | null
@@ -262,14 +276,18 @@ export type ClassWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   schoolId?: Prisma.StringFilter<"Class"> | string
   academicYearId?: Prisma.StringFilter<"Class"> | string
+  schoolLevelId?: Prisma.StringNullableFilter<"Class"> | string | null
+  gradeDefinitionId?: Prisma.StringNullableFilter<"Class"> | string | null
   name?: Prisma.StringFilter<"Class"> | string
-  gradeLevel?: Prisma.IntFilter<"Class"> | number
+  gradeLevel?: Prisma.IntNullableFilter<"Class"> | number | null
   section?: Prisma.StringNullableFilter<"Class"> | string | null
   capacity?: Prisma.IntNullableFilter<"Class"> | number | null
   roomNumber?: Prisma.StringNullableFilter<"Class"> | string | null
   classTeacherId?: Prisma.StringNullableFilter<"Class"> | string | null
   school?: Prisma.XOR<Prisma.SchoolScalarRelationFilter, Prisma.SchoolWhereInput>
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
+  schoolLevel?: Prisma.XOR<Prisma.SchoolLevelNullableScalarRelationFilter, Prisma.SchoolLevelWhereInput> | null
+  gradeDefinition?: Prisma.XOR<Prisma.GradeDefinitionNullableScalarRelationFilter, Prisma.GradeDefinitionWhereInput> | null
   classTeacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   classSubjects?: Prisma.ClassSubjectListRelationFilter
   students?: Prisma.StudentProfileListRelationFilter
@@ -284,14 +302,18 @@ export type ClassOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  schoolLevelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  gradeDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  gradeLevel?: Prisma.SortOrder
+  gradeLevel?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrderInput | Prisma.SortOrder
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   roomNumber?: Prisma.SortOrderInput | Prisma.SortOrder
   classTeacherId?: Prisma.SortOrderInput | Prisma.SortOrder
   school?: Prisma.SchoolOrderByWithRelationInput
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
+  schoolLevel?: Prisma.SchoolLevelOrderByWithRelationInput
+  gradeDefinition?: Prisma.GradeDefinitionOrderByWithRelationInput
   classTeacher?: Prisma.UserOrderByWithRelationInput
   classSubjects?: Prisma.ClassSubjectOrderByRelationAggregateInput
   students?: Prisma.StudentProfileOrderByRelationAggregateInput
@@ -309,14 +331,18 @@ export type ClassWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   schoolId?: Prisma.StringFilter<"Class"> | string
   academicYearId?: Prisma.StringFilter<"Class"> | string
+  schoolLevelId?: Prisma.StringNullableFilter<"Class"> | string | null
+  gradeDefinitionId?: Prisma.StringNullableFilter<"Class"> | string | null
   name?: Prisma.StringFilter<"Class"> | string
-  gradeLevel?: Prisma.IntFilter<"Class"> | number
+  gradeLevel?: Prisma.IntNullableFilter<"Class"> | number | null
   section?: Prisma.StringNullableFilter<"Class"> | string | null
   capacity?: Prisma.IntNullableFilter<"Class"> | number | null
   roomNumber?: Prisma.StringNullableFilter<"Class"> | string | null
   classTeacherId?: Prisma.StringNullableFilter<"Class"> | string | null
   school?: Prisma.XOR<Prisma.SchoolScalarRelationFilter, Prisma.SchoolWhereInput>
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
+  schoolLevel?: Prisma.XOR<Prisma.SchoolLevelNullableScalarRelationFilter, Prisma.SchoolLevelWhereInput> | null
+  gradeDefinition?: Prisma.XOR<Prisma.GradeDefinitionNullableScalarRelationFilter, Prisma.GradeDefinitionWhereInput> | null
   classTeacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   classSubjects?: Prisma.ClassSubjectListRelationFilter
   students?: Prisma.StudentProfileListRelationFilter
@@ -331,8 +357,10 @@ export type ClassOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  schoolLevelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  gradeDefinitionId?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  gradeLevel?: Prisma.SortOrder
+  gradeLevel?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrderInput | Prisma.SortOrder
   capacity?: Prisma.SortOrderInput | Prisma.SortOrder
   roomNumber?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -353,8 +381,10 @@ export type ClassScalarWhereWithAggregatesInput = {
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Class"> | Date | string
   schoolId?: Prisma.StringWithAggregatesFilter<"Class"> | string
   academicYearId?: Prisma.StringWithAggregatesFilter<"Class"> | string
+  schoolLevelId?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
+  gradeDefinitionId?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Class"> | string
-  gradeLevel?: Prisma.IntWithAggregatesFilter<"Class"> | number
+  gradeLevel?: Prisma.IntNullableWithAggregatesFilter<"Class"> | number | null
   section?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
   capacity?: Prisma.IntNullableWithAggregatesFilter<"Class"> | number | null
   roomNumber?: Prisma.StringNullableWithAggregatesFilter<"Class"> | string | null
@@ -366,12 +396,14 @@ export type ClassCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -386,8 +418,10 @@ export type ClassUncheckedCreateInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -404,12 +438,14 @@ export type ClassUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -424,8 +460,10 @@ export type ClassUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -443,8 +481,10 @@ export type ClassCreateManyInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -456,7 +496,7 @@ export type ClassUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -468,8 +508,10 @@ export type ClassUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -497,6 +539,8 @@ export type ClassCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  schoolLevelId?: Prisma.SortOrder
+  gradeDefinitionId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   gradeLevel?: Prisma.SortOrder
   section?: Prisma.SortOrder
@@ -516,6 +560,8 @@ export type ClassMaxOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  schoolLevelId?: Prisma.SortOrder
+  gradeDefinitionId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   gradeLevel?: Prisma.SortOrder
   section?: Prisma.SortOrder
@@ -530,6 +576,8 @@ export type ClassMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
   academicYearId?: Prisma.SortOrder
+  schoolLevelId?: Prisma.SortOrder
+  gradeDefinitionId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   gradeLevel?: Prisma.SortOrder
   section?: Prisma.SortOrder
@@ -648,6 +696,90 @@ export type ClassUpdateOneWithoutStudentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ClassUpdateToOneWithWhereWithoutStudentsInput, Prisma.ClassUpdateWithoutStudentsInput>, Prisma.ClassUncheckedUpdateWithoutStudentsInput>
 }
 
+export type ClassCreateNestedManyWithoutGradeDefinitionInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput> | Prisma.ClassCreateWithoutGradeDefinitionInput[] | Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput | Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput[]
+  createMany?: Prisma.ClassCreateManyGradeDefinitionInputEnvelope
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+}
+
+export type ClassUncheckedCreateNestedManyWithoutGradeDefinitionInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput> | Prisma.ClassCreateWithoutGradeDefinitionInput[] | Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput | Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput[]
+  createMany?: Prisma.ClassCreateManyGradeDefinitionInputEnvelope
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+}
+
+export type ClassUpdateManyWithoutGradeDefinitionNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput> | Prisma.ClassCreateWithoutGradeDefinitionInput[] | Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput | Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput[]
+  upsert?: Prisma.ClassUpsertWithWhereUniqueWithoutGradeDefinitionInput | Prisma.ClassUpsertWithWhereUniqueWithoutGradeDefinitionInput[]
+  createMany?: Prisma.ClassCreateManyGradeDefinitionInputEnvelope
+  set?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  disconnect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  delete?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  update?: Prisma.ClassUpdateWithWhereUniqueWithoutGradeDefinitionInput | Prisma.ClassUpdateWithWhereUniqueWithoutGradeDefinitionInput[]
+  updateMany?: Prisma.ClassUpdateManyWithWhereWithoutGradeDefinitionInput | Prisma.ClassUpdateManyWithWhereWithoutGradeDefinitionInput[]
+  deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
+}
+
+export type ClassUncheckedUpdateManyWithoutGradeDefinitionNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput> | Prisma.ClassCreateWithoutGradeDefinitionInput[] | Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput | Prisma.ClassCreateOrConnectWithoutGradeDefinitionInput[]
+  upsert?: Prisma.ClassUpsertWithWhereUniqueWithoutGradeDefinitionInput | Prisma.ClassUpsertWithWhereUniqueWithoutGradeDefinitionInput[]
+  createMany?: Prisma.ClassCreateManyGradeDefinitionInputEnvelope
+  set?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  disconnect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  delete?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  update?: Prisma.ClassUpdateWithWhereUniqueWithoutGradeDefinitionInput | Prisma.ClassUpdateWithWhereUniqueWithoutGradeDefinitionInput[]
+  updateMany?: Prisma.ClassUpdateManyWithWhereWithoutGradeDefinitionInput | Prisma.ClassUpdateManyWithWhereWithoutGradeDefinitionInput[]
+  deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
+}
+
+export type ClassCreateNestedManyWithoutSchoolLevelInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput> | Prisma.ClassCreateWithoutSchoolLevelInput[] | Prisma.ClassUncheckedCreateWithoutSchoolLevelInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutSchoolLevelInput | Prisma.ClassCreateOrConnectWithoutSchoolLevelInput[]
+  createMany?: Prisma.ClassCreateManySchoolLevelInputEnvelope
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+}
+
+export type ClassUncheckedCreateNestedManyWithoutSchoolLevelInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput> | Prisma.ClassCreateWithoutSchoolLevelInput[] | Prisma.ClassUncheckedCreateWithoutSchoolLevelInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutSchoolLevelInput | Prisma.ClassCreateOrConnectWithoutSchoolLevelInput[]
+  createMany?: Prisma.ClassCreateManySchoolLevelInputEnvelope
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+}
+
+export type ClassUpdateManyWithoutSchoolLevelNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput> | Prisma.ClassCreateWithoutSchoolLevelInput[] | Prisma.ClassUncheckedCreateWithoutSchoolLevelInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutSchoolLevelInput | Prisma.ClassCreateOrConnectWithoutSchoolLevelInput[]
+  upsert?: Prisma.ClassUpsertWithWhereUniqueWithoutSchoolLevelInput | Prisma.ClassUpsertWithWhereUniqueWithoutSchoolLevelInput[]
+  createMany?: Prisma.ClassCreateManySchoolLevelInputEnvelope
+  set?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  disconnect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  delete?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  update?: Prisma.ClassUpdateWithWhereUniqueWithoutSchoolLevelInput | Prisma.ClassUpdateWithWhereUniqueWithoutSchoolLevelInput[]
+  updateMany?: Prisma.ClassUpdateManyWithWhereWithoutSchoolLevelInput | Prisma.ClassUpdateManyWithWhereWithoutSchoolLevelInput[]
+  deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
+}
+
+export type ClassUncheckedUpdateManyWithoutSchoolLevelNestedInput = {
+  create?: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput> | Prisma.ClassCreateWithoutSchoolLevelInput[] | Prisma.ClassUncheckedCreateWithoutSchoolLevelInput[]
+  connectOrCreate?: Prisma.ClassCreateOrConnectWithoutSchoolLevelInput | Prisma.ClassCreateOrConnectWithoutSchoolLevelInput[]
+  upsert?: Prisma.ClassUpsertWithWhereUniqueWithoutSchoolLevelInput | Prisma.ClassUpsertWithWhereUniqueWithoutSchoolLevelInput[]
+  createMany?: Prisma.ClassCreateManySchoolLevelInputEnvelope
+  set?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  disconnect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  delete?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  connect?: Prisma.ClassWhereUniqueInput | Prisma.ClassWhereUniqueInput[]
+  update?: Prisma.ClassUpdateWithWhereUniqueWithoutSchoolLevelInput | Prisma.ClassUpdateWithWhereUniqueWithoutSchoolLevelInput[]
+  updateMany?: Prisma.ClassUpdateManyWithWhereWithoutSchoolLevelInput | Prisma.ClassUpdateManyWithWhereWithoutSchoolLevelInput[]
+  deleteMany?: Prisma.ClassScalarWhereInput | Prisma.ClassScalarWhereInput[]
+}
+
 export type ClassCreateNestedManyWithoutAcademicYearInput = {
   create?: Prisma.XOR<Prisma.ClassCreateWithoutAcademicYearInput, Prisma.ClassUncheckedCreateWithoutAcademicYearInput> | Prisma.ClassCreateWithoutAcademicYearInput[] | Prisma.ClassUncheckedCreateWithoutAcademicYearInput[]
   connectOrCreate?: Prisma.ClassCreateOrConnectWithoutAcademicYearInput | Prisma.ClassCreateOrConnectWithoutAcademicYearInput[]
@@ -759,11 +891,13 @@ export type ClassCreateWithoutSchoolInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -777,8 +911,10 @@ export type ClassUncheckedCreateWithoutSchoolInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -825,8 +961,10 @@ export type ClassScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Class"> | Date | string
   schoolId?: Prisma.StringFilter<"Class"> | string
   academicYearId?: Prisma.StringFilter<"Class"> | string
+  schoolLevelId?: Prisma.StringNullableFilter<"Class"> | string | null
+  gradeDefinitionId?: Prisma.StringNullableFilter<"Class"> | string | null
   name?: Prisma.StringFilter<"Class"> | string
-  gradeLevel?: Prisma.IntFilter<"Class"> | number
+  gradeLevel?: Prisma.IntNullableFilter<"Class"> | number | null
   section?: Prisma.StringNullableFilter<"Class"> | string | null
   capacity?: Prisma.IntNullableFilter<"Class"> | number | null
   roomNumber?: Prisma.StringNullableFilter<"Class"> | string | null
@@ -838,12 +976,14 @@ export type ClassCreateWithoutClassTeacherInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassInput
@@ -857,8 +997,10 @@ export type ClassUncheckedCreateWithoutClassTeacherInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -900,12 +1042,14 @@ export type ClassCreateWithoutStudentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassInput
@@ -919,8 +1063,10 @@ export type ClassUncheckedCreateWithoutStudentsInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -952,12 +1098,14 @@ export type ClassUpdateWithoutStudentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassNestedInput
@@ -971,8 +1119,10 @@ export type ClassUncheckedUpdateWithoutStudentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -983,16 +1133,150 @@ export type ClassUncheckedUpdateWithoutStudentsInput = {
   enrollments?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutClassNestedInput
 }
 
+export type ClassCreateWithoutGradeDefinitionInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  school: Prisma.SchoolCreateNestedOneWithoutClassesInput
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
+  classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
+  students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
+  timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassInput
+  attendance?: Prisma.AttendanceCreateNestedManyWithoutClassInput
+  enrollments?: Prisma.StudentEnrollmentCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutGradeDefinitionInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolId: string
+  academicYearId: string
+  schoolLevelId?: string | null
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  classTeacherId?: string | null
+  classSubjects?: Prisma.ClassSubjectUncheckedCreateNestedManyWithoutClassInput
+  students?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutClassInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassInput
+  attendance?: Prisma.AttendanceUncheckedCreateNestedManyWithoutClassInput
+  enrollments?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutGradeDefinitionInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput>
+}
+
+export type ClassCreateManyGradeDefinitionInputEnvelope = {
+  data: Prisma.ClassCreateManyGradeDefinitionInput | Prisma.ClassCreateManyGradeDefinitionInput[]
+  skipDuplicates?: boolean
+}
+
+export type ClassUpsertWithWhereUniqueWithoutGradeDefinitionInput = {
+  where: Prisma.ClassWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutGradeDefinitionInput, Prisma.ClassUncheckedUpdateWithoutGradeDefinitionInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutGradeDefinitionInput, Prisma.ClassUncheckedCreateWithoutGradeDefinitionInput>
+}
+
+export type ClassUpdateWithWhereUniqueWithoutGradeDefinitionInput = {
+  where: Prisma.ClassWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutGradeDefinitionInput, Prisma.ClassUncheckedUpdateWithoutGradeDefinitionInput>
+}
+
+export type ClassUpdateManyWithWhereWithoutGradeDefinitionInput = {
+  where: Prisma.ClassScalarWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateManyMutationInput, Prisma.ClassUncheckedUpdateManyWithoutGradeDefinitionInput>
+}
+
+export type ClassCreateWithoutSchoolLevelInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  school: Prisma.SchoolCreateNestedOneWithoutClassesInput
+  academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
+  classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
+  classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
+  students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
+  timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassInput
+  attendance?: Prisma.AttendanceCreateNestedManyWithoutClassInput
+  enrollments?: Prisma.StudentEnrollmentCreateNestedManyWithoutClassInput
+}
+
+export type ClassUncheckedCreateWithoutSchoolLevelInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolId: string
+  academicYearId: string
+  gradeDefinitionId?: string | null
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  classTeacherId?: string | null
+  classSubjects?: Prisma.ClassSubjectUncheckedCreateNestedManyWithoutClassInput
+  students?: Prisma.StudentProfileUncheckedCreateNestedManyWithoutClassInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassInput
+  attendance?: Prisma.AttendanceUncheckedCreateNestedManyWithoutClassInput
+  enrollments?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutClassInput
+}
+
+export type ClassCreateOrConnectWithoutSchoolLevelInput = {
+  where: Prisma.ClassWhereUniqueInput
+  create: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput>
+}
+
+export type ClassCreateManySchoolLevelInputEnvelope = {
+  data: Prisma.ClassCreateManySchoolLevelInput | Prisma.ClassCreateManySchoolLevelInput[]
+  skipDuplicates?: boolean
+}
+
+export type ClassUpsertWithWhereUniqueWithoutSchoolLevelInput = {
+  where: Prisma.ClassWhereUniqueInput
+  update: Prisma.XOR<Prisma.ClassUpdateWithoutSchoolLevelInput, Prisma.ClassUncheckedUpdateWithoutSchoolLevelInput>
+  create: Prisma.XOR<Prisma.ClassCreateWithoutSchoolLevelInput, Prisma.ClassUncheckedCreateWithoutSchoolLevelInput>
+}
+
+export type ClassUpdateWithWhereUniqueWithoutSchoolLevelInput = {
+  where: Prisma.ClassWhereUniqueInput
+  data: Prisma.XOR<Prisma.ClassUpdateWithoutSchoolLevelInput, Prisma.ClassUncheckedUpdateWithoutSchoolLevelInput>
+}
+
+export type ClassUpdateManyWithWhereWithoutSchoolLevelInput = {
+  where: Prisma.ClassScalarWhereInput
+  data: Prisma.XOR<Prisma.ClassUpdateManyMutationInput, Prisma.ClassUncheckedUpdateManyWithoutSchoolLevelInput>
+}
+
 export type ClassCreateWithoutAcademicYearInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -1006,8 +1290,10 @@ export type ClassUncheckedCreateWithoutAcademicYearInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schoolId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1050,12 +1336,14 @@ export type ClassCreateWithoutClassSubjectsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassInput
@@ -1069,8 +1357,10 @@ export type ClassUncheckedCreateWithoutClassSubjectsInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1102,12 +1392,14 @@ export type ClassUpdateWithoutClassSubjectsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassNestedInput
@@ -1121,8 +1413,10 @@ export type ClassUncheckedUpdateWithoutClassSubjectsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1138,12 +1432,14 @@ export type ClassCreateWithoutTimetableSlotsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -1157,8 +1453,10 @@ export type ClassUncheckedCreateWithoutTimetableSlotsInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1190,12 +1488,14 @@ export type ClassUpdateWithoutTimetableSlotsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -1209,8 +1509,10 @@ export type ClassUncheckedUpdateWithoutTimetableSlotsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1226,12 +1528,14 @@ export type ClassCreateWithoutAttendanceInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -1245,8 +1549,10 @@ export type ClassUncheckedCreateWithoutAttendanceInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1278,12 +1584,14 @@ export type ClassUpdateWithoutAttendanceInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -1297,8 +1605,10 @@ export type ClassUncheckedUpdateWithoutAttendanceInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1314,12 +1624,14 @@ export type ClassCreateWithoutEnrollmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
   school: Prisma.SchoolCreateNestedOneWithoutClassesInput
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutClassesInput
+  schoolLevel?: Prisma.SchoolLevelCreateNestedOneWithoutClassesInput
+  gradeDefinition?: Prisma.GradeDefinitionCreateNestedOneWithoutClassesInput
   classTeacher?: Prisma.UserCreateNestedOneWithoutClassTeacherOfInput
   classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutClassInput
   students?: Prisma.StudentProfileCreateNestedManyWithoutClassInput
@@ -1333,8 +1645,10 @@ export type ClassUncheckedCreateWithoutEnrollmentsInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1366,12 +1680,14 @@ export type ClassUpdateWithoutEnrollmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -1385,8 +1701,10 @@ export type ClassUncheckedUpdateWithoutEnrollmentsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1402,8 +1720,10 @@ export type ClassCreateManySchoolInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1415,11 +1735,13 @@ export type ClassUpdateWithoutSchoolInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -1433,8 +1755,10 @@ export type ClassUncheckedUpdateWithoutSchoolInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1451,8 +1775,10 @@ export type ClassUncheckedUpdateManyWithoutSchoolInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1465,8 +1791,10 @@ export type ClassCreateManyClassTeacherInput = {
   updatedAt?: Date | string
   schoolId: string
   academicYearId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1477,12 +1805,14 @@ export type ClassUpdateWithoutClassTeacherInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassNestedInput
@@ -1496,8 +1826,10 @@ export type ClassUncheckedUpdateWithoutClassTeacherInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1514,11 +1846,153 @@ export type ClassUncheckedUpdateManyWithoutClassTeacherInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
   academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ClassCreateManyGradeDefinitionInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolId: string
+  academicYearId: string
+  schoolLevelId?: string | null
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  classTeacherId?: string | null
+}
+
+export type ClassUpdateWithoutGradeDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
+  classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
+  students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
+  timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassNestedInput
+  attendance?: Prisma.AttendanceUpdateManyWithoutClassNestedInput
+  enrollments?: Prisma.StudentEnrollmentUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutGradeDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classTeacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classSubjects?: Prisma.ClassSubjectUncheckedUpdateManyWithoutClassNestedInput
+  students?: Prisma.StudentProfileUncheckedUpdateManyWithoutClassNestedInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassNestedInput
+  attendance?: Prisma.AttendanceUncheckedUpdateManyWithoutClassNestedInput
+  enrollments?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateManyWithoutGradeDefinitionInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classTeacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type ClassCreateManySchoolLevelInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  schoolId: string
+  academicYearId: string
+  gradeDefinitionId?: string | null
+  name: string
+  gradeLevel?: number | null
+  section?: string | null
+  capacity?: number | null
+  roomNumber?: string | null
+  classTeacherId?: string | null
+}
+
+export type ClassUpdateWithoutSchoolLevelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
+  academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
+  classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
+  classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
+  students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
+  timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassNestedInput
+  attendance?: Prisma.AttendanceUpdateManyWithoutClassNestedInput
+  enrollments?: Prisma.StudentEnrollmentUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateWithoutSchoolLevelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classTeacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classSubjects?: Prisma.ClassSubjectUncheckedUpdateManyWithoutClassNestedInput
+  students?: Prisma.StudentProfileUncheckedUpdateManyWithoutClassNestedInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassNestedInput
+  attendance?: Prisma.AttendanceUncheckedUpdateManyWithoutClassNestedInput
+  enrollments?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutClassNestedInput
+}
+
+export type ClassUncheckedUpdateManyWithoutSchoolLevelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  academicYearId?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  classTeacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ClassCreateManyAcademicYearInput = {
@@ -1526,8 +2000,10 @@ export type ClassCreateManyAcademicYearInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   schoolId: string
+  schoolLevelId?: string | null
+  gradeDefinitionId?: string | null
   name: string
-  gradeLevel: number
+  gradeLevel?: number | null
   section?: string | null
   capacity?: number | null
   roomNumber?: string | null
@@ -1539,11 +2015,13 @@ export type ClassUpdateWithoutAcademicYearInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   school?: Prisma.SchoolUpdateOneRequiredWithoutClassesNestedInput
+  schoolLevel?: Prisma.SchoolLevelUpdateOneWithoutClassesNestedInput
+  gradeDefinition?: Prisma.GradeDefinitionUpdateOneWithoutClassesNestedInput
   classTeacher?: Prisma.UserUpdateOneWithoutClassTeacherOfNestedInput
   classSubjects?: Prisma.ClassSubjectUpdateManyWithoutClassNestedInput
   students?: Prisma.StudentProfileUpdateManyWithoutClassNestedInput
@@ -1557,8 +2035,10 @@ export type ClassUncheckedUpdateWithoutAcademicYearInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1575,8 +2055,10 @@ export type ClassUncheckedUpdateManyWithoutAcademicYearInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   schoolId?: Prisma.StringFieldUpdateOperationsInput | string
+  schoolLevelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  gradeDefinitionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  gradeLevel?: Prisma.IntFieldUpdateOperationsInput | number
+  gradeLevel?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   capacity?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   roomNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1656,6 +2138,8 @@ export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   updatedAt?: boolean
   schoolId?: boolean
   academicYearId?: boolean
+  schoolLevelId?: boolean
+  gradeDefinitionId?: boolean
   name?: boolean
   gradeLevel?: boolean
   section?: boolean
@@ -1664,6 +2148,8 @@ export type ClassSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   classTeacherId?: boolean
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
   classSubjects?: boolean | Prisma.Class$classSubjectsArgs<ExtArgs>
   students?: boolean | Prisma.Class$studentsArgs<ExtArgs>
@@ -1679,6 +2165,8 @@ export type ClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   updatedAt?: boolean
   schoolId?: boolean
   academicYearId?: boolean
+  schoolLevelId?: boolean
+  gradeDefinitionId?: boolean
   name?: boolean
   gradeLevel?: boolean
   section?: boolean
@@ -1687,6 +2175,8 @@ export type ClassSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   classTeacherId?: boolean
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
 }, ExtArgs["result"]["class"]>
 
@@ -1696,6 +2186,8 @@ export type ClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   updatedAt?: boolean
   schoolId?: boolean
   academicYearId?: boolean
+  schoolLevelId?: boolean
+  gradeDefinitionId?: boolean
   name?: boolean
   gradeLevel?: boolean
   section?: boolean
@@ -1704,6 +2196,8 @@ export type ClassSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   classTeacherId?: boolean
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
 }, ExtArgs["result"]["class"]>
 
@@ -1713,6 +2207,8 @@ export type ClassSelectScalar = {
   updatedAt?: boolean
   schoolId?: boolean
   academicYearId?: boolean
+  schoolLevelId?: boolean
+  gradeDefinitionId?: boolean
   name?: boolean
   gradeLevel?: boolean
   section?: boolean
@@ -1721,10 +2217,12 @@ export type ClassSelectScalar = {
   classTeacherId?: boolean
 }
 
-export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "schoolId" | "academicYearId" | "name" | "gradeLevel" | "section" | "capacity" | "roomNumber" | "classTeacherId", ExtArgs["result"]["class"]>
+export type ClassOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "schoolId" | "academicYearId" | "schoolLevelId" | "gradeDefinitionId" | "name" | "gradeLevel" | "section" | "capacity" | "roomNumber" | "classTeacherId", ExtArgs["result"]["class"]>
 export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
   classSubjects?: boolean | Prisma.Class$classSubjectsArgs<ExtArgs>
   students?: boolean | Prisma.Class$studentsArgs<ExtArgs>
@@ -1736,11 +2234,15 @@ export type ClassInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type ClassIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
 }
 export type ClassIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   school?: boolean | Prisma.SchoolDefaultArgs<ExtArgs>
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
+  schoolLevel?: boolean | Prisma.Class$schoolLevelArgs<ExtArgs>
+  gradeDefinition?: boolean | Prisma.Class$gradeDefinitionArgs<ExtArgs>
   classTeacher?: boolean | Prisma.Class$classTeacherArgs<ExtArgs>
 }
 
@@ -1749,6 +2251,8 @@ export type $ClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     school: Prisma.$SchoolPayload<ExtArgs>
     academicYear: Prisma.$AcademicYearPayload<ExtArgs>
+    schoolLevel: Prisma.$SchoolLevelPayload<ExtArgs> | null
+    gradeDefinition: Prisma.$GradeDefinitionPayload<ExtArgs> | null
     classTeacher: Prisma.$UserPayload<ExtArgs> | null
     classSubjects: Prisma.$ClassSubjectPayload<ExtArgs>[]
     students: Prisma.$StudentProfilePayload<ExtArgs>[]
@@ -1762,8 +2266,10 @@ export type $ClassPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     updatedAt: Date
     schoolId: string
     academicYearId: string
+    schoolLevelId: string | null
+    gradeDefinitionId: string | null
     name: string
-    gradeLevel: number
+    gradeLevel: number | null
     section: string | null
     capacity: number | null
     roomNumber: string | null
@@ -2164,6 +2670,8 @@ export interface Prisma__ClassClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   school<T extends Prisma.SchoolDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SchoolDefaultArgs<ExtArgs>>): Prisma.Prisma__SchoolClient<runtime.Types.Result.GetResult<Prisma.$SchoolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   academicYear<T extends Prisma.AcademicYearDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AcademicYearDefaultArgs<ExtArgs>>): Prisma.Prisma__AcademicYearClient<runtime.Types.Result.GetResult<Prisma.$AcademicYearPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  schoolLevel<T extends Prisma.Class$schoolLevelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$schoolLevelArgs<ExtArgs>>): Prisma.Prisma__SchoolLevelClient<runtime.Types.Result.GetResult<Prisma.$SchoolLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  gradeDefinition<T extends Prisma.Class$gradeDefinitionArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$gradeDefinitionArgs<ExtArgs>>): Prisma.Prisma__GradeDefinitionClient<runtime.Types.Result.GetResult<Prisma.$GradeDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   classTeacher<T extends Prisma.Class$classTeacherArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$classTeacherArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   classSubjects<T extends Prisma.Class$classSubjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$classSubjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClassSubjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   students<T extends Prisma.Class$studentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Class$studentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2204,6 +2712,8 @@ export interface ClassFieldRefs {
   readonly updatedAt: Prisma.FieldRef<"Class", 'DateTime'>
   readonly schoolId: Prisma.FieldRef<"Class", 'String'>
   readonly academicYearId: Prisma.FieldRef<"Class", 'String'>
+  readonly schoolLevelId: Prisma.FieldRef<"Class", 'String'>
+  readonly gradeDefinitionId: Prisma.FieldRef<"Class", 'String'>
   readonly name: Prisma.FieldRef<"Class", 'String'>
   readonly gradeLevel: Prisma.FieldRef<"Class", 'Int'>
   readonly section: Prisma.FieldRef<"Class", 'String'>
@@ -2603,6 +3113,44 @@ export type ClassDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Limit how many Classes to delete.
    */
   limit?: number
+}
+
+/**
+ * Class.schoolLevel
+ */
+export type Class$schoolLevelArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SchoolLevel
+   */
+  select?: Prisma.SchoolLevelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SchoolLevel
+   */
+  omit?: Prisma.SchoolLevelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SchoolLevelInclude<ExtArgs> | null
+  where?: Prisma.SchoolLevelWhereInput
+}
+
+/**
+ * Class.gradeDefinition
+ */
+export type Class$gradeDefinitionArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GradeDefinition
+   */
+  select?: Prisma.GradeDefinitionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GradeDefinition
+   */
+  omit?: Prisma.GradeDefinitionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GradeDefinitionInclude<ExtArgs> | null
+  where?: Prisma.GradeDefinitionWhereInput
 }
 
 /**

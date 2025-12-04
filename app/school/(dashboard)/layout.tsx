@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname, useSearchParams, useRouter } from "next/navigation"
 import {
   LayoutDashboard,
   Users,
@@ -19,6 +19,7 @@ import {
   Bell,
   Search,
   School,
+  Loader2,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -33,6 +34,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { getCurrentUser, logoutFromSchool } from "../login/_actions/auth-actions"
+import type { SessionUser } from "@/lib/auth"
 
 // Base menu items - hrefs will be adjusted based on subdomain
 const baseMenuItems = [
@@ -110,15 +113,27 @@ function SidebarNav() {
   )
 }
 
-function SidebarContent() {
+function SidebarContent({ user, schoolName }: { user: SessionUser | null; schoolName: string }) {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const subdomain = searchParams.get("subdomain")
   const logoutHref = subdomain ? `/login?subdomain=${subdomain}` : "/login"
   
-  // School name from subdomain (capitalized)
-  const schoolName = subdomain 
-    ? subdomain.charAt(0).toUpperCase() + subdomain.slice(1)
-    : "School"
+  const handleLogout = async () => {
+    await logoutFromSchool()
+    router.push(logoutHref)
+    router.refresh()
+  }
+
+  // Get user initials
+  const userInitials = user 
+    ? `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase() || 'U'
+    : 'U'
+
+  // Format role for display
+  const roleDisplay = user?.role?.replace('_', ' ').split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ') || 'User'
 
   return (
     <div className="flex flex-col h-full">
@@ -153,11 +168,13 @@ function SidebarContent() {
             <button className="w-full flex items-center gap-3 p-3 rounded-2xl neu-sm hover:neu transition-all duration-300 group">
               <Avatar className="h-10 w-10 ring-2 ring-background shadow-sm">
                 <AvatarImage src="" />
-                <AvatarFallback className="bg-foreground text-background font-semibold text-sm">JD</AvatarFallback>
+                <AvatarFallback className="bg-foreground text-background font-semibold text-sm">{userInitials}</AvatarFallback>
               </Avatar>
               <div className="flex-1 text-left min-w-0">
-                <p className="text-sm font-semibold truncate">John Doe</p>
-                <p className="text-xs text-muted-foreground truncate">School Admin</p>
+                <p className="text-sm font-semibold truncate">
+                  {user ? `${user.firstName} ${user.lastName}` : 'Loading...'}
+                </p>
+                <p className="text-xs text-muted-foreground truncate">{roleDisplay}</p>
               </div>
               <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
             </button>
@@ -170,12 +187,13 @@ function SidebarContent() {
               <span>Settings</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-border/50" />
-            <Link href={logoutHref}>
-              <DropdownMenuItem className="rounded-xl py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">
-                <LogOut className="mr-3 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </Link>
+            <DropdownMenuItem 
+              className="rounded-xl py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-3 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -198,13 +216,26 @@ export default function SchoolLayout({
 function LayoutSkeleton() {
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden lg:flex lg:w-[280px] lg:flex-col neu m-5 rounded-3xl animate-pulse" />
+      <aside className="hidden lg:flex lg:w-[280px] lg:flex-col neu m-5 rounded-3xl">
+        <div className="flex flex-col h-full animate-pulse">
+          <div className="p-6">
+            <div className="h-11 w-full bg-muted/20 rounded-2xl" />
+          </div>
+          <div className="flex-1 p-3 space-y-2">
+            {[...Array(8)].map((_, i) => (
+              <div key={i} className="h-12 bg-muted/20 rounded-2xl" />
+            ))}
+          </div>
+        </div>
+      </aside>
       <div className="flex-1 flex flex-col min-w-0">
         <header className="sticky top-0 z-50 m-5 mb-0 lg:ml-0">
-          <div className="neu rounded-3xl h-16 animate-pulse" />
+          <div className="neu rounded-3xl h-16" />
         </header>
         <main className="flex-1 p-5 lg:pl-0">
-          <div className="glass-card rounded-3xl p-8 min-h-full animate-pulse" />
+          <div className="glass-card rounded-3xl p-8 min-h-full flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
         </main>
       </div>
     </div>
@@ -216,11 +247,57 @@ function SchoolLayoutContent({
 }: {
   children: React.ReactNode
 }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const subdomain = searchParams.get("subdomain")
+  const [user, setUser] = React.useState<SessionUser | null>(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [schoolName, setSchoolName] = React.useState("School")
+
+  React.useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const session = await getCurrentUser()
+        
+        if (!session?.user) {
+          // Not authenticated, redirect to login
+          const loginPath = subdomain ? `/login?subdomain=${subdomain}` : "/school/login"
+          router.push(loginPath)
+          return
+        }
+
+        setUser(session.user)
+        setSchoolName(session.user.schoolName || subdomain || "School")
+      } catch (error) {
+        console.error("Auth check error:", error)
+        const loginPath = subdomain ? `/login?subdomain=${subdomain}` : "/school/login"
+        router.push(loginPath)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkAuth()
+  }, [router, subdomain])
+
+  if (isLoading) {
+    return <LayoutSkeleton />
+  }
+
+  if (!user) {
+    return <LayoutSkeleton />
+  }
+
+  // Get user initials for mobile avatar
+  const userInitials = user 
+    ? `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase() || 'U'
+    : 'U'
+
   return (
     <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:w-[280px] lg:flex-col neu m-5 rounded-3xl">
-        <SidebarContent />
+        <SidebarContent user={user} schoolName={schoolName} />
       </aside>
 
       {/* Main Content */}
@@ -237,7 +314,7 @@ function SchoolLayoutContent({
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-[280px] p-0 neu rounded-r-3xl border-0">
-                  <SidebarContent />
+                  <SidebarContent user={user} schoolName={schoolName} />
                 </SheetContent>
               </Sheet>
 
@@ -274,7 +351,7 @@ function SchoolLayoutContent({
                 {/* Mobile User Avatar */}
                 <Avatar className="h-10 w-10 lg:hidden ring-2 ring-background shadow-sm">
                   <AvatarImage src="" />
-                  <AvatarFallback className="bg-foreground text-background font-semibold text-sm">JD</AvatarFallback>
+                  <AvatarFallback className="bg-foreground text-background font-semibold text-sm">{userInitials}</AvatarFallback>
                 </Avatar>
               </div>
             </div>

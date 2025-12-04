@@ -143,3 +143,11 @@ export const Platform = {
 } as const
 
 export type Platform = (typeof Platform)[keyof typeof Platform]
+
+
+export const SubjectType = {
+  CORE: 'CORE',
+  ELECTIVE: 'ELECTIVE'
+} as const
+
+export type SubjectType = (typeof SubjectType)[keyof typeof SubjectType]

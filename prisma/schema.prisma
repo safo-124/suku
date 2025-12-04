@@ -108,6 +108,11 @@ enum Platform {
   WEB
 }
 
+enum SubjectType {
+  CORE
+  ELECTIVE
+}
+
 // ============================================
 // CORE: SCHOOL & SUBSCRIPTION
 // ============================================
@@ -137,15 +142,17 @@ model School {
   maxTeachers        Int                @default(10) // Based on plan
 
   // Relations
-  users          User[]
-  gradeScales    GradeScale[]
-  promotionRules PromotionRule[]
-  academicYears  AcademicYear[]
-  classes        Class[]
-  subjects       Subject[]
-  periods        Period[]
-  feeCategories  FeeCategory[]
-  questions      Question[]
+  users            User[]
+  gradeScales      GradeScale[]
+  promotionRules   PromotionRule[]
+  academicYears    AcademicYear[]
+  classes          Class[]
+  subjects         Subject[]
+  periods          Period[]
+  feeCategories    FeeCategory[]
+  questions        Question[]
+  schoolLevels     SchoolLevel[]
+  gradeDefinitions GradeDefinition[]
 
   @@map("schools")
 }
@@ -305,6 +312,75 @@ model ParentStudent {
 // ACADEMIC STRUCTURE
 // ============================================
 
+// School-defined grade/class definitions
+model GradeDefinition {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  name        String   // "Class 1", "Grade 1", "Form 1", "KG1", etc.
+  shortName   String   // "C1", "G1", "F1", "KG1"
+  description String?
+  order       Int      // For sorting and progression (1, 2, 3...)
+  
+  // Optional link to school level
+  schoolLevelId String?
+  schoolLevel   SchoolLevel? @relation(fields: [schoolLevelId], references: [id])
+
+  // Relations
+  classes Class[]
+
+  @@unique([schoolId, name])
+  @@unique([schoolId, order])
+  @@map("grade_definitions")
+}
+
+model SchoolLevel {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  schoolId String
+  school   School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  name        String   // "Primary", "Junior High School", "Senior High School"
+  shortName   String   // "Primary", "JHS", "SHS"
+  description String?
+  order       Int      // For sorting: 1=Primary, 2=JHS, 3=SHS
+  
+  // Configuration
+  allowElectives Boolean @default(false) // Whether students can choose electives at this level
+
+  // Relations
+  classes  Class[]
+  subjects LevelSubject[]
+  grades   GradeDefinition[]
+
+  @@unique([schoolId, name])
+  @@map("school_levels")
+}
+
+model LevelSubject {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  levelId String
+  level   SchoolLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  subjectType SubjectType @default(CORE) // CORE or ELECTIVE
+  isCompulsory Boolean @default(true)    // Must all students take this?
+
+  @@unique([levelId, subjectId])
+  @@map("level_subjects")
+}
+
 model GradeScale {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
@@ -396,9 +472,17 @@ model Class {
   academicYearId String
   academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
 
-  name         String // "Grade 5A"
-  gradeLevel   Int // Numeric for promotion logic
-  section      String?
+  // Link to school level (optional)
+  schoolLevelId String?
+  schoolLevel   SchoolLevel? @relation(fields: [schoolLevelId], references: [id])
+
+  // Link to grade definition (the school's custom grade)
+  gradeDefinitionId String?
+  gradeDefinition   GradeDefinition? @relation(fields: [gradeDefinitionId], references: [id])
+
+  name         String  // "Class 5A", "Form 2B"
+  gradeLevel   Int?    // Legacy field - use gradeDefinitionId instead
+  section      String? // "A", "B", "C"
   capacity     Int?
   roomNumber   String?
 
@@ -432,6 +516,7 @@ model Subject {
   // Relations
   classSubjects ClassSubject[]
   questions     Question[]
+  levelSubjects LevelSubject[]
 
   @@map("subjects")
 }

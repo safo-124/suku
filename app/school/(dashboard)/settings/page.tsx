@@ -1,12 +1,33 @@
 import { Metadata } from "next"
 import { Settings } from "lucide-react"
+import { SettingsClient } from "./_components/settings-client"
+import {
+  getSchoolProfile,
+  getGradeScales,
+  getPromotionRule,
+  getRequiredSubjects,
+  getAcademicYears,
+  getSchoolLevels,
+  getGradeDefinitions,
+} from "./_actions/settings-actions"
 
 export const metadata: Metadata = {
   title: "Settings | School Admin",
   description: "School settings and configuration",
 }
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  // Fetch all settings data in parallel
+  const [profile, grades, promotionRule, subjects, academicYears, schoolLevels, gradeDefinitions] = await Promise.all([
+    getSchoolProfile(),
+    getGradeScales(),
+    getPromotionRule(),
+    getRequiredSubjects(),
+    getAcademicYears(),
+    getSchoolLevels(),
+    getGradeDefinitions(),
+  ])
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -17,20 +38,21 @@ export default function SettingsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Settings</h1>
           <p className="text-muted-foreground">
-            Configure your school settings
+            Configure your school settings and academic structure
           </p>
         </div>
       </div>
 
-      {/* Coming Soon */}
-      <div className="neu-flat rounded-2xl p-12 text-center">
-        <Settings className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Settings Module</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          This module will include school profile, academic year configuration,
-          grading scales, promotion rules, and user management.
-        </p>
-      </div>
+      {/* Settings Content */}
+      <SettingsClient
+        profile={profile}
+        grades={grades}
+        promotionRule={promotionRule}
+        subjects={subjects}
+        academicYears={academicYears as any}
+        schoolLevels={schoolLevels as any}
+        gradeDefinitions={gradeDefinitions as any}
+      />
     </div>
   )
 }

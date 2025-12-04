@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Loader2, AlertCircle } from "lucide-react"
+import { Loader2, AlertCircle, Info } from "lucide-react"
 import { createClass, updateClass } from "../_actions/class-actions"
 
 interface Teacher {
@@ -36,15 +36,31 @@ interface AcademicYear {
   isCurrent: boolean
 }
 
+interface SchoolLevel {
+  id: string
+  name: string
+  shortName: string
+  allowElectives: boolean
+}
+
+interface GradeDefinition {
+  id: string
+  name: string
+  shortName: string
+  description: string | null
+  order: number
+}
+
 interface ClassData {
   id: string
   name: string
-  gradeLevel: number
+  gradeDefinitionId: string | null
   section: string | null
   capacity: number | null
   roomNumber: string | null
   classTeacherId?: string | null
   academicYearId: string
+  schoolLevelId?: string | null
 }
 
 interface ClassFormProps {
@@ -54,6 +70,8 @@ interface ClassFormProps {
   teachers: Teacher[]
   academicYears: AcademicYear[]
   currentAcademicYear: AcademicYear | null
+  schoolLevels?: SchoolLevel[]
+  gradeDefinitions?: GradeDefinition[]
 }
 
 export function ClassForm({ 
@@ -62,7 +80,9 @@ export function ClassForm({
   classData, 
   teachers,
   academicYears,
-  currentAcademicYear
+  currentAcademicYear,
+  schoolLevels = [],
+  gradeDefinitions = []
 }: ClassFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -72,13 +92,17 @@ export function ClassForm({
 
   const [formData, setFormData] = useState({
     name: "",
-    gradeLevel: "1",
+    gradeDefinitionId: "",
     section: "",
     capacity: "",
     roomNumber: "",
     classTeacherId: "",
     academicYearId: currentAcademicYear?.id || "",
+    schoolLevelId: "",
   })
+
+  // Get the selected school level
+  const selectedLevel = schoolLevels.find(l => l.id === formData.schoolLevelId)
 
   // Reset form when dialog opens with new data
   useEffect(() => {
@@ -86,22 +110,24 @@ export function ClassForm({
       if (classData) {
         setFormData({
           name: classData.name || "",
-          gradeLevel: classData.gradeLevel?.toString() || "1",
+          gradeDefinitionId: classData.gradeDefinitionId || "",
           section: classData.section || "",
           capacity: classData.capacity?.toString() || "",
           roomNumber: classData.roomNumber || "",
           classTeacherId: classData.classTeacherId || "",
           academicYearId: classData.academicYearId || currentAcademicYear?.id || "",
+          schoolLevelId: classData.schoolLevelId || "",
         })
       } else {
         setFormData({
           name: "",
-          gradeLevel: "1",
+          gradeDefinitionId: "",
           section: "",
           capacity: "",
           roomNumber: "",
           classTeacherId: "",
           academicYearId: currentAcademicYear?.id || "",
+          schoolLevelId: "",
         })
       }
       setError(null)
@@ -125,12 +151,13 @@ export function ClassForm({
     startTransition(async () => {
       const submitData = {
         name: formData.name,
-        gradeLevel: formData.gradeLevel,
+        gradeDefinitionId: formData.gradeDefinitionId || undefined,
         section: formData.section || undefined,
         capacity: formData.capacity ? parseInt(formData.capacity) : undefined,
         roomNumber: formData.roomNumber || undefined,
         classTeacherId: formData.classTeacherId || undefined,
         academicYearId: formData.academicYearId,
+        schoolLevelId: formData.schoolLevelId || undefined,
       }
 
       let result
@@ -193,6 +220,37 @@ export function ClassForm({
             </Select>
           </div>
 
+          {schoolLevels.length > 0 && (
+            <div className="space-y-2">
+              <Label htmlFor="schoolLevel">School Level</Label>
+              <Select
+                value={formData.schoolLevelId || "none"}
+                onValueChange={(value) => setFormData({ ...formData, schoolLevelId: value === "none" ? "" : value })}
+                disabled={isPending}
+              >
+                <SelectTrigger className={inputClass}>
+                  <SelectValue placeholder="Select school level" />
+                </SelectTrigger>
+                <SelectContent className="neu rounded-xl border-0">
+                  <SelectItem value="none">None</SelectItem>
+                  {schoolLevels.map((level) => (
+                    <SelectItem key={level.id} value={level.id}>
+                      {level.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {selectedLevel && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                  <Info className="h-3 w-3" />
+                  {selectedLevel.allowElectives 
+                    ? "Students can choose elective subjects at this level"
+                    : "All subjects are core at this level"}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Class Name *</Label>
@@ -206,25 +264,41 @@ export function ClassForm({
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="gradeLevel">Grade Level *</Label>
-              <Select
-                value={formData.gradeLevel}
-                onValueChange={(value) => setFormData({ ...formData, gradeLevel: value })}
-                disabled={isPending}
-              >
-                <SelectTrigger className={inputClass}>
-                  <SelectValue placeholder="Select grade" />
-                </SelectTrigger>
-                <SelectContent className="neu rounded-xl border-0">
-                  {[...Array(12)].map((_, i) => (
-                    <SelectItem key={i + 1} value={(i + 1).toString()}>
-                      Grade {i + 1}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            {gradeDefinitions.length > 0 ? (
+              <div className="space-y-2">
+                <Label htmlFor="gradeDefinition">Class/Grade</Label>
+                <Select
+                  value={formData.gradeDefinitionId || "none"}
+                  onValueChange={(value) => setFormData({ ...formData, gradeDefinitionId: value === "none" ? "" : value })}
+                  disabled={isPending}
+                >
+                  <SelectTrigger className={inputClass}>
+                    <SelectValue placeholder="Select class/grade" />
+                  </SelectTrigger>
+                  <SelectContent className="neu rounded-xl border-0">
+                    <SelectItem value="none">None</SelectItem>
+                    {gradeDefinitions.map((grade) => (
+                      <SelectItem key={grade.id} value={grade.id}>
+                        {grade.name} ({grade.shortName})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {formData.gradeDefinitionId && gradeDefinitions.find(g => g.id === formData.gradeDefinitionId)?.description && (
+                  <p className="text-xs text-muted-foreground">
+                    {gradeDefinitions.find(g => g.id === formData.gradeDefinitionId)?.description}
+                  </p>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="gradeDefinition">Class/Grade</Label>
+                <div className="flex items-center gap-2 h-11 px-3 text-sm text-muted-foreground neu-inset rounded-xl">
+                  <Info className="h-4 w-4" />
+                  <span>Define classes in Settings first</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -270,15 +344,15 @@ export function ClassForm({
             <div className="space-y-2">
               <Label htmlFor="classTeacher">Class Teacher</Label>
               <Select
-                value={formData.classTeacherId}
-                onValueChange={(value) => setFormData({ ...formData, classTeacherId: value })}
+                value={formData.classTeacherId || "none"}
+                onValueChange={(value) => setFormData({ ...formData, classTeacherId: value === "none" ? "" : value })}
                 disabled={isPending}
               >
                 <SelectTrigger className={inputClass}>
                   <SelectValue placeholder="Select teacher" />
                 </SelectTrigger>
                 <SelectContent className="neu rounded-xl border-0">
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {teachers.map((teacher) => (
                     <SelectItem key={teacher.id} value={teacher.id}>
                       {teacher.firstName} {teacher.lastName}

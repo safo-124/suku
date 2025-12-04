@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache"
 import prisma from "@/lib/prisma"
+import { hashPassword } from "@/lib/auth"
 import { SubscriptionPlan, SubscriptionStatus, UserRole } from "@/app/generated/prisma/client"
 
 export interface CreateSchoolInput {
@@ -63,12 +64,7 @@ export async function checkEmailAvailability(email: string, excludeId?: string) 
   }
 }
 
-// Simple password hash (in production, use bcrypt)
-function hashPassword(password: string): string {
-  // TODO: Replace with bcrypt in production
-  // For now, we'll store a placeholder - in real app use: await bcrypt.hash(password, 10)
-  return `hashed_${password}_${Date.now()}`
-}
+// Password hashing is now handled by lib/auth.ts hashPassword function
 
 // Generate a temporary password
 function generateTempPassword(): string {
@@ -125,6 +121,7 @@ export async function createSchool(data: CreateSchoolWithAdminInput) {
       // Create school admin if provided
       if (data.admin) {
         tempPassword = data.admin.password || generateTempPassword()
+        const hashedPwd = await hashPassword(tempPassword)
         
         admin = await tx.user.create({
           data: {
@@ -132,7 +129,7 @@ export async function createSchool(data: CreateSchoolWithAdminInput) {
             firstName: data.admin.firstName,
             lastName: data.admin.lastName,
             phone: data.admin.phone || null,
-            passwordHash: hashPassword(tempPassword),
+            passwordHash: hashedPwd,
             role: UserRole.SCHOOL_ADMIN,
             schoolId: school.id,
             isActive: true,
@@ -316,6 +313,7 @@ export async function createSchoolAdmin(schoolId: string, data: CreateSchoolAdmi
     }
 
     const tempPassword = data.password || generateTempPassword()
+    const hashedPwd = await hashPassword(tempPassword)
 
     const admin = await prisma.user.create({
       data: {
@@ -323,7 +321,7 @@ export async function createSchoolAdmin(schoolId: string, data: CreateSchoolAdmi
         firstName: data.firstName,
         lastName: data.lastName,
         phone: data.phone || null,
-        passwordHash: hashPassword(tempPassword),
+        passwordHash: hashedPwd,
         role: UserRole.SCHOOL_ADMIN,
         schoolId: schoolId,
         isActive: true,
@@ -385,11 +383,12 @@ export async function updateSchoolAdmin(
 export async function resetSchoolAdminPassword(adminId: string) {
   try {
     const tempPassword = generateTempPassword()
+    const hashedPwd = await hashPassword(tempPassword)
 
     await prisma.user.update({
       where: { id: adminId },
       data: {
-        passwordHash: hashPassword(tempPassword),
+        passwordHash: hashedPwd,
       },
     })
 

@@ -8,12 +8,13 @@ import { UserRole } from "@/app/generated/prisma/client"
 // Types
 export interface CreateClassInput {
   name: string
-  gradeLevel: string
+  gradeDefinitionId?: string
   section?: string
   capacity?: number
   roomNumber?: string
   classTeacherId?: string
   academicYearId: string
+  schoolLevelId?: string
 }
 
 export interface UpdateClassInput extends Partial<CreateClassInput> {
@@ -22,7 +23,7 @@ export interface UpdateClassInput extends Partial<CreateClassInput> {
 
 export interface ClassFilters {
   search?: string
-  gradeLevel?: string
+  gradeDefinitionId?: string
   academicYearId?: string
   page?: number
   limit?: number
@@ -36,7 +37,7 @@ export async function getClasses(filters: ClassFilters = {}) {
     return { success: false, error: auth.error, classes: [], total: 0 }
   }
 
-  const { search, gradeLevel, academicYearId, page = 1, limit = 20 } = filters
+  const { search, gradeDefinitionId, academicYearId, page = 1, limit = 20 } = filters
   const skip = (page - 1) * limit
 
   try {
@@ -49,7 +50,7 @@ export async function getClasses(filters: ClassFilters = {}) {
           { roomNumber: { contains: search, mode: "insensitive" as const } },
         ],
       }),
-      ...(gradeLevel !== undefined && { gradeLevel: parseInt(gradeLevel) }),
+      ...(gradeDefinitionId && { gradeDefinitionId }),
     }
 
     const [classes, total] = await Promise.all([
@@ -67,6 +68,21 @@ export async function getClasses(filters: ClassFilters = {}) {
           academicYear: {
             select: { name: true },
           },
+          gradeDefinition: {
+            select: {
+              id: true,
+              name: true,
+              shortName: true,
+            },
+          },
+          schoolLevel: {
+            select: {
+              id: true,
+              name: true,
+              shortName: true,
+              allowElectives: true,
+            },
+          },
           _count: {
             select: {
               students: true,
@@ -74,7 +90,11 @@ export async function getClasses(filters: ClassFilters = {}) {
             },
           },
         },
-        orderBy: [{ gradeLevel: "asc" }, { section: "asc" }],
+        orderBy: [
+          { gradeDefinition: { order: "asc" } },
+          { section: "asc" },
+          { name: "asc" },
+        ],
         skip,
         take: limit,
       }),
@@ -197,11 +217,12 @@ export async function createClass(data: CreateClassInput) {
         schoolId: auth.school.id,
         academicYearId: data.academicYearId,
         name: data.name,
-        gradeLevel: parseInt(data.gradeLevel),
+        gradeDefinitionId: data.gradeDefinitionId || null,
         section: data.section || null,
         capacity: data.capacity || null,
         roomNumber: data.roomNumber || null,
         classTeacherId: data.classTeacherId || null,
+        schoolLevelId: data.schoolLevelId || null,
       },
     })
 
@@ -253,12 +274,13 @@ export async function updateClass(data: UpdateClassInput) {
       where: { id: data.id },
       data: {
         ...(data.name && { name: data.name }),
-        ...(data.gradeLevel !== undefined && { gradeLevel: parseInt(data.gradeLevel) }),
+        ...(data.gradeDefinitionId !== undefined && { gradeDefinitionId: data.gradeDefinitionId || null }),
         ...(data.section !== undefined && { section: data.section || null }),
         ...(data.capacity !== undefined && { capacity: data.capacity || null }),
         ...(data.roomNumber !== undefined && { roomNumber: data.roomNumber || null }),
         ...(data.classTeacherId !== undefined && { classTeacherId: data.classTeacherId || null }),
         ...(data.academicYearId && { academicYearId: data.academicYearId }),
+        ...(data.schoolLevelId !== undefined && { schoolLevelId: data.schoolLevelId || null }),
       },
     })
 
@@ -342,6 +364,61 @@ export async function getTeachersForDropdown() {
   } catch (error) {
     console.error("Error fetching teachers:", error)
     return { success: false, error: "Failed to fetch teachers", teachers: [] }
+  }
+}
+
+// Get school levels for dropdown
+export async function getSchoolLevelsForDropdown() {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error, levels: [] }
+  }
+
+  try {
+    const levels = await prisma.schoolLevel.findMany({
+      where: { schoolId: auth.school.id },
+      select: {
+        id: true,
+        name: true,
+        shortName: true,
+        allowElectives: true,
+      },
+      orderBy: { order: "asc" },
+    })
+
+    return { success: true, levels }
+  } catch (error) {
+    console.error("Error fetching school levels:", error)
+    return { success: false, error: "Failed to fetch school levels", levels: [] }
+  }
+}
+
+// Get grade definitions for dropdown
+export async function getGradeDefinitionsForDropdown() {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error, gradeDefinitions: [] }
+  }
+
+  try {
+    const gradeDefinitions = await prisma.gradeDefinition.findMany({
+      where: { schoolId: auth.school.id },
+      select: {
+        id: true,
+        name: true,
+        shortName: true,
+        description: true,
+        order: true,
+      },
+      orderBy: { order: "asc" },
+    })
+
+    return { success: true, gradeDefinitions }
+  } catch (error) {
+    console.error("Error fetching grade definitions:", error)
+    return { success: false, error: "Failed to fetch grade definitions", gradeDefinitions: [] }
   }
 }
 

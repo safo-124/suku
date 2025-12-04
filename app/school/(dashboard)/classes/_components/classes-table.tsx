@@ -10,6 +10,7 @@ import {
   Users,
   GraduationCap,
   MapPin,
+  Layers,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,19 +31,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { deleteClass } from "../_actions/class-actions"
 
 export type ClassWithDetails = {
   id: string
   name: string
-  gradeLevel: number
+  gradeDefinitionId: string | null
   section: string | null
   capacity: number | null
   roomNumber: string | null
   createdAt: Date
   academicYearId: string
   classTeacherId: string | null
+  schoolLevelId?: string | null
   classTeacher: {
     id: string
     firstName: string
@@ -51,6 +54,17 @@ export type ClassWithDetails = {
   } | null
   academicYear: {
     name: string
+  } | null
+  gradeDefinition?: {
+    id: string
+    name: string
+    shortName: string
+  } | null
+  schoolLevel?: {
+    id: string
+    name: string
+    shortName: string
+    allowElectives: boolean
   } | null
   _count: {
     students: number
@@ -113,13 +127,23 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl neu-convex group-hover:neu-inset transition-all duration-300">
-                  <span className="text-lg font-bold">{cls.gradeLevel}</span>
+                  <span className="text-lg font-bold">{cls.gradeDefinition?.shortName || "—"}</span>
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">{cls.name}</h3>
-                  {cls.section && (
-                    <p className="text-sm text-muted-foreground">Section {cls.section}</p>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {cls.gradeDefinition && (
+                      <p className="text-sm text-muted-foreground">{cls.gradeDefinition.name}</p>
+                    )}
+                    {cls.section && (
+                      <p className="text-sm text-muted-foreground">• Section {cls.section}</p>
+                    )}
+                    {cls.schoolLevel && (
+                      <Badge variant="secondary" className="text-xs">
+                        {cls.schoolLevel.shortName}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
               <DropdownMenu>
@@ -178,6 +202,16 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
 
             {/* Details */}
             <div className="space-y-2 text-sm">
+              {cls.schoolLevel && (
+                <div className="flex items-center gap-2">
+                  <Layers className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-muted-foreground">Level:</span>
+                  <span className="font-medium">{cls.schoolLevel.name}</span>
+                  {cls.schoolLevel.allowElectives && (
+                    <Badge variant="outline" className="text-xs">Electives</Badge>
+                  )}
+                </div>
+              )}
               {cls.classTeacher && (
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />

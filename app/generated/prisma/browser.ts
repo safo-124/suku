@@ -53,6 +53,21 @@ export type ParentProfile = Prisma.ParentProfileModel
  */
 export type ParentStudent = Prisma.ParentStudentModel
 /**
+ * Model GradeDefinition
+ * 
+ */
+export type GradeDefinition = Prisma.GradeDefinitionModel
+/**
+ * Model SchoolLevel
+ * 
+ */
+export type SchoolLevel = Prisma.SchoolLevelModel
+/**
+ * Model LevelSubject
+ * 
+ */
+export type LevelSubject = Prisma.LevelSubjectModel
+/**
  * Model GradeScale
  * 
  */

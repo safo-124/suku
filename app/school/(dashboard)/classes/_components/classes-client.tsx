@@ -28,18 +28,37 @@ interface AcademicYear {
   isCurrent: boolean
 }
 
+interface SchoolLevel {
+  id: string
+  name: string
+  shortName: string
+  allowElectives: boolean
+}
+
+interface GradeDefinition {
+  id: string
+  name: string
+  shortName: string
+  description: string | null
+  order: number
+}
+
 interface ClassesClientProps {
   classes: ClassWithDetails[]
   teachers: Teacher[]
   academicYears: AcademicYear[]
   currentAcademicYear: AcademicYear | null
+  schoolLevels?: SchoolLevel[]
+  gradeDefinitions?: GradeDefinition[]
 }
 
 export function ClassesClient({ 
   classes, 
   teachers, 
   academicYears,
-  currentAcademicYear 
+  currentAcademicYear,
+  schoolLevels = [],
+  gradeDefinitions = []
 }: ClassesClientProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedGrade, setSelectedGrade] = useState<string>("all")
@@ -59,15 +78,17 @@ export function ClassesClient({
       (cls.section?.toLowerCase().includes(searchQuery.toLowerCase())) ||
       teacherName.includes(searchQuery.toLowerCase())
 
-    const matchesGrade = selectedGrade === "all" || cls.gradeLevel?.toString() === selectedGrade
+    const matchesGrade = selectedGrade === "all" || cls.gradeDefinitionId === selectedGrade
 
     const matchesYear = selectedYear === "all" || cls.academicYearId === selectedYear
 
     return matchesSearch && matchesGrade && matchesYear
   })
 
-  // Get unique grade levels
-  const gradeLevels = Array.from(new Set(classes.map((c) => c.gradeLevel?.toString()).filter(Boolean)))
+  // Get unique grade definitions from classes
+  const usedGradeDefinitions = gradeDefinitions.filter(gd => 
+    classes.some(c => c.gradeDefinitionId === gd.id)
+  )
 
   // Calculate stats
   const totalClasses = classes.length
@@ -149,14 +170,14 @@ export function ClassesClient({
           </div>
 
           <Select value={selectedGrade} onValueChange={setSelectedGrade}>
-            <SelectTrigger className="w-40 neu-inset border-0 bg-transparent rounded-xl h-11">
-              <SelectValue placeholder="Grade Level" />
+            <SelectTrigger className="w-44 neu-inset border-0 bg-transparent rounded-xl h-11">
+              <SelectValue placeholder="Class/Grade" />
             </SelectTrigger>
             <SelectContent className="neu border-0 rounded-xl">
-              <SelectItem value="all">All Grades</SelectItem>
-              {gradeLevels.map((grade) => (
-                <SelectItem key={grade} value={grade!}>
-                  Grade {grade}
+              <SelectItem value="all">All Classes</SelectItem>
+              {usedGradeDefinitions.map((grade) => (
+                <SelectItem key={grade.id} value={grade.id}>
+                  {grade.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -223,6 +244,8 @@ export function ClassesClient({
         teachers={teachers}
         academicYears={academicYears}
         currentAcademicYear={currentAcademicYear}
+        schoolLevels={schoolLevels}
+        gradeDefinitions={gradeDefinitions}
       />
 
       {/* Academic Year Form Modal */}
