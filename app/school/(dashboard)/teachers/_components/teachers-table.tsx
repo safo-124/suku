@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import {
   Users,
   MoreHorizontal,
@@ -16,6 +17,7 @@ import {
   Check,
   BookOpen,
   GraduationCap,
+  ExternalLink,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -162,9 +164,10 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
         {/* Table Body */}
         <div className="divide-y divide-border/30">
           {teachers.map((teacher) => (
-            <div
+            <Link
               key={teacher.id}
-              className="group grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 sm:px-8 py-5 items-center hover:bg-muted/20 transition-colors"
+              href={`/school/teachers/${teacher.id}`}
+              className="group grid grid-cols-1 lg:grid-cols-12 gap-4 px-6 sm:px-8 py-5 items-center hover:bg-muted/20 transition-colors cursor-pointer"
             >
               {/* Teacher Info */}
               <div className="lg:col-span-4 flex items-center gap-4">
@@ -223,25 +226,35 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
               </div>
 
               {/* Contact */}
-              <div className="lg:col-span-2 flex items-center gap-2 lg:block">
+              <div className="lg:col-span-2 flex items-center gap-2 lg:block" onClick={(e) => e.preventDefault()}>
                 <span className="lg:hidden text-xs text-muted-foreground w-20">Contact:</span>
                 <div className="flex items-center gap-2">
                   {teacher.phone && (
-                    <a
-                      href={`tel:${teacher.phone}`}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        window.location.href = `tel:${teacher.phone}`
+                      }}
                       className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
                       title={teacher.phone}
                     >
                       <Phone className="h-4 w-4 text-muted-foreground" />
-                    </a>
+                    </button>
                   )}
-                  <a
-                    href={`mailto:${teacher.email}`}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      window.location.href = `mailto:${teacher.email}`
+                    }}
                     className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors"
                     title={teacher.email}
                   >
                     <Mail className="h-4 w-4 text-muted-foreground" />
-                  </a>
+                  </button>
                 </div>
               </div>
 
@@ -267,13 +280,14 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
               </div>
 
               {/* Actions */}
-              <div className="lg:col-span-1 flex justify-end">
+              <div className="lg:col-span-1 flex justify-end" onClick={(e) => e.preventDefault()}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="neu-sm hover:neu rounded-xl h-10 w-10"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <MoreHorizontal className="h-4 w-4" />
                       <span className="sr-only">Actions</span>
@@ -287,7 +301,10 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
                     
                     <DropdownMenuItem
                       className="rounded-xl py-2.5 cursor-pointer"
-                      onClick={() => onEdit(teacher)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit(teacher)
+                      }}
                     >
                       <Pencil className="mr-3 h-4 w-4" />
                       Edit
@@ -295,7 +312,10 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
                     
                     <DropdownMenuItem
                       className="rounded-xl py-2.5 cursor-pointer"
-                      onClick={() => handleResetPassword(teacher.id, teacher.email)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleResetPassword(teacher.id, teacher.email)
+                      }}
                     >
                       <Key className="mr-3 h-4 w-4" />
                       Reset Password
@@ -303,7 +323,10 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
                     
                     <DropdownMenuItem
                       className="rounded-xl py-2.5 cursor-pointer"
-                      onClick={() => setToggleId({ id: teacher.id, isActive: teacher.isActive })}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setToggleId({ id: teacher.id, isActive: teacher.isActive })
+                      }}
                     >
                       {teacher.isActive ? (
                         <>
@@ -322,7 +345,10 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
                     
                     <DropdownMenuItem
                       className="rounded-xl py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
-                      onClick={() => setDeleteId(teacher.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setDeleteId(teacher.id)
+                      }}
                     >
                       <Trash2 className="mr-3 h-4 w-4" />
                       Delete
@@ -330,7 +356,7 @@ export function TeachersTable({ teachers, onEdit }: TeachersTableProps) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

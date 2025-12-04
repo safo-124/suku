@@ -383,29 +383,64 @@ export async function assignSubjectToLevel(data: AssignSubjectToLevelInput) {
       },
     })
 
-    if (existingAssignment) {
-      // Update existing assignment
-      await prisma.levelSubject.update({
-        where: { id: existingAssignment.id },
-        data: {
-          subjectType: data.subjectType,
-          isCompulsory: data.isCompulsory,
+    // Use transaction to create LevelSubject and ClassSubjects atomically
+    await prisma.$transaction(async (tx) => {
+      if (existingAssignment) {
+        // Update existing assignment
+        await tx.levelSubject.update({
+          where: { id: existingAssignment.id },
+          data: {
+            subjectType: data.subjectType,
+            isCompulsory: data.isCompulsory,
+          },
+        })
+      } else {
+        // Create new assignment
+        await tx.levelSubject.create({
+          data: {
+            subjectId: data.subjectId,
+            levelId: data.levelId,
+            subjectType: data.subjectType,
+            isCompulsory: data.isCompulsory,
+          },
+        })
+      }
+
+      // Get all classes in this level (across all academic years)
+      const classesInLevel = await tx.class.findMany({
+        where: {
+          schoolId: auth.school!.id,
+          schoolLevelId: data.levelId,
         },
+        select: { id: true },
       })
-    } else {
-      // Create new assignment
-      await prisma.levelSubject.create({
-        data: {
-          subjectId: data.subjectId,
-          levelId: data.levelId,
-          subjectType: data.subjectType,
-          isCompulsory: data.isCompulsory,
-        },
-      })
-    }
+
+      // Create ClassSubject for each class if it doesn't exist
+      for (const cls of classesInLevel) {
+        const existingClassSubject = await tx.classSubject.findUnique({
+          where: {
+            classId_subjectId: {
+              classId: cls.id,
+              subjectId: data.subjectId,
+            },
+          },
+        })
+
+        if (!existingClassSubject) {
+          await tx.classSubject.create({
+            data: {
+              classId: cls.id,
+              subjectId: data.subjectId,
+            },
+          })
+        }
+      }
+    })
 
     revalidatePath("/school/subjects")
     revalidatePath("/school/settings")
+    revalidatePath("/school/classes")
+    revalidatePath("/school/teachers")
     return { success: true }
   } catch (error) {
     console.error("Error assigning subject to level:", error)
@@ -566,5 +601,86 @@ export async function bulkCreateSubjects(
   } catch (error) {
     console.error("Error bulk creating subjects:", error)
     return { success: false, error: "Failed to create subjects" }
+  }
+}
+
+// Sync class subjects with level subjects
+// This ensures all classes in a level have the level's subjects as ClassSubjects
+export async function syncClassSubjectsWithLevelSubjects(levelId?: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Get all levels or specific level
+    const levels = await prisma.schoolLevel.findMany({
+      where: {
+        schoolId: auth.school.id,
+        ...(levelId && { id: levelId }),
+      },
+      select: { id: true },
+    })
+
+    let totalCreated = 0
+
+    await prisma.$transaction(async (tx) => {
+      for (const level of levels) {
+        // Get level subjects
+        const levelSubjects = await tx.levelSubject.findMany({
+          where: { levelId: level.id },
+          select: { subjectId: true },
+        })
+        const levelSubjectIds = levelSubjects.map(ls => ls.subjectId)
+        
+        if (levelSubjectIds.length === 0) continue
+        
+        // Get classes in this level
+        const classes = await tx.class.findMany({
+          where: { schoolLevelId: level.id },
+          select: { 
+            id: true,
+          },
+        })
+        
+        for (const cls of classes) {
+          // Get existing class subjects
+          const existingClassSubjects = await tx.classSubject.findMany({
+            where: { classId: cls.id },
+            select: { subjectId: true },
+          })
+          const existingSubjectIds = new Set(existingClassSubjects.map(cs => cs.subjectId))
+          
+          // Find subjects that need to be added
+          const subjectsToAdd = levelSubjectIds.filter(
+            subjectId => !existingSubjectIds.has(subjectId)
+          )
+          
+          if (subjectsToAdd.length > 0) {
+            await tx.classSubject.createMany({
+              data: subjectsToAdd.map(subjectId => ({
+                classId: cls.id,
+                subjectId,
+              })),
+            })
+            totalCreated += subjectsToAdd.length
+          }
+        }
+      }
+    })
+
+    revalidatePath("/school/classes")
+    revalidatePath("/school/teachers")
+    revalidatePath("/school/subjects")
+    
+    return { 
+      success: true, 
+      message: `Synced ${totalCreated} subject-class assignments`,
+      createdCount: totalCreated,
+    }
+  } catch (error) {
+    console.error("Error syncing class subjects:", error)
+    return { success: false, error: "Failed to sync class subjects" }
   }
 }

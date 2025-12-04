@@ -212,22 +212,21 @@ export async function createClass(data: CreateClassInput) {
       return { success: false, error: "A class with this name already exists for this academic year" }
     }
 
-    // Fetch core subjects for this school level if provided
-    let coreSubjects: { subjectId: string }[] = []
+    // Fetch ALL subjects for this school level if provided (both CORE and ELECTIVE)
+    // All subjects should be available as ClassSubjects for teacher assignment
+    let levelSubjects: { subjectId: string }[] = []
     if (data.schoolLevelId) {
-      const levelSubjects = await prisma.levelSubject.findMany({
+      levelSubjects = await prisma.levelSubject.findMany({
         where: {
           levelId: data.schoolLevelId,
-          subjectType: "CORE",
         },
         select: {
           subjectId: true,
         },
       })
-      coreSubjects = levelSubjects
     }
 
-    // Use transaction to create class and auto-assign core subjects
+    // Use transaction to create class and auto-assign level subjects
     const classData = await prisma.$transaction(async (tx) => {
       // Create the class
       const newClass = await tx.class.create({
@@ -244,10 +243,10 @@ export async function createClass(data: CreateClassInput) {
         },
       })
 
-      // Auto-assign core subjects to the class
-      if (coreSubjects.length > 0) {
+      // Auto-assign all level subjects to the class
+      if (levelSubjects.length > 0) {
         await tx.classSubject.createMany({
-          data: coreSubjects.map((subject) => ({
+          data: levelSubjects.map((subject) => ({
             classId: newClass.id,
             subjectId: subject.subjectId,
           })),
@@ -261,7 +260,7 @@ export async function createClass(data: CreateClassInput) {
     return { 
       success: true, 
       class: classData,
-      assignedSubjects: coreSubjects.length,
+      assignedSubjects: levelSubjects.length,
     }
   } catch (error) {
     console.error("Error creating class:", error)
@@ -269,43 +268,61 @@ export async function createClass(data: CreateClassInput) {
   }
 }
 
-// Get core subjects for a school level (for preview in class form)
-export async function getCoreSubjectsForLevel(levelId: string) {
+// Get all subjects for a school level (for preview in class form)
+export async function getSubjectsForLevel(levelId: string) {
   const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
   
   if (!auth.success || !auth.school) {
-    return { success: false, error: auth.error, subjects: [] as { id: string; name: string; code: string | null }[] }
+    return { success: false, error: auth.error, subjects: [] as { id: string; name: string; code: string | null; subjectType: string }[] }
   }
 
   try {
-    // Query subjects directly through the level relationship
-    const subjects = await prisma.subject.findMany({
+    // Query subjects with their level assignments
+    const subjectsData = await prisma.subject.findMany({
       where: {
+        schoolId: auth.school.id,
         levelSubjects: {
           some: {
             levelId,
-            subjectType: "CORE",
           },
         },
       },
-      select: {
-        id: true,
-        name: true,
-        code: true,
+      include: {
+        levelSubjects: {
+          where: { levelId },
+          take: 1,
+        },
       },
       orderBy: {
         name: "asc",
       },
-    })
+    }) as unknown as Array<{
+      id: string
+      name: string
+      code: string | null
+      levelSubjects: Array<{ subjectType: string }>
+    }>
+
+    const formattedSubjects = subjectsData.map(s => ({
+      id: s.id,
+      name: s.name,
+      code: s.code,
+      subjectType: s.levelSubjects[0]?.subjectType || "CORE",
+    }))
 
     return { 
       success: true, 
-      subjects,
+      subjects: formattedSubjects,
     }
   } catch (error) {
-    console.error("Error fetching core subjects:", error)
-    return { success: false, error: "Failed to fetch core subjects", subjects: [] as { id: string; name: string; code: string | null }[] }
+    console.error("Error fetching level subjects:", error)
+    return { success: false, error: "Failed to fetch level subjects", subjects: [] as { id: string; name: string; code: string | null; subjectType: string }[] }
   }
+}
+
+// Alias for backward compatibility
+export async function getCoreSubjectsForLevel(levelId: string) {
+  return getSubjectsForLevel(levelId)
 }
 
 // Update a class
@@ -364,7 +381,7 @@ export async function updateClass(data: UpdateClassInput) {
         },
       })
 
-      // If school level changed, sync core subjects
+      // If school level changed, sync ALL level subjects
       if (levelChanging && data.schoolLevelId) {
         // Get current class subjects
         const currentSubjects = await tx.classSubject.findMany({
@@ -373,17 +390,16 @@ export async function updateClass(data: UpdateClassInput) {
         })
         const currentSubjectIds = new Set(currentSubjects.map(s => s.subjectId))
 
-        // Get new level's core subjects
-        const newCoreSubjects = await tx.levelSubject.findMany({
+        // Get new level's ALL subjects (both CORE and ELECTIVE)
+        const newLevelSubjects = await tx.levelSubject.findMany({
           where: {
             levelId: data.schoolLevelId,
-            subjectType: "CORE",
           },
           select: { subjectId: true },
         })
 
-        // Add only the new core subjects that aren't already assigned
-        const subjectsToAdd = newCoreSubjects.filter(
+        // Add only the new level subjects that aren't already assigned
+        const subjectsToAdd = newLevelSubjects.filter(
           s => !currentSubjectIds.has(s.subjectId)
         )
 
@@ -675,19 +691,18 @@ export async function createClassesFromGradeDefinitions(academicYearId: string) 
           },
         })
 
-        // Auto-assign core subjects if there's a school level
+        // Auto-assign ALL level subjects if there's a school level
         if (gd.schoolLevelId) {
-          const coreSubjects = await tx.levelSubject.findMany({
+          const levelSubjects = await tx.levelSubject.findMany({
             where: {
               levelId: gd.schoolLevelId,
-              subjectType: "CORE",
             },
             select: { subjectId: true },
           })
 
-          if (coreSubjects.length > 0) {
+          if (levelSubjects.length > 0) {
             await tx.classSubject.createMany({
-              data: coreSubjects.map((subject) => ({
+              data: levelSubjects.map((subject) => ({
                 classId: newClass.id,
                 subjectId: subject.subjectId,
               })),
@@ -702,6 +717,7 @@ export async function createClassesFromGradeDefinitions(academicYearId: string) 
     })
 
     revalidatePath("/school/classes")
+    revalidatePath("/school/teachers")
     return { 
       success: true, 
       createdCount: createdClasses.length,

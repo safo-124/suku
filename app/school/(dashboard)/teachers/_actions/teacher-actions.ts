@@ -429,6 +429,370 @@ function generateTempPassword(): string {
   return password
 }
 
+// ============================================
+// SUBJECT ASSIGNMENTS
+// ============================================
+
+// Get all class-subjects available for assignment (for a specific academic year)
+export async function getAvailableClassSubjects(academicYearId?: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error, classSubjects: [] }
+  }
+
+  try {
+    // Get current academic year if not specified
+    let yearId = academicYearId
+    if (!yearId) {
+      const currentYear = await prisma.academicYear.findFirst({
+        where: { schoolId: auth.school.id, isCurrent: true },
+      })
+      yearId = currentYear?.id
+    }
+
+    if (!yearId) {
+      return { success: false, error: "No academic year found", classSubjects: [] }
+    }
+
+    const classSubjects = await prisma.classSubject.findMany({
+      where: {
+        class: {
+          schoolId: auth.school.id,
+          academicYearId: yearId,
+        },
+      },
+      include: {
+        class: {
+          select: {
+            id: true,
+            name: true,
+            section: true,
+          },
+        },
+        subject: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+          },
+        },
+        teacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+      orderBy: [
+        { class: { name: "asc" } },
+        { subject: { name: "asc" } },
+      ],
+    })
+
+    return { success: true, classSubjects }
+  } catch (error) {
+    console.error("Error fetching class subjects:", error)
+    return { success: false, error: "Failed to fetch class subjects", classSubjects: [] }
+  }
+}
+
+// Assign a subject (class-subject) to a teacher
+export async function assignSubjectToTeacher(classSubjectId: string, teacherId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify teacher belongs to this school
+    const teacher = await prisma.user.findFirst({
+      where: {
+        id: teacherId,
+        schoolId: auth.school.id,
+        role: UserRole.TEACHER,
+      },
+    })
+
+    if (!teacher) {
+      return { success: false, error: "Teacher not found" }
+    }
+
+    // Verify class subject belongs to this school
+    const classSubject = await prisma.classSubject.findFirst({
+      where: {
+        id: classSubjectId,
+        class: { schoolId: auth.school.id },
+      },
+    })
+
+    if (!classSubject) {
+      return { success: false, error: "Class subject not found" }
+    }
+
+    // Update the class subject with the teacher
+    await prisma.classSubject.update({
+      where: { id: classSubjectId },
+      data: { teacherId },
+    })
+
+    revalidatePath("/school/teachers")
+    revalidatePath(`/school/teachers/${teacherId}`)
+    revalidatePath("/school/classes")
+    return { success: true }
+  } catch (error) {
+    console.error("Error assigning subject to teacher:", error)
+    return { success: false, error: "Failed to assign subject" }
+  }
+}
+
+// Unassign a subject from a teacher
+export async function unassignSubjectFromTeacher(classSubjectId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify class subject belongs to this school
+    const classSubject = await prisma.classSubject.findFirst({
+      where: {
+        id: classSubjectId,
+        class: { schoolId: auth.school.id },
+      },
+      include: { teacher: true },
+    })
+
+    if (!classSubject) {
+      return { success: false, error: "Class subject not found" }
+    }
+
+    const teacherId = classSubject.teacherId
+
+    // Remove the teacher from the class subject
+    await prisma.classSubject.update({
+      where: { id: classSubjectId },
+      data: { teacherId: null },
+    })
+
+    revalidatePath("/school/teachers")
+    if (teacherId) {
+      revalidatePath(`/school/teachers/${teacherId}`)
+    }
+    revalidatePath("/school/classes")
+    return { success: true }
+  } catch (error) {
+    console.error("Error unassigning subject from teacher:", error)
+    return { success: false, error: "Failed to unassign subject" }
+  }
+}
+
+// Bulk assign subjects to a teacher
+export async function bulkAssignSubjectsToTeacher(classSubjectIds: string[], teacherId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify teacher belongs to this school
+    const teacher = await prisma.user.findFirst({
+      where: {
+        id: teacherId,
+        schoolId: auth.school.id,
+        role: UserRole.TEACHER,
+      },
+    })
+
+    if (!teacher) {
+      return { success: false, error: "Teacher not found" }
+    }
+
+    // Verify all class subjects belong to this school
+    const classSubjects = await prisma.classSubject.findMany({
+      where: {
+        id: { in: classSubjectIds },
+        class: { schoolId: auth.school.id },
+      },
+    })
+
+    if (classSubjects.length !== classSubjectIds.length) {
+      return { success: false, error: "Some class subjects not found" }
+    }
+
+    // Update all class subjects with the teacher
+    await prisma.classSubject.updateMany({
+      where: { id: { in: classSubjectIds } },
+      data: { teacherId },
+    })
+
+    revalidatePath("/school/teachers")
+    revalidatePath(`/school/teachers/${teacherId}`)
+    revalidatePath("/school/classes")
+    return { success: true, assignedCount: classSubjectIds.length }
+  } catch (error) {
+    console.error("Error bulk assigning subjects to teacher:", error)
+    return { success: false, error: "Failed to assign subjects" }
+  }
+}
+
+// ============================================
+// CLASS TEACHER ASSIGNMENTS
+// ============================================
+
+// Get all classes available for class teacher assignment
+export async function getAvailableClasses(academicYearId?: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error, classes: [] }
+  }
+
+  try {
+    // Get current academic year if not specified
+    let yearId = academicYearId
+    if (!yearId) {
+      const currentYear = await prisma.academicYear.findFirst({
+        where: { schoolId: auth.school.id, isCurrent: true },
+      })
+      yearId = currentYear?.id
+    }
+
+    if (!yearId) {
+      return { success: false, error: "No academic year found", classes: [] }
+    }
+
+    const classes = await prisma.class.findMany({
+      where: {
+        schoolId: auth.school.id,
+        academicYearId: yearId,
+      },
+      include: {
+        classTeacher: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+        gradeDefinition: {
+          select: {
+            name: true,
+          },
+        },
+        _count: {
+          select: {
+            students: true,
+          },
+        },
+      },
+      orderBy: { name: "asc" },
+    })
+
+    return { success: true, classes }
+  } catch (error) {
+    console.error("Error fetching classes:", error)
+    return { success: false, error: "Failed to fetch classes", classes: [] }
+  }
+}
+
+// Assign a teacher as class teacher for a class
+export async function assignClassTeacher(classId: string, teacherId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify teacher belongs to this school
+    const teacher = await prisma.user.findFirst({
+      where: {
+        id: teacherId,
+        schoolId: auth.school.id,
+        role: UserRole.TEACHER,
+      },
+    })
+
+    if (!teacher) {
+      return { success: false, error: "Teacher not found" }
+    }
+
+    // Verify class belongs to this school
+    const classToUpdate = await prisma.class.findFirst({
+      where: {
+        id: classId,
+        schoolId: auth.school.id,
+      },
+    })
+
+    if (!classToUpdate) {
+      return { success: false, error: "Class not found" }
+    }
+
+    // Update the class with the teacher
+    await prisma.class.update({
+      where: { id: classId },
+      data: { classTeacherId: teacherId },
+    })
+
+    revalidatePath("/school/teachers")
+    revalidatePath(`/school/teachers/${teacherId}`)
+    revalidatePath("/school/classes")
+    revalidatePath(`/school/classes/${classId}`)
+    return { success: true }
+  } catch (error) {
+    console.error("Error assigning class teacher:", error)
+    return { success: false, error: "Failed to assign class teacher" }
+  }
+}
+
+// Remove a class teacher from a class
+export async function removeClassTeacher(classId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify class belongs to this school
+    const classToUpdate = await prisma.class.findFirst({
+      where: {
+        id: classId,
+        schoolId: auth.school.id,
+      },
+    })
+
+    if (!classToUpdate) {
+      return { success: false, error: "Class not found" }
+    }
+
+    const previousTeacherId = classToUpdate.classTeacherId
+
+    // Remove the class teacher
+    await prisma.class.update({
+      where: { id: classId },
+      data: { classTeacherId: null },
+    })
+
+    revalidatePath("/school/teachers")
+    if (previousTeacherId) {
+      revalidatePath(`/school/teachers/${previousTeacherId}`)
+    }
+    revalidatePath("/school/classes")
+    revalidatePath(`/school/classes/${classId}`)
+    return { success: true }
+  } catch (error) {
+    console.error("Error removing class teacher:", error)
+    return { success: false, error: "Failed to remove class teacher" }
+  }
+}
+
 // Types for responses
 type TeacherWithProfile = {
   id: string

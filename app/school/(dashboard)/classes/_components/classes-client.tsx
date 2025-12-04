@@ -312,20 +312,24 @@ export function ClassesClient({
         <AlertDialogContent className="neu border-0 rounded-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Create Classes from Grade Definitions?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will create {gradeDefinitions.length} class{gradeDefinitions.length !== 1 ? 'es' : ''} for the current academic year ({currentAcademicYear?.name}), 
-              using the grade definition names as class names:
-              <ul className="mt-3 space-y-1 text-sm">
-                {gradeDefinitions.slice(0, 5).map((gd) => (
-                  <li key={gd.id} className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                    {gd.name}
-                  </li>
-                ))}
-                {gradeDefinitions.length > 5 && (
-                  <li className="text-muted-foreground">... and {gradeDefinitions.length - 5} more</li>
-                )}
-              </ul>
+            <AlertDialogDescription asChild>
+              <div>
+                <p>
+                  This will create {gradeDefinitions.length} class{gradeDefinitions.length !== 1 ? 'es' : ''} for the current academic year ({currentAcademicYear?.name}), 
+                  using the grade definition names as class names:
+                </p>
+                <ul className="mt-3 space-y-1 text-sm">
+                  {gradeDefinitions.slice(0, 5).map((gd) => (
+                    <li key={gd.id} className="flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      {gd.name}
+                    </li>
+                  ))}
+                  {gradeDefinitions.length > 5 && (
+                    <li className="text-muted-foreground">... and {gradeDefinitions.length - 5} more</li>
+                  )}
+                </ul>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
