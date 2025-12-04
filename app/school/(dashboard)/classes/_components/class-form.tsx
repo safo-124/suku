@@ -20,8 +20,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Loader2, AlertCircle, Info } from "lucide-react"
-import { createClass, updateClass } from "../_actions/class-actions"
+import { Loader2, AlertCircle, Info, BookOpen } from "lucide-react"
+import { createClass, updateClass, getCoreSubjectsForLevel } from "../_actions/class-actions"
 
 interface Teacher {
   id: string
@@ -63,6 +63,12 @@ interface ClassData {
   schoolLevelId?: string | null
 }
 
+interface CoreSubject {
+  id: string
+  name: string
+  code: string | null
+}
+
 interface ClassFormProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -87,6 +93,8 @@ export function ClassForm({
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [coreSubjects, setCoreSubjects] = useState<CoreSubject[]>([])
+  const [loadingSubjects, setLoadingSubjects] = useState(false)
 
   const isEditing = !!classData
 
@@ -103,6 +111,24 @@ export function ClassForm({
 
   // Get the selected school level
   const selectedLevel = schoolLevels.find(l => l.id === formData.schoolLevelId)
+
+  // Fetch core subjects when school level changes
+  useEffect(() => {
+    if (formData.schoolLevelId && !isEditing) {
+      setLoadingSubjects(true)
+      getCoreSubjectsForLevel(formData.schoolLevelId)
+        .then((result) => {
+          if (result.success) {
+            setCoreSubjects(result.subjects)
+          } else {
+            setCoreSubjects([])
+          }
+        })
+        .finally(() => setLoadingSubjects(false))
+    } else {
+      setCoreSubjects([])
+    }
+  }, [formData.schoolLevelId, isEditing])
 
   // Reset form when dialog opens with new data
   useEffect(() => {
@@ -131,6 +157,7 @@ export function ClassForm({
         })
       }
       setError(null)
+      setCoreSubjects([])
     }
   }, [open, classData, currentAcademicYear])
 
@@ -246,6 +273,46 @@ export function ClassForm({
                   {selectedLevel.allowElectives 
                     ? "Students can choose elective subjects at this level"
                     : "All subjects are core at this level"}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Core Subjects Preview - Only show for new classes with a level selected */}
+          {!isEditing && formData.schoolLevelId && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <BookOpen className="h-4 w-4 text-primary" />
+                <Label>Core Subjects (Auto-Assigned)</Label>
+              </div>
+              {loadingSubjects ? (
+                <div className="p-3 rounded-xl bg-muted/30 flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading subjects...
+                </div>
+              ) : coreSubjects.length > 0 ? (
+                <div className="p-3 rounded-xl bg-primary/5 border border-primary/20">
+                  <p className="text-xs text-muted-foreground mb-2">
+                    These core subjects will be automatically assigned to this class:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {coreSubjects.map((subject) => (
+                      <span
+                        key={subject.id}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded-lg bg-primary/10 text-primary"
+                      >
+                        {subject.name}
+                        {subject.code && (
+                          <span className="text-primary/60">({subject.code})</span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="p-3 rounded-xl bg-muted/30 text-sm text-muted-foreground">
+                  <p>No core subjects configured for this level.</p>
+                  <p className="text-xs mt-1">Go to Subjects to configure level assignments.</p>
                 </div>
               )}
             </div>

@@ -412,6 +412,7 @@ export const ModelName = {
   ExamResult: 'ExamResult',
   ReportCard: 'ReportCard',
   StudentEnrollment: 'StudentEnrollment',
+  StudentSubject: 'StudentSubject',
   FeeCategory: 'FeeCategory',
   FeeStructure: 'FeeStructure',
   StudentFee: 'StudentFee',
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "school" | "subscription" | "user" | "teacherProfile" | "studentProfile" | "parentProfile" | "parentStudent" | "gradeDefinition" | "schoolLevel" | "levelSubject" | "gradeScale" | "promotionRule" | "academicYear" | "academicPeriod" | "class" | "subject" | "classSubject" | "period" | "timetableSlot" | "attendance" | "question" | "assignment" | "assignmentQuestion" | "assignmentSubmission" | "questionResponse" | "examResult" | "reportCard" | "studentEnrollment" | "feeCategory" | "feeStructure" | "studentFee" | "payment" | "message" | "pushToken" | "notification" | "account" | "session" | "verificationToken"
+    modelProps: "school" | "subscription" | "user" | "teacherProfile" | "studentProfile" | "parentProfile" | "parentStudent" | "gradeDefinition" | "schoolLevel" | "levelSubject" | "gradeScale" | "promotionRule" | "academicYear" | "academicPeriod" | "class" | "subject" | "classSubject" | "period" | "timetableSlot" | "attendance" | "question" | "assignment" | "assignmentQuestion" | "assignmentSubmission" | "questionResponse" | "examResult" | "reportCard" | "studentEnrollment" | "studentSubject" | "feeCategory" | "feeStructure" | "studentFee" | "payment" | "message" | "pushToken" | "notification" | "account" | "session" | "verificationToken"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2513,6 +2514,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    StudentSubject: {
+      payload: Prisma.$StudentSubjectPayload<ExtArgs>
+      fields: Prisma.StudentSubjectFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StudentSubjectFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StudentSubjectFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        findFirst: {
+          args: Prisma.StudentSubjectFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StudentSubjectFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        findMany: {
+          args: Prisma.StudentSubjectFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>[]
+        }
+        create: {
+          args: Prisma.StudentSubjectCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        createMany: {
+          args: Prisma.StudentSubjectCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StudentSubjectCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>[]
+        }
+        delete: {
+          args: Prisma.StudentSubjectDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        update: {
+          args: Prisma.StudentSubjectUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        deleteMany: {
+          args: Prisma.StudentSubjectDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StudentSubjectUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StudentSubjectUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>[]
+        }
+        upsert: {
+          args: Prisma.StudentSubjectUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StudentSubjectPayload>
+        }
+        aggregate: {
+          args: Prisma.StudentSubjectAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStudentSubject>
+        }
+        groupBy: {
+          args: Prisma.StudentSubjectGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentSubjectGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StudentSubjectCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StudentSubjectCountAggregateOutputType> | number
+        }
+      }
+    }
     FeeCategory: {
       payload: Prisma.$FeeCategoryPayload<ExtArgs>
       fields: Prisma.FeeCategoryFieldRefs
@@ -3728,6 +3803,20 @@ export const StudentEnrollmentScalarFieldEnum = {
 export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
 
 
+export const StudentSubjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  studentId: 'studentId',
+  subjectId: 'subjectId',
+  academicYearId: 'academicYearId',
+  approvedAt: 'approvedAt',
+  approvedById: 'approvedById'
+} as const
+
+export type StudentSubjectScalarFieldEnum = (typeof StudentSubjectScalarFieldEnum)[keyof typeof StudentSubjectScalarFieldEnum]
+
+
 export const FeeCategoryScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
@@ -4301,6 +4390,7 @@ export type GlobalOmitConfig = {
   examResult?: Prisma.ExamResultOmit
   reportCard?: Prisma.ReportCardOmit
   studentEnrollment?: Prisma.StudentEnrollmentOmit
+  studentSubject?: Prisma.StudentSubjectOmit
   feeCategory?: Prisma.FeeCategoryOmit
   feeStructure?: Prisma.FeeStructureOmit
   studentFee?: Prisma.StudentFeeOmit

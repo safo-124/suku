@@ -79,6 +79,7 @@ export const ModelName = {
   ExamResult: 'ExamResult',
   ReportCard: 'ReportCard',
   StudentEnrollment: 'StudentEnrollment',
+  StudentSubject: 'StudentSubject',
   FeeCategory: 'FeeCategory',
   FeeStructure: 'FeeStructure',
   StudentFee: 'StudentFee',
@@ -541,6 +542,20 @@ export const StudentEnrollmentScalarFieldEnum = {
 } as const
 
 export type StudentEnrollmentScalarFieldEnum = (typeof StudentEnrollmentScalarFieldEnum)[keyof typeof StudentEnrollmentScalarFieldEnum]
+
+
+export const StudentSubjectScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  studentId: 'studentId',
+  subjectId: 'subjectId',
+  academicYearId: 'academicYearId',
+  approvedAt: 'approvedAt',
+  approvedById: 'approvedById'
+} as const
+
+export type StudentSubjectScalarFieldEnum = (typeof StudentSubjectScalarFieldEnum)[keyof typeof StudentSubjectScalarFieldEnum]
 
 
 export const FeeCategoryScalarFieldEnum = {

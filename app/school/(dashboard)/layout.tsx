@@ -20,6 +20,7 @@ import {
   Search,
   School,
   Loader2,
+  Library,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -43,6 +44,7 @@ const baseMenuItems = [
   { title: "Students", icon: GraduationCap, path: "/students" },
   { title: "Teachers", icon: Users, path: "/teachers" },
   { title: "Classes", icon: BookOpen, path: "/classes" },
+  { title: "Subjects", icon: Library, path: "/subjects" },
   { title: "Timetable", icon: Calendar, path: "/timetable" },
   { title: "Attendance", icon: ClipboardList, path: "/attendance" },
   { title: "Fees", icon: CreditCard, path: "/fees" },

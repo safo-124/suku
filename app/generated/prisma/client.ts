@@ -180,6 +180,11 @@ export type ReportCard = Prisma.ReportCardModel
  */
 export type StudentEnrollment = Prisma.StudentEnrollmentModel
 /**
+ * Model StudentSubject
+ * 
+ */
+export type StudentSubject = Prisma.StudentSubjectModel
+/**
  * Model FeeCategory
  * 
  */

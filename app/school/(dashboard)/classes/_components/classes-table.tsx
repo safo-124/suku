@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import {
   BookOpen,
   MoreHorizontal,
@@ -11,6 +12,7 @@ import {
   GraduationCap,
   MapPin,
   Layers,
+  ExternalLink,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -119,9 +121,10 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
       {/* Grid of class cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {classes.map((cls) => (
-          <div
+          <Link
             key={cls.id}
-            className="group neu rounded-2xl p-6 hover:neu-sm transition-all duration-300"
+            href={`/school/classes/${cls.id}`}
+            className="group neu rounded-2xl p-6 hover:neu-sm transition-all duration-300 block"
           >
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
@@ -152,6 +155,7 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
                     variant="ghost"
                     size="icon"
                     className="neu-sm hover:neu rounded-xl h-9 w-9 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={(e) => e.preventDefault()}
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
@@ -163,14 +167,18 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
                   <DropdownMenuSeparator className="bg-border/50" />
                   <DropdownMenuItem
                     className="rounded-xl py-2.5 cursor-pointer"
-                    onClick={() => onEdit(cls)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onEdit(cls)
+                    }}
                   >
                     <Pencil className="mr-3 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="rounded-xl py-2.5 cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault()
                       setDeleteError(null)
                       setDeleteId(cls.id)
                     }}
@@ -255,7 +263,7 @@ export function ClassesTable({ classes, onEdit }: ClassesTableProps) {
                 </div>
               )}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
 

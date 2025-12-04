@@ -223,6 +223,7 @@ model User {
   pushTokens         PushToken[]
   notifications      Notification[]
   promotionsApproved StudentEnrollment[]  @relation("PromotedBy")
+  approvedStudentSubjects StudentSubject[] @relation("ApprovedStudentSubjects")
 
   @@map("users")
 }
@@ -273,6 +274,7 @@ model StudentProfile {
   parentLinks   ParentStudent[]
   feeAssignments StudentFee[]
   payments      Payment[]
+  subjectSelections StudentSubject[]
 
   @@map("student_profiles")
 }
@@ -432,6 +434,7 @@ model AcademicYear {
   periods     AcademicPeriod[]
   classes     Class[]
   enrollments StudentEnrollment[]
+  studentSubjects StudentSubject[]
 
   @@map("academic_years")
 }
@@ -517,6 +520,7 @@ model Subject {
   classSubjects ClassSubject[]
   questions     Question[]
   levelSubjects LevelSubject[]
+  studentSubjects StudentSubject[]
 
   @@map("subjects")
 }
@@ -811,6 +815,30 @@ model StudentEnrollment {
 
   @@unique([studentId, academicYearId])
   @@map("student_enrollments")
+}
+
+// Student's elective subject selections
+model StudentSubject {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  subjectId String
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  academicYearId String
+  academicYear   AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  // Track when and who approved the elective selection
+  approvedAt   DateTime?
+  approvedById String?
+  approvedBy   User?    @relation("ApprovedStudentSubjects", fields: [approvedById], references: [id])
+
+  @@unique([studentId, subjectId, academicYearId])
+  @@map("student_subjects")
 }
 
 // ============================================

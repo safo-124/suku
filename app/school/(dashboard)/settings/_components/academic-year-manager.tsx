@@ -372,15 +372,15 @@ export function AcademicYearManager({ years }: AcademicYearManagerProps) {
                 <div className="space-y-2">
                   <Label>Copy From Previous Year (optional)</Label>
                   <Select
-                    value={yearFormData.copyFromYearId}
-                    onValueChange={(value) => setYearFormData({ ...yearFormData, copyFromYearId: value })}
+                    value={yearFormData.copyFromYearId || "none"}
+                    onValueChange={(value) => setYearFormData({ ...yearFormData, copyFromYearId: value === "none" ? "" : value })}
                     disabled={isPending}
                   >
                     <SelectTrigger className={inputClass}>
                       <SelectValue placeholder="Start fresh" />
                     </SelectTrigger>
                     <SelectContent className="glass-card border-0 neu rounded-xl">
-                      <SelectItem value="">Start fresh</SelectItem>
+                      <SelectItem value="none">Start fresh</SelectItem>
                       {activeYears.map((year) => (
                         <SelectItem key={year.id} value={year.id}>
                           <div className="flex items-center gap-2">

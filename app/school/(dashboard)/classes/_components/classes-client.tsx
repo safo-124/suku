@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -10,10 +11,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Plus, Search, BookOpen, Users, GraduationCap, Calendar } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Plus, Search, BookOpen, Users, GraduationCap, Calendar, Sparkles, Loader2 } from "lucide-react"
+import { toast } from "sonner"
 import { ClassForm } from "./class-form"
 import { ClassesTable, ClassWithDetails } from "./classes-table"
 import { AcademicYearForm } from "./academic-year-form"
+import { createClassesFromGradeDefinitions } from "../_actions/class-actions"
 
 interface Teacher {
   id: string
@@ -60,12 +73,15 @@ export function ClassesClient({
   schoolLevels = [],
   gradeDefinitions = []
 }: ClassesClientProps) {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedGrade, setSelectedGrade] = useState<string>("all")
   const [selectedYear, setSelectedYear] = useState<string>(currentAcademicYear?.id || "all")
   const [showClassForm, setShowClassForm] = useState(false)
   const [showAcademicYearForm, setShowAcademicYearForm] = useState(false)
   const [editingClass, setEditingClass] = useState<ClassWithDetails | null>(null)
+  const [showBulkCreateDialog, setShowBulkCreateDialog] = useState(false)
 
   // Filter classes based on search and grade filter
   const filteredClasses = classes.filter((cls) => {
@@ -105,6 +121,28 @@ export function ClassesClient({
     if (!open) {
       setEditingClass(null)
     }
+  }
+
+  const handleBulkCreateClasses = () => {
+    if (!currentAcademicYear) return
+    
+    startTransition(async () => {
+      try {
+        const result = await createClassesFromGradeDefinitions(currentAcademicYear.id)
+        if (result.success) {
+          const message = `Created ${result.createdCount} class${result.createdCount !== 1 ? 'es' : ''}` + 
+            (result.skippedCount && result.skippedCount > 0 ? ` (${result.skippedCount} skipped)` : '')
+          toast.success(message)
+          router.refresh()
+        } else {
+          toast.error(result.error || "Failed to create classes")
+        }
+      } catch (error) {
+        toast.error("Failed to create classes from grade definitions")
+      } finally {
+        setShowBulkCreateDialog(false)
+      }
+    })
   }
 
   const statsCards = [
@@ -207,6 +245,21 @@ export function ClassesClient({
             <Calendar className="h-4 w-4 mr-2" />
             Add Year
           </Button>
+          {gradeDefinitions.length > 0 && currentAcademicYear && (
+            <Button
+              onClick={() => setShowBulkCreateDialog(true)}
+              variant="outline"
+              className="rounded-xl neu-convex border-0 h-11"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Sparkles className="h-4 w-4 mr-2" />
+              )}
+              Create All Classes
+            </Button>
+          )}
           <Button
             onClick={() => setShowClassForm(true)}
             className="rounded-xl neu-convex border-0 h-11"
@@ -253,6 +306,52 @@ export function ClassesClient({
         open={showAcademicYearForm}
         onOpenChange={setShowAcademicYearForm}
       />
+
+      {/* Bulk Create Classes Confirmation Dialog */}
+      <AlertDialog open={showBulkCreateDialog} onOpenChange={setShowBulkCreateDialog}>
+        <AlertDialogContent className="neu border-0 rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Create Classes from Grade Definitions?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will create {gradeDefinitions.length} class{gradeDefinitions.length !== 1 ? 'es' : ''} for the current academic year ({currentAcademicYear?.name}), 
+              using the grade definition names as class names:
+              <ul className="mt-3 space-y-1 text-sm">
+                {gradeDefinitions.slice(0, 5).map((gd) => (
+                  <li key={gd.id} className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                    {gd.name}
+                  </li>
+                ))}
+                {gradeDefinitions.length > 5 && (
+                  <li className="text-muted-foreground">... and {gradeDefinitions.length - 5} more</li>
+                )}
+              </ul>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl neu border-0" disabled={isPending}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleBulkCreateClasses} 
+              className="rounded-xl neu-convex border-0"
+              disabled={isPending}
+            >
+              {isPending ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Create All
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -212,25 +212,99 @@ export async function createClass(data: CreateClassInput) {
       return { success: false, error: "A class with this name already exists for this academic year" }
     }
 
-    const classData = await prisma.class.create({
-      data: {
-        schoolId: auth.school.id,
-        academicYearId: data.academicYearId,
-        name: data.name,
-        gradeDefinitionId: data.gradeDefinitionId || null,
-        section: data.section || null,
-        capacity: data.capacity || null,
-        roomNumber: data.roomNumber || null,
-        classTeacherId: data.classTeacherId || null,
-        schoolLevelId: data.schoolLevelId || null,
-      },
+    // Fetch core subjects for this school level if provided
+    let coreSubjects: { subjectId: string }[] = []
+    if (data.schoolLevelId) {
+      const levelSubjects = await prisma.levelSubject.findMany({
+        where: {
+          levelId: data.schoolLevelId,
+          subjectType: "CORE",
+        },
+        select: {
+          subjectId: true,
+        },
+      })
+      coreSubjects = levelSubjects
+    }
+
+    // Use transaction to create class and auto-assign core subjects
+    const classData = await prisma.$transaction(async (tx) => {
+      // Create the class
+      const newClass = await tx.class.create({
+        data: {
+          schoolId: auth.school!.id,
+          academicYearId: data.academicYearId,
+          name: data.name,
+          gradeDefinitionId: data.gradeDefinitionId || null,
+          section: data.section || null,
+          capacity: data.capacity || null,
+          roomNumber: data.roomNumber || null,
+          classTeacherId: data.classTeacherId || null,
+          schoolLevelId: data.schoolLevelId || null,
+        },
+      })
+
+      // Auto-assign core subjects to the class
+      if (coreSubjects.length > 0) {
+        await tx.classSubject.createMany({
+          data: coreSubjects.map((subject) => ({
+            classId: newClass.id,
+            subjectId: subject.subjectId,
+          })),
+        })
+      }
+
+      return newClass
     })
 
     revalidatePath("/school/classes")
-    return { success: true, class: classData }
+    return { 
+      success: true, 
+      class: classData,
+      assignedSubjects: coreSubjects.length,
+    }
   } catch (error) {
     console.error("Error creating class:", error)
     return { success: false, error: "Failed to create class" }
+  }
+}
+
+// Get core subjects for a school level (for preview in class form)
+export async function getCoreSubjectsForLevel(levelId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error, subjects: [] as { id: string; name: string; code: string | null }[] }
+  }
+
+  try {
+    // Query subjects directly through the level relationship
+    const subjects = await prisma.subject.findMany({
+      where: {
+        levelSubjects: {
+          some: {
+            levelId,
+            subjectType: "CORE",
+          },
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        code: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+    })
+
+    return { 
+      success: true, 
+      subjects,
+    }
+  } catch (error) {
+    console.error("Error fetching core subjects:", error)
+    return { success: false, error: "Failed to fetch core subjects", subjects: [] as { id: string; name: string; code: string | null }[] }
   }
 }
 
@@ -270,18 +344,60 @@ export async function updateClass(data: UpdateClassInput) {
       }
     }
 
-    const updatedClass = await prisma.class.update({
-      where: { id: data.id },
-      data: {
-        ...(data.name && { name: data.name }),
-        ...(data.gradeDefinitionId !== undefined && { gradeDefinitionId: data.gradeDefinitionId || null }),
-        ...(data.section !== undefined && { section: data.section || null }),
-        ...(data.capacity !== undefined && { capacity: data.capacity || null }),
-        ...(data.roomNumber !== undefined && { roomNumber: data.roomNumber || null }),
-        ...(data.classTeacherId !== undefined && { classTeacherId: data.classTeacherId || null }),
-        ...(data.academicYearId && { academicYearId: data.academicYearId }),
-        ...(data.schoolLevelId !== undefined && { schoolLevelId: data.schoolLevelId || null }),
-      },
+    // Check if school level is changing
+    const levelChanging = data.schoolLevelId !== undefined && 
+      data.schoolLevelId !== existingClass.schoolLevelId
+
+    const updatedClass = await prisma.$transaction(async (tx) => {
+      // Update the class
+      const updated = await tx.class.update({
+        where: { id: data.id },
+        data: {
+          ...(data.name && { name: data.name }),
+          ...(data.gradeDefinitionId !== undefined && { gradeDefinitionId: data.gradeDefinitionId || null }),
+          ...(data.section !== undefined && { section: data.section || null }),
+          ...(data.capacity !== undefined && { capacity: data.capacity || null }),
+          ...(data.roomNumber !== undefined && { roomNumber: data.roomNumber || null }),
+          ...(data.classTeacherId !== undefined && { classTeacherId: data.classTeacherId || null }),
+          ...(data.academicYearId && { academicYearId: data.academicYearId }),
+          ...(data.schoolLevelId !== undefined && { schoolLevelId: data.schoolLevelId || null }),
+        },
+      })
+
+      // If school level changed, sync core subjects
+      if (levelChanging && data.schoolLevelId) {
+        // Get current class subjects
+        const currentSubjects = await tx.classSubject.findMany({
+          where: { classId: data.id },
+          select: { subjectId: true },
+        })
+        const currentSubjectIds = new Set(currentSubjects.map(s => s.subjectId))
+
+        // Get new level's core subjects
+        const newCoreSubjects = await tx.levelSubject.findMany({
+          where: {
+            levelId: data.schoolLevelId,
+            subjectType: "CORE",
+          },
+          select: { subjectId: true },
+        })
+
+        // Add only the new core subjects that aren't already assigned
+        const subjectsToAdd = newCoreSubjects.filter(
+          s => !currentSubjectIds.has(s.subjectId)
+        )
+
+        if (subjectsToAdd.length > 0) {
+          await tx.classSubject.createMany({
+            data: subjectsToAdd.map((subject) => ({
+              classId: data.id,
+              subjectId: subject.subjectId,
+            })),
+          })
+        }
+      }
+
+      return updated
     })
 
     revalidatePath("/school/classes")
@@ -480,5 +596,119 @@ export async function createAcademicYear(data: {
   } catch (error) {
     console.error("Error creating academic year:", error)
     return { success: false, error: "Failed to create academic year" }
+  }
+}
+
+// Bulk create classes from grade definitions
+export async function createClassesFromGradeDefinitions(academicYearId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Verify academic year belongs to this school
+    const academicYear = await prisma.academicYear.findFirst({
+      where: { 
+        id: academicYearId, 
+        schoolId: auth.school.id 
+      },
+    })
+
+    if (!academicYear) {
+      return { success: false, error: "Academic year not found" }
+    }
+
+    // Get all grade definitions for this school
+    const gradeDefinitions = await prisma.gradeDefinition.findMany({
+      where: { schoolId: auth.school.id },
+      orderBy: { order: "asc" },
+      include: {
+        schoolLevel: {
+          select: { id: true },
+        },
+      },
+    })
+
+    if (gradeDefinitions.length === 0) {
+      return { success: false, error: "No grade definitions found. Please create grade definitions in Settings first." }
+    }
+
+    // Get existing classes for this academic year to avoid duplicates
+    const existingClasses = await prisma.class.findMany({
+      where: {
+        schoolId: auth.school.id,
+        academicYearId,
+      },
+      select: {
+        name: true,
+        gradeDefinitionId: true,
+      },
+    })
+
+    const existingNames = new Set(existingClasses.map(c => c.name))
+    const existingGradeIds = new Set(existingClasses.map(c => c.gradeDefinitionId))
+
+    // Filter out grade definitions that already have a class
+    const newGradeDefinitions = gradeDefinitions.filter(
+      gd => !existingGradeIds.has(gd.id) && !existingNames.has(gd.name)
+    )
+
+    if (newGradeDefinitions.length === 0) {
+      return { success: false, error: "All grade definitions already have classes for this academic year." }
+    }
+
+    // Create classes in a transaction with auto-assignment of core subjects
+    const createdClasses = await prisma.$transaction(async (tx) => {
+      const classes = []
+      
+      for (const gd of newGradeDefinitions) {
+        // Create the class
+        const newClass = await tx.class.create({
+          data: {
+            schoolId: auth.school!.id,
+            academicYearId,
+            name: gd.name,
+            gradeDefinitionId: gd.id,
+            schoolLevelId: gd.schoolLevelId || null,
+          },
+        })
+
+        // Auto-assign core subjects if there's a school level
+        if (gd.schoolLevelId) {
+          const coreSubjects = await tx.levelSubject.findMany({
+            where: {
+              levelId: gd.schoolLevelId,
+              subjectType: "CORE",
+            },
+            select: { subjectId: true },
+          })
+
+          if (coreSubjects.length > 0) {
+            await tx.classSubject.createMany({
+              data: coreSubjects.map((subject) => ({
+                classId: newClass.id,
+                subjectId: subject.subjectId,
+              })),
+            })
+          }
+        }
+
+        classes.push(newClass)
+      }
+
+      return classes
+    })
+
+    revalidatePath("/school/classes")
+    return { 
+      success: true, 
+      createdCount: createdClasses.length,
+      skippedCount: gradeDefinitions.length - newGradeDefinitions.length,
+    }
+  } catch (error) {
+    console.error("Error creating classes from grade definitions:", error)
+    return { success: false, error: "Failed to create classes" }
   }
 }

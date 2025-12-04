@@ -263,6 +263,7 @@ export type UserWhereInput = {
   pushTokens?: Prisma.PushTokenListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   promotionsApproved?: Prisma.StudentEnrollmentListRelationFilter
+  approvedStudentSubjects?: Prisma.StudentSubjectListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -296,6 +297,7 @@ export type UserOrderByWithRelationInput = {
   pushTokens?: Prisma.PushTokenOrderByRelationAggregateInput
   notifications?: Prisma.NotificationOrderByRelationAggregateInput
   promotionsApproved?: Prisma.StudentEnrollmentOrderByRelationAggregateInput
+  approvedStudentSubjects?: Prisma.StudentSubjectOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -332,6 +334,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   pushTokens?: Prisma.PushTokenListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   promotionsApproved?: Prisma.StudentEnrollmentListRelationFilter
+  approvedStudentSubjects?: Prisma.StudentSubjectListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -402,6 +405,7 @@ export type UserCreateInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -434,6 +438,7 @@ export type UserUncheckedCreateInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUpdateInput = {
@@ -466,6 +471,7 @@ export type UserUpdateInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -498,6 +504,7 @@ export type UserUncheckedUpdateInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -811,6 +818,22 @@ export type UserUpdateOneWithoutPromotionsApprovedNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPromotionsApprovedInput, Prisma.UserUpdateWithoutPromotionsApprovedInput>, Prisma.UserUncheckedUpdateWithoutPromotionsApprovedInput>
 }
 
+export type UserCreateNestedOneWithoutApprovedStudentSubjectsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedCreateWithoutApprovedStudentSubjectsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedStudentSubjectsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneWithoutApprovedStudentSubjectsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedCreateWithoutApprovedStudentSubjectsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutApprovedStudentSubjectsInput
+  upsert?: Prisma.UserUpsertWithoutApprovedStudentSubjectsInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutApprovedStudentSubjectsInput, Prisma.UserUpdateWithoutApprovedStudentSubjectsInput>, Prisma.UserUncheckedUpdateWithoutApprovedStudentSubjectsInput>
+}
+
 export type UserCreateNestedOneWithoutMessagesSentInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesSentInput, Prisma.UserUncheckedCreateWithoutMessagesSentInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesSentInput
@@ -924,6 +947,7 @@ export type UserCreateWithoutSchoolInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutSchoolInput = {
@@ -955,6 +979,7 @@ export type UserUncheckedCreateWithoutSchoolInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutSchoolInput = {
@@ -1031,6 +1056,7 @@ export type UserCreateWithoutTeacherProfileInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutTeacherProfileInput = {
@@ -1062,6 +1088,7 @@ export type UserUncheckedCreateWithoutTeacherProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutTeacherProfileInput = {
@@ -1109,6 +1136,7 @@ export type UserUpdateWithoutTeacherProfileInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTeacherProfileInput = {
@@ -1140,6 +1168,7 @@ export type UserUncheckedUpdateWithoutTeacherProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutStudentProfileInput = {
@@ -1171,6 +1200,7 @@ export type UserCreateWithoutStudentProfileInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutStudentProfileInput = {
@@ -1202,6 +1232,7 @@ export type UserUncheckedCreateWithoutStudentProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutStudentProfileInput = {
@@ -1249,6 +1280,7 @@ export type UserUpdateWithoutStudentProfileInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStudentProfileInput = {
@@ -1280,6 +1312,7 @@ export type UserUncheckedUpdateWithoutStudentProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutParentProfileInput = {
@@ -1311,6 +1344,7 @@ export type UserCreateWithoutParentProfileInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutParentProfileInput = {
@@ -1342,6 +1376,7 @@ export type UserUncheckedCreateWithoutParentProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutParentProfileInput = {
@@ -1389,6 +1424,7 @@ export type UserUpdateWithoutParentProfileInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutParentProfileInput = {
@@ -1420,6 +1456,7 @@ export type UserUncheckedUpdateWithoutParentProfileInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutClassTeacherOfInput = {
@@ -1451,6 +1488,7 @@ export type UserCreateWithoutClassTeacherOfInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutClassTeacherOfInput = {
@@ -1482,6 +1520,7 @@ export type UserUncheckedCreateWithoutClassTeacherOfInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutClassTeacherOfInput = {
@@ -1529,6 +1568,7 @@ export type UserUpdateWithoutClassTeacherOfInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassTeacherOfInput = {
@@ -1560,6 +1600,7 @@ export type UserUncheckedUpdateWithoutClassTeacherOfInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutClassSubjectsInput = {
@@ -1591,6 +1632,7 @@ export type UserCreateWithoutClassSubjectsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutClassSubjectsInput = {
@@ -1622,6 +1664,7 @@ export type UserUncheckedCreateWithoutClassSubjectsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutClassSubjectsInput = {
@@ -1669,6 +1712,7 @@ export type UserUpdateWithoutClassSubjectsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutClassSubjectsInput = {
@@ -1700,6 +1744,7 @@ export type UserUncheckedUpdateWithoutClassSubjectsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutTimetableSlotsInput = {
@@ -1731,6 +1776,7 @@ export type UserCreateWithoutTimetableSlotsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutTimetableSlotsInput = {
@@ -1762,6 +1808,7 @@ export type UserUncheckedCreateWithoutTimetableSlotsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutTimetableSlotsInput = {
@@ -1809,6 +1856,7 @@ export type UserUpdateWithoutTimetableSlotsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTimetableSlotsInput = {
@@ -1840,6 +1888,7 @@ export type UserUncheckedUpdateWithoutTimetableSlotsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutAttendanceMarkedInput = {
@@ -1871,6 +1920,7 @@ export type UserCreateWithoutAttendanceMarkedInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutAttendanceMarkedInput = {
@@ -1902,6 +1952,7 @@ export type UserUncheckedCreateWithoutAttendanceMarkedInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutAttendanceMarkedInput = {
@@ -1949,6 +2000,7 @@ export type UserUpdateWithoutAttendanceMarkedInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAttendanceMarkedInput = {
@@ -1980,6 +2032,7 @@ export type UserUncheckedUpdateWithoutAttendanceMarkedInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutQuestionsCreatedInput = {
@@ -2011,6 +2064,7 @@ export type UserCreateWithoutQuestionsCreatedInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutQuestionsCreatedInput = {
@@ -2042,6 +2096,7 @@ export type UserUncheckedCreateWithoutQuestionsCreatedInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutQuestionsCreatedInput = {
@@ -2089,6 +2144,7 @@ export type UserUpdateWithoutQuestionsCreatedInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutQuestionsCreatedInput = {
@@ -2120,6 +2176,7 @@ export type UserUncheckedUpdateWithoutQuestionsCreatedInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutAssignmentsCreatedInput = {
@@ -2151,6 +2208,7 @@ export type UserCreateWithoutAssignmentsCreatedInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutAssignmentsCreatedInput = {
@@ -2182,6 +2240,7 @@ export type UserUncheckedCreateWithoutAssignmentsCreatedInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutAssignmentsCreatedInput = {
@@ -2229,6 +2288,7 @@ export type UserUpdateWithoutAssignmentsCreatedInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAssignmentsCreatedInput = {
@@ -2260,6 +2320,7 @@ export type UserUncheckedUpdateWithoutAssignmentsCreatedInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutPromotionsApprovedInput = {
@@ -2291,6 +2352,7 @@ export type UserCreateWithoutPromotionsApprovedInput = {
   messagesSent?: Prisma.MessageCreateNestedManyWithoutSenderInput
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutPromotionsApprovedInput = {
@@ -2322,6 +2384,7 @@ export type UserUncheckedCreateWithoutPromotionsApprovedInput = {
   messagesSent?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutPromotionsApprovedInput = {
@@ -2369,6 +2432,7 @@ export type UserUpdateWithoutPromotionsApprovedInput = {
   messagesSent?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPromotionsApprovedInput = {
@@ -2400,6 +2464,151 @@ export type UserUncheckedUpdateWithoutPromotionsApprovedInput = {
   messagesSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
+}
+
+export type UserCreateWithoutApprovedStudentSubjectsInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  email: string
+  passwordHash?: string | null
+  firstName: string
+  lastName: string
+  phone?: string | null
+  avatar?: string | null
+  role: $Enums.UserRole
+  isActive?: boolean
+  emailVerified?: boolean
+  school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  teacherProfile?: Prisma.TeacherProfileCreateNestedOneWithoutUserInput
+  studentProfile?: Prisma.StudentProfileCreateNestedOneWithoutUserInput
+  parentProfile?: Prisma.ParentProfileCreateNestedOneWithoutUserInput
+  classTeacherOf?: Prisma.ClassCreateNestedManyWithoutClassTeacherInput
+  classSubjects?: Prisma.ClassSubjectCreateNestedManyWithoutTeacherInput
+  timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutTeacherInput
+  attendanceMarked?: Prisma.AttendanceCreateNestedManyWithoutMarkedByInput
+  questionsCreated?: Prisma.QuestionCreateNestedManyWithoutCreatedByInput
+  assignmentsCreated?: Prisma.AssignmentCreateNestedManyWithoutCreatedByInput
+  messagesReceived?: Prisma.MessageCreateNestedManyWithoutReceiverInput
+  messagesSent?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
+  promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+}
+
+export type UserUncheckedCreateWithoutApprovedStudentSubjectsInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  email: string
+  passwordHash?: string | null
+  firstName: string
+  lastName: string
+  phone?: string | null
+  avatar?: string | null
+  role: $Enums.UserRole
+  isActive?: boolean
+  emailVerified?: boolean
+  schoolId?: string | null
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  teacherProfile?: Prisma.TeacherProfileUncheckedCreateNestedOneWithoutUserInput
+  studentProfile?: Prisma.StudentProfileUncheckedCreateNestedOneWithoutUserInput
+  parentProfile?: Prisma.ParentProfileUncheckedCreateNestedOneWithoutUserInput
+  classTeacherOf?: Prisma.ClassUncheckedCreateNestedManyWithoutClassTeacherInput
+  classSubjects?: Prisma.ClassSubjectUncheckedCreateNestedManyWithoutTeacherInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutTeacherInput
+  attendanceMarked?: Prisma.AttendanceUncheckedCreateNestedManyWithoutMarkedByInput
+  questionsCreated?: Prisma.QuestionUncheckedCreateNestedManyWithoutCreatedByInput
+  assignmentsCreated?: Prisma.AssignmentUncheckedCreateNestedManyWithoutCreatedByInput
+  messagesReceived?: Prisma.MessageUncheckedCreateNestedManyWithoutReceiverInput
+  messagesSent?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
+  promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+}
+
+export type UserCreateOrConnectWithoutApprovedStudentSubjectsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedCreateWithoutApprovedStudentSubjectsInput>
+}
+
+export type UserUpsertWithoutApprovedStudentSubjectsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedUpdateWithoutApprovedStudentSubjectsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedCreateWithoutApprovedStudentSubjectsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutApprovedStudentSubjectsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutApprovedStudentSubjectsInput, Prisma.UserUncheckedUpdateWithoutApprovedStudentSubjectsInput>
+}
+
+export type UserUpdateWithoutApprovedStudentSubjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  teacherProfile?: Prisma.TeacherProfileUpdateOneWithoutUserNestedInput
+  studentProfile?: Prisma.StudentProfileUpdateOneWithoutUserNestedInput
+  parentProfile?: Prisma.ParentProfileUpdateOneWithoutUserNestedInput
+  classTeacherOf?: Prisma.ClassUpdateManyWithoutClassTeacherNestedInput
+  classSubjects?: Prisma.ClassSubjectUpdateManyWithoutTeacherNestedInput
+  timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutTeacherNestedInput
+  attendanceMarked?: Prisma.AttendanceUpdateManyWithoutMarkedByNestedInput
+  questionsCreated?: Prisma.QuestionUpdateManyWithoutCreatedByNestedInput
+  assignmentsCreated?: Prisma.AssignmentUpdateManyWithoutCreatedByNestedInput
+  messagesReceived?: Prisma.MessageUpdateManyWithoutReceiverNestedInput
+  messagesSent?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
+  promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutApprovedStudentSubjectsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatar?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  teacherProfile?: Prisma.TeacherProfileUncheckedUpdateOneWithoutUserNestedInput
+  studentProfile?: Prisma.StudentProfileUncheckedUpdateOneWithoutUserNestedInput
+  parentProfile?: Prisma.ParentProfileUncheckedUpdateOneWithoutUserNestedInput
+  classTeacherOf?: Prisma.ClassUncheckedUpdateManyWithoutClassTeacherNestedInput
+  classSubjects?: Prisma.ClassSubjectUncheckedUpdateManyWithoutTeacherNestedInput
+  timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutTeacherNestedInput
+  attendanceMarked?: Prisma.AttendanceUncheckedUpdateManyWithoutMarkedByNestedInput
+  questionsCreated?: Prisma.QuestionUncheckedUpdateManyWithoutCreatedByNestedInput
+  assignmentsCreated?: Prisma.AssignmentUncheckedUpdateManyWithoutCreatedByNestedInput
+  messagesReceived?: Prisma.MessageUncheckedUpdateManyWithoutReceiverNestedInput
+  messagesSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+  promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
 }
 
 export type UserCreateWithoutMessagesSentInput = {
@@ -2431,6 +2640,7 @@ export type UserCreateWithoutMessagesSentInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesSentInput = {
@@ -2462,6 +2672,7 @@ export type UserUncheckedCreateWithoutMessagesSentInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesSentInput = {
@@ -2498,6 +2709,7 @@ export type UserCreateWithoutMessagesReceivedInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutMessagesReceivedInput = {
@@ -2529,6 +2741,7 @@ export type UserUncheckedCreateWithoutMessagesReceivedInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutMessagesReceivedInput = {
@@ -2576,6 +2789,7 @@ export type UserUpdateWithoutMessagesSentInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesSentInput = {
@@ -2607,6 +2821,7 @@ export type UserUncheckedUpdateWithoutMessagesSentInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUpsertWithoutMessagesReceivedInput = {
@@ -2649,6 +2864,7 @@ export type UserUpdateWithoutMessagesReceivedInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
@@ -2680,6 +2896,7 @@ export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutPushTokensInput = {
@@ -2711,6 +2928,7 @@ export type UserCreateWithoutPushTokensInput = {
   messagesSent?: Prisma.MessageCreateNestedManyWithoutSenderInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutPushTokensInput = {
@@ -2742,6 +2960,7 @@ export type UserUncheckedCreateWithoutPushTokensInput = {
   messagesSent?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutPushTokensInput = {
@@ -2789,6 +3008,7 @@ export type UserUpdateWithoutPushTokensInput = {
   messagesSent?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPushTokensInput = {
@@ -2820,6 +3040,7 @@ export type UserUncheckedUpdateWithoutPushTokensInput = {
   messagesSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutNotificationsInput = {
@@ -2851,6 +3072,7 @@ export type UserCreateWithoutNotificationsInput = {
   messagesSent?: Prisma.MessageCreateNestedManyWithoutSenderInput
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutNotificationsInput = {
@@ -2882,6 +3104,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   messagesSent?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutNotificationsInput = {
@@ -2929,6 +3152,7 @@ export type UserUpdateWithoutNotificationsInput = {
   messagesSent?: Prisma.MessageUpdateManyWithoutSenderNestedInput
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotificationsInput = {
@@ -2960,6 +3184,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   messagesSent?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -2991,6 +3216,7 @@ export type UserCreateWithoutAccountsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -3022,6 +3248,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -3069,6 +3296,7 @@ export type UserUpdateWithoutAccountsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -3100,6 +3328,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateWithoutSessionsInput = {
@@ -3131,6 +3360,7 @@ export type UserCreateWithoutSessionsInput = {
   pushTokens?: Prisma.PushTokenCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -3162,6 +3392,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   pushTokens?: Prisma.PushTokenUncheckedCreateNestedManyWithoutUserInput
   notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedCreateNestedManyWithoutPromotedByUserInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedCreateNestedManyWithoutApprovedByInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -3209,6 +3440,7 @@ export type UserUpdateWithoutSessionsInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -3240,6 +3472,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserCreateManySchoolInput = {
@@ -3286,6 +3519,7 @@ export type UserUpdateWithoutSchoolInput = {
   pushTokens?: Prisma.PushTokenUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSchoolInput = {
@@ -3317,6 +3551,7 @@ export type UserUncheckedUpdateWithoutSchoolInput = {
   pushTokens?: Prisma.PushTokenUncheckedUpdateManyWithoutUserNestedInput
   notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
   promotionsApproved?: Prisma.StudentEnrollmentUncheckedUpdateManyWithoutPromotedByUserNestedInput
+  approvedStudentSubjects?: Prisma.StudentSubjectUncheckedUpdateManyWithoutApprovedByNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutSchoolInput = {
@@ -3353,6 +3588,7 @@ export type UserCountOutputType = {
   pushTokens: number
   notifications: number
   promotionsApproved: number
+  approvedStudentSubjects: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3369,6 +3605,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   pushTokens?: boolean | UserCountOutputTypeCountPushTokensArgs
   notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   promotionsApproved?: boolean | UserCountOutputTypeCountPromotionsApprovedArgs
+  approvedStudentSubjects?: boolean | UserCountOutputTypeCountApprovedStudentSubjectsArgs
 }
 
 /**
@@ -3472,6 +3709,13 @@ export type UserCountOutputTypeCountPromotionsApprovedArgs<ExtArgs extends runti
   where?: Prisma.StudentEnrollmentWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountApprovedStudentSubjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StudentSubjectWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -3504,6 +3748,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   pushTokens?: boolean | Prisma.User$pushTokensArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   promotionsApproved?: boolean | Prisma.User$promotionsApprovedArgs<ExtArgs>
+  approvedStudentSubjects?: boolean | Prisma.User$approvedStudentSubjectsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -3576,6 +3821,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   pushTokens?: boolean | Prisma.User$pushTokensArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   promotionsApproved?: boolean | Prisma.User$promotionsApprovedArgs<ExtArgs>
+  approvedStudentSubjects?: boolean | Prisma.User$approvedStudentSubjectsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3605,6 +3851,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     pushTokens: Prisma.$PushTokenPayload<ExtArgs>[]
     notifications: Prisma.$NotificationPayload<ExtArgs>[]
     promotionsApproved: Prisma.$StudentEnrollmentPayload<ExtArgs>[]
+    approvedStudentSubjects: Prisma.$StudentSubjectPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -4031,6 +4278,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   pushTokens<T extends Prisma.User$pushTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$pushTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PushTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   promotionsApproved<T extends Prisma.User$promotionsApprovedArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$promotionsApprovedArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentEnrollmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  approvedStudentSubjects<T extends Prisma.User$approvedStudentSubjectsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$approvedStudentSubjectsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudentSubjectPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4854,6 +5102,30 @@ export type User$promotionsApprovedArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.StudentEnrollmentScalarFieldEnum | Prisma.StudentEnrollmentScalarFieldEnum[]
+}
+
+/**
+ * User.approvedStudentSubjects
+ */
+export type User$approvedStudentSubjectsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StudentSubject
+   */
+  select?: Prisma.StudentSubjectSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StudentSubject
+   */
+  omit?: Prisma.StudentSubjectOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StudentSubjectInclude<ExtArgs> | null
+  where?: Prisma.StudentSubjectWhereInput
+  orderBy?: Prisma.StudentSubjectOrderByWithRelationInput | Prisma.StudentSubjectOrderByWithRelationInput[]
+  cursor?: Prisma.StudentSubjectWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StudentSubjectScalarFieldEnum | Prisma.StudentSubjectScalarFieldEnum[]
 }
 
 /**
