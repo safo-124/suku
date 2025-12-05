@@ -1,8 +1,8 @@
 import { headers } from "next/headers"
-import { StudentLoginClient } from "./_components/login-client"
-import { getSchoolBySlug } from "./_actions/student-auth-actions"
+import { TeacherLoginClient } from "./_components/login-client"
+import { getSchoolBySlug } from "./_actions/teacher-auth-actions"
 
-export default async function StudentLoginPage({
+export default async function TeacherLoginPage({
   searchParams,
 }: {
   searchParams: Promise<{ subdomain?: string }>
@@ -18,7 +18,7 @@ export default async function StudentLoginPage({
   const school = subdomain ? await getSchoolBySlug(subdomain) : null
   
   return (
-    <StudentLoginClient 
+    <TeacherLoginClient 
       subdomain={subdomain}
       school={school ? {
         name: school.name,

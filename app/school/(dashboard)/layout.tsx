@@ -9,7 +9,6 @@ import {
   GraduationCap,
   BookOpen,
   Calendar,
-  ClipboardList,
   CreditCard,
   MessageSquare,
   Settings,
@@ -40,16 +39,15 @@ import type { SessionUser } from "@/lib/auth"
 
 // Base menu items - hrefs will be adjusted based on subdomain
 const baseMenuItems = [
-  { title: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { title: "Students", icon: GraduationCap, path: "/students" },
-  { title: "Teachers", icon: Users, path: "/teachers" },
-  { title: "Classes", icon: BookOpen, path: "/classes" },
-  { title: "Subjects", icon: Library, path: "/subjects" },
-  { title: "Timetable", icon: Calendar, path: "/timetable" },
-  { title: "Attendance", icon: ClipboardList, path: "/attendance" },
-  { title: "Fees", icon: CreditCard, path: "/fees" },
-  { title: "Messages", icon: MessageSquare, path: "/messages" },
-  { title: "Settings", icon: Settings, path: "/settings" },
+  { title: "Dashboard", icon: LayoutDashboard, path: "/school/dashboard" },
+  { title: "Students", icon: GraduationCap, path: "/school/students" },
+  { title: "Teachers", icon: Users, path: "/school/teachers" },
+  { title: "Classes", icon: BookOpen, path: "/school/classes" },
+  { title: "Subjects", icon: Library, path: "/school/subjects" },
+  { title: "Timetable", icon: Calendar, path: "/school/timetable" },
+  { title: "Fees", icon: CreditCard, path: "/school/fees" },
+  { title: "Messages", icon: MessageSquare, path: "/school/messages" },
+  { title: "Settings", icon: Settings, path: "/school/settings" },
 ]
 
 function useSubdomainLink(path: string) {

@@ -285,6 +285,16 @@ export function StudentsTable({ students, onEdit }: StudentsTableProps) {
                     
                     <DropdownMenuItem
                       className="rounded-xl py-2.5 cursor-pointer"
+                      asChild
+                    >
+                      <Link href={getLink(`/school/students/${student.id}`)}>
+                        <Eye className="mr-3 h-4 w-4" />
+                        View Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    
+                    <DropdownMenuItem
+                      className="rounded-xl py-2.5 cursor-pointer"
                       onClick={() => onEdit(student)}
                     >
                       <Pencil className="mr-3 h-4 w-4" />

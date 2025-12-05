@@ -51,28 +51,30 @@ export default function proxy(request: NextRequest) {
 
   // School routes (schoolslug.domain.com or ?subdomain=schoolslug)
   if (subdomain && subdomain !== "www" && subdomain !== "app") {
-    // Already in school path, continue but pass slug header
-    if (pathname.startsWith("/school")) {
-      const response = NextResponse.next()
+    // Already in school/teacher/student path, continue but pass slug header
+    if (pathname.startsWith("/school") || pathname.startsWith("/teacher") || pathname.startsWith("/student")) {
+      // Use rewrite to the same URL to ensure headers are properly set
+      const url = request.nextUrl.clone()
+      const response = NextResponse.rewrite(url)
       response.headers.set("x-school-slug", subdomain)
       return response
     }
     
-    // Rewrite to school routes
+    // Rewrite to appropriate routes based on path
     const url = request.nextUrl.clone()
     
-    // Map routes for school subdomain
-    if (pathname === "/") {
-      url.pathname = "/school/dashboard"
-    } else if (pathname === "/login") {
+    // All login routes redirect to unified school login
+    if (pathname === "/" || pathname === "/login" || pathname === "/teacher-login" || pathname === "/student-login") {
       url.pathname = "/school/login"
     } else {
+      // Default: add /school prefix for all other routes
+      // This includes /teachers, /students, /classes, /dashboard, etc.
       url.pathname = `/school${pathname}`
     }
     
-    const response = NextResponse.rewrite(url)
-    response.headers.set("x-school-slug", subdomain)
-    return response
+    const rewriteResponse = NextResponse.rewrite(url)
+    rewriteResponse.headers.set("x-school-slug", subdomain)
+    return rewriteResponse
   }
 
   // Main marketing site / landing page (no subdomain or www)

@@ -1,13 +1,13 @@
 import { Metadata } from "next"
 import { headers } from "next/headers"
 import { Suspense } from "react"
-import { LoginForm } from "./_components/login-form"
+import { UnifiedLoginForm } from "./_components/unified-login-form"
 import { getSchoolBySlug } from "./_actions/auth-actions"
 import { School, Loader2 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "School Admin Login | Suku",
-  description: "Sign in to your school administration portal",
+  title: "Login | School Portal",
+  description: "Sign in to your school portal",
 }
 
 async function getSubdomain(): Promise<string> {
@@ -77,7 +77,7 @@ export default async function SchoolLoginPage({ searchParams }: LoginPageProps) 
             {school?.name || "School Portal"}
           </h1>
           <p className="text-muted-foreground mt-1">
-            Sign in to your school portal
+            Sign in to access your portal
           </p>
           
           {/* Subdomain badge */}
@@ -92,7 +92,7 @@ export default async function SchoolLoginPage({ searchParams }: LoginPageProps) 
         {/* Login Card */}
         <div className="neu rounded-3xl p-8">
           <Suspense fallback={<LoginFormSkeleton />}>
-            <LoginForm school={school} subdomain={subdomain} />
+            <UnifiedLoginForm school={school} subdomain={subdomain} />
           </Suspense>
         </div>
 

@@ -1,0 +1,376 @@
+"use server"
+
+import prisma from "@/lib/prisma"
+import { verifySchoolAccess } from "@/lib/auth"
+import { UserRole, AttendanceStatus } from "@/app/generated/prisma/client"
+
+// Get student with full profile details
+export async function getStudentProfile(studentId: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN, UserRole.TEACHER])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Get student user
+    const user = await prisma.user.findFirst({
+      where: {
+        id: studentId,
+        schoolId: auth.school.id,
+        role: UserRole.STUDENT,
+      },
+    })
+
+    if (!user) {
+      return { success: false, error: "Student not found" }
+    }
+
+    // Get student profile
+    const studentProfile = await prisma.studentProfile.findUnique({
+      where: { userId: studentId },
+    })
+
+    if (!studentProfile) {
+      return { success: false, error: "Student profile not found" }
+    }
+
+    // Get class info
+    let classInfo = null
+    if (studentProfile.classId) {
+      const classData = await prisma.class.findUnique({
+        where: { id: studentProfile.classId },
+      })
+      if (classData) {
+        // Get class teacher
+        let classTeacher = null
+        if (classData.classTeacherId) {
+          classTeacher = await prisma.user.findUnique({
+            where: { id: classData.classTeacherId },
+            select: { id: true, firstName: true, lastName: true },
+          })
+        }
+        // Get grade definition
+        let gradeDef = null
+        if (classData.gradeDefinitionId) {
+          gradeDef = await prisma.gradeDefinition.findUnique({
+            where: { id: classData.gradeDefinitionId },
+          })
+        }
+        // Get school level
+        let schoolLevel = null
+        if (classData.schoolLevelId) {
+          schoolLevel = await prisma.schoolLevel.findUnique({
+            where: { id: classData.schoolLevelId },
+          })
+        }
+        classInfo = {
+          id: classData.id,
+          name: classData.name,
+          section: classData.section,
+          gradeDefinition: gradeDef ? { name: gradeDef.name, shortName: gradeDef.shortName } : null,
+          schoolLevel: schoolLevel ? { name: schoolLevel.name, shortName: schoolLevel.shortName } : null,
+          classTeacher: classTeacher ? `${classTeacher.firstName} ${classTeacher.lastName}` : null,
+        }
+      }
+    }
+
+    // Get parent links
+    const parentLinks = await prisma.parentStudent.findMany({
+      where: { studentId: studentProfile.id },
+    })
+    
+    const parentIds = parentLinks.map(pl => pl.parentId)
+    const parentProfiles = parentIds.length > 0
+      ? await prisma.parentProfile.findMany({
+          where: { id: { in: parentIds } },
+        })
+      : []
+    
+    const parentUserIds = parentProfiles.map(p => p.userId)
+    const parentUsers = parentUserIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: parentUserIds } },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+          },
+        })
+      : []
+    
+    const parentUserMap = new Map(parentUsers.map(u => [u.id, u]))
+    
+    const parents = parentProfiles.map(p => {
+      const user = parentUserMap.get(p.userId)
+      return {
+        id: p.id,
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        email: user?.email || "",
+        phone: user?.phone || null,
+        relationship: p.relationship,
+        occupation: p.occupation,
+      }
+    })
+
+    // Get enrollments
+    const enrollments = await prisma.studentEnrollment.findMany({
+      where: { studentId: studentProfile.id },
+      orderBy: { createdAt: "desc" },
+    })
+    
+    const enrollmentClassIds = enrollments.map(e => e.classId)
+    const enrollmentClasses = enrollmentClassIds.length > 0
+      ? await prisma.class.findMany({
+          where: { id: { in: enrollmentClassIds } },
+        })
+      : []
+    const classMap = new Map(enrollmentClasses.map(c => [c.id, c]))
+    
+    const enrollmentYearIds = enrollments.map(e => e.academicYearId)
+    const enrollmentYears = enrollmentYearIds.length > 0
+      ? await prisma.academicYear.findMany({
+          where: { id: { in: enrollmentYearIds } },
+        })
+      : []
+    const yearMap = new Map(enrollmentYears.map(y => [y.id, y]))
+
+    const enrollmentHistory = enrollments.map(e => ({
+      id: e.id,
+      className: classMap.get(e.classId)?.name || "Unknown",
+      academicYear: yearMap.get(e.academicYearId)?.name || "Unknown",
+      status: e.status,
+      enrolledAt: e.enrolledAt,
+    }))
+
+    return {
+      success: true,
+      student: {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        phone: user.phone,
+        avatar: user.avatar,
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+        profile: {
+          id: studentProfile.id,
+          studentId: studentProfile.studentId,
+          dateOfBirth: studentProfile.dateOfBirth,
+          gender: studentProfile.gender,
+          bloodGroup: studentProfile.bloodGroup,
+          address: studentProfile.address,
+          admissionDate: studentProfile.admissionDate,
+          repeatCount: studentProfile.repeatCount,
+        },
+        class: classInfo,
+        parents,
+        enrollments: enrollmentHistory,
+      },
+    }
+  } catch (error) {
+    console.error("Error fetching student profile:", error)
+    return { success: false, error: "Failed to fetch student profile" }
+  }
+}
+
+// Get student attendance summary
+export async function getStudentAttendanceSummary(studentId: string, academicYearId?: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN, UserRole.TEACHER])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Get student profile
+    const studentProfile = await prisma.studentProfile.findFirst({
+      where: {
+        userId: studentId,
+        user: { schoolId: auth.school.id },
+      },
+    })
+
+    if (!studentProfile) {
+      return { success: false, error: "Student not found" }
+    }
+
+    // Get current academic year if not specified
+    let yearId = academicYearId
+    if (!yearId) {
+      const currentYear = await prisma.academicYear.findFirst({
+        where: { schoolId: auth.school.id, isCurrent: true },
+      })
+      yearId = currentYear?.id
+    }
+
+    if (!yearId) {
+      return { success: false, error: "No academic year found" }
+    }
+
+    // Get academic year date range
+    const academicYear = await prisma.academicYear.findUnique({
+      where: { id: yearId },
+    })
+
+    if (!academicYear) {
+      return { success: false, error: "Academic year not found" }
+    }
+
+    // Get all attendance records for this student in the year
+    const attendanceRecords = await prisma.attendance.findMany({
+      where: {
+        studentId: studentProfile.id,
+        date: {
+          gte: academicYear.startDate,
+          lte: academicYear.endDate,
+        },
+      },
+      orderBy: { date: "desc" },
+    })
+
+    // Calculate stats
+    const stats = {
+      total: attendanceRecords.length,
+      present: attendanceRecords.filter(a => a.status === AttendanceStatus.PRESENT).length,
+      absent: attendanceRecords.filter(a => a.status === AttendanceStatus.ABSENT).length,
+      late: attendanceRecords.filter(a => a.status === AttendanceStatus.LATE).length,
+      excused: attendanceRecords.filter(a => a.status === AttendanceStatus.EXCUSED).length,
+    }
+
+    const attendanceRate = stats.total > 0
+      ? Math.round(((stats.present + stats.late) / stats.total) * 100)
+      : 0
+
+    // Get recent attendance (last 30 days)
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    
+    const recentAttendance = attendanceRecords
+      .filter(a => new Date(a.date) >= thirtyDaysAgo)
+      .map(a => ({
+        date: a.date,
+        status: a.status,
+        notes: a.notes,
+      }))
+
+    return {
+      success: true,
+      academicYear: academicYear.name,
+      stats,
+      attendanceRate,
+      recentAttendance,
+    }
+  } catch (error) {
+    console.error("Error fetching attendance summary:", error)
+    return { success: false, error: "Failed to fetch attendance summary" }
+  }
+}
+
+// Get student grades summary
+export async function getStudentGradesSummary(studentId: string, periodId?: string) {
+  const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN, UserRole.TEACHER])
+  
+  if (!auth.success || !auth.school) {
+    return { success: false, error: auth.error }
+  }
+
+  try {
+    // Get student profile
+    const studentProfile = await prisma.studentProfile.findFirst({
+      where: {
+        userId: studentId,
+        user: { schoolId: auth.school.id },
+      },
+    })
+
+    if (!studentProfile) {
+      return { success: false, error: "Student not found" }
+    }
+
+    // Get academic periods
+    const periods = await prisma.academicPeriod.findMany({
+      where: {
+        academicYear: {
+          schoolId: auth.school.id,
+          isCurrent: true,
+        },
+      },
+      orderBy: { startDate: "desc" },
+    })
+
+    const selectedPeriodId = periodId || periods[0]?.id
+
+    if (!selectedPeriodId) {
+      return { success: true, periods: [], grades: [], reportCard: null }
+    }
+
+    // Get exam results for the period
+    const examResults = await prisma.examResult.findMany({
+      where: {
+        studentId: studentProfile.id,
+        academicPeriodId: selectedPeriodId,
+      },
+    })
+
+    // Get class subjects for grades
+    const classSubjectIds = [...new Set(examResults.map(e => e.classSubjectId))]
+    const classSubjects = classSubjectIds.length > 0
+      ? await prisma.classSubject.findMany({
+          where: { id: { in: classSubjectIds } },
+        })
+      : []
+    
+    const subjectIds = classSubjects.map(cs => cs.subjectId)
+    const subjects = subjectIds.length > 0
+      ? await prisma.subject.findMany({
+          where: { id: { in: subjectIds } },
+        })
+      : []
+    const subjectMap = new Map(subjects.map(s => [s.id, s]))
+    const classSubjectMap = new Map(classSubjects.map(cs => [cs.id, cs]))
+
+    const grades = examResults.map(er => {
+      const classSubject = classSubjectMap.get(er.classSubjectId)
+      const subject = classSubject ? subjectMap.get(classSubject.subjectId) : null
+      return {
+        id: er.id,
+        subjectName: subject?.name || "Unknown",
+        examType: er.examType,
+        score: Number(er.score),
+        maxScore: Number(er.maxScore),
+        grade: er.grade,
+        remarks: er.remarks,
+      }
+    })
+
+    // Get report card
+    const reportCard = await prisma.reportCard.findFirst({
+      where: {
+        studentId: studentProfile.id,
+        academicPeriodId: selectedPeriodId,
+      },
+    })
+
+    return {
+      success: true,
+      periods: periods.map(p => ({ id: p.id, name: p.name })),
+      selectedPeriodId,
+      grades,
+      reportCard: reportCard ? {
+        totalScore: reportCard.totalScore ? Number(reportCard.totalScore) : null,
+        averageScore: reportCard.averageScore ? Number(reportCard.averageScore) : null,
+        position: reportCard.position,
+        passStatus: reportCard.passStatus,
+        attendancePercentage: reportCard.attendancePercentage ? Number(reportCard.attendancePercentage) : null,
+      } : null,
+    }
+  } catch (error) {
+    console.error("Error fetching grades summary:", error)
+    return { success: false, error: "Failed to fetch grades summary" }
+  }
+}

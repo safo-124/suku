@@ -1,17 +1,27 @@
 import { Metadata } from "next"
 import { ClipboardList } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { getSchoolAttendanceOverview } from "./_actions/attendance-actions"
+import { AttendanceClient } from "./_components/attendance-client"
 
 export const metadata: Metadata = {
   title: "Attendance | School Admin",
-  description: "Manage student attendance",
+  description: "Track and manage student attendance",
 }
 
-export default function AttendancePage() {
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+interface PageProps {
+  searchParams: Promise<{ date?: string }>
+}
+
+export default async function AttendancePage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const date = params.date || new Date().toISOString().split("T")[0]
+  
+  const result = await getSchoolAttendanceOverview(date)
+  
+  if (!result.success) {
+    return (
+      <div className="space-y-6">
+        {/* Header */}
         <div className="flex items-center gap-4">
           <div className="p-3 neu-flat rounded-xl">
             <ClipboardList className="h-6 w-6" />
@@ -23,20 +33,40 @@ export default function AttendancePage() {
             </p>
           </div>
         </div>
-        <Button className="neu-convex hover:scale-[0.98] active:neu-inset rounded-xl">
-          Mark Attendance
-        </Button>
+
+        {/* Error */}
+        <div className="neu-flat rounded-2xl p-12 text-center">
+          <ClipboardList className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Unable to Load Attendance</h2>
+          <p className="text-muted-foreground max-w-md mx-auto">
+            {result.error || "An error occurred while loading attendance data."}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-4">
+        <div className="p-3 neu-flat rounded-xl">
+          <ClipboardList className="h-6 w-6" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-semibold">Attendance</h1>
+          <p className="text-muted-foreground">
+            View attendance records across all classes and levels
+          </p>
+        </div>
       </div>
 
-      {/* Coming Soon */}
-      <div className="neu-flat rounded-2xl p-12 text-center">
-        <ClipboardList className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Attendance Module</h2>
-        <p className="text-muted-foreground max-w-md mx-auto">
-          This module will include daily attendance marking, reports, 
-          low attendance alerts, and attendance statistics.
-        </p>
-      </div>
+      {/* Attendance Client */}
+      <AttendanceClient
+        initialDate={result.date!}
+        levels={result.levels!}
+        overallStats={result.overallStats!}
+      />
     </div>
   )
 }
