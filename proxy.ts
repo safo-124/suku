@@ -51,13 +51,19 @@ export default function proxy(request: NextRequest) {
 
   // School routes (schoolslug.domain.com or ?subdomain=schoolslug)
   if (subdomain && subdomain !== "www" && subdomain !== "app") {
+    // Create new request headers with the school slug
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set("x-school-slug", subdomain)
+    
     // Already in school/teacher/student path, continue but pass slug header
     if (pathname.startsWith("/school") || pathname.startsWith("/teacher") || pathname.startsWith("/student")) {
       // Use rewrite to the same URL to ensure headers are properly set
       const url = request.nextUrl.clone()
-      const response = NextResponse.rewrite(url)
-      response.headers.set("x-school-slug", subdomain)
-      return response
+      return NextResponse.rewrite(url, {
+        request: {
+          headers: requestHeaders,
+        },
+      })
     }
     
     // Rewrite to appropriate routes based on path
@@ -72,9 +78,11 @@ export default function proxy(request: NextRequest) {
       url.pathname = `/school${pathname}`
     }
     
-    const rewriteResponse = NextResponse.rewrite(url)
-    rewriteResponse.headers.set("x-school-slug", subdomain)
-    return rewriteResponse
+    return NextResponse.rewrite(url, {
+      request: {
+        headers: requestHeaders,
+      },
+    })
   }
 
   // Main marketing site / landing page (no subdomain or www)

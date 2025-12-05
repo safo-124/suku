@@ -47,6 +47,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { cn } from "@/lib/utils"
 import { Gender } from "@/app/generated/prisma/client"
+import { toast } from "sonner"
 import { 
   deleteStudent, 
   toggleStudentStatus, 
@@ -103,7 +104,10 @@ export function StudentsTable({ students, onEdit }: StudentsTableProps) {
     startTransition(async () => {
       const result = await deleteStudent(deleteId)
       if (result.success) {
+        toast.success("Student deleted successfully")
         router.refresh()
+      } else {
+        toast.error(result.error || "Failed to delete student")
       }
       setDeleteId(null)
     })
@@ -115,7 +119,10 @@ export function StudentsTable({ students, onEdit }: StudentsTableProps) {
     startTransition(async () => {
       const result = await toggleStudentStatus(toggleId.id, !toggleId.isActive)
       if (result.success) {
+        toast.success(`Student ${!toggleId.isActive ? "activated" : "deactivated"} successfully`)
         router.refresh()
+      } else {
+        toast.error(result.error || "Failed to update student status")
       }
       setToggleId(null)
     })
@@ -126,6 +133,9 @@ export function StudentsTable({ students, onEdit }: StudentsTableProps) {
       const result = await resetStudentPassword(studentId)
       if (result.success && result.tempPassword) {
         setResetPasswordResult({ email, password: result.tempPassword })
+        toast.success("Password reset successfully")
+      } else {
+        toast.error(result.error || "Failed to reset password")
       }
     })
   }
