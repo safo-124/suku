@@ -21,9 +21,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { Loader2, AlertCircle, Copy, Check } from "lucide-react"
+import { Loader2, AlertCircle, Copy, Check, Users } from "lucide-react"
 import { Gender } from "@/app/generated/prisma/client"
-import { createStudent, updateStudent, type CreateStudentInput } from "../_actions/student-actions"
+import { createStudent, updateStudent, type CreateStudentInput, type ParentInput } from "../_actions/student-actions"
 
 interface ClassOption {
   id: string
@@ -60,7 +60,9 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [tempPassword, setTempPassword] = useState<string | null>(null)
+  const [parentCredentials, setParentCredentials] = useState<Array<{ email: string; tempPassword: string }> | null>(null)
   const [copied, setCopied] = useState(false)
+  const [copiedParent, setCopiedParent] = useState<string | null>(null)
 
   const isEditing = !!student
 
@@ -77,6 +79,23 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
     bloodGroup: student?.studentProfile?.bloodGroup || "",
     address: student?.studentProfile?.address || "",
     classId: student?.studentProfile?.classId || "",
+    // Parent details
+    parent1: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      relationship: "",
+      occupation: "",
+    },
+    parent2: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      relationship: "",
+      occupation: "",
+    },
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,16 +108,23 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
     }
 
     startTransition(async () => {
-      let result: { success: boolean; error?: string; tempPassword?: string }
+      let result: { success: boolean; error?: string; tempPassword?: string; parentCredentials?: Array<{ email: string; tempPassword: string }> }
       if (isEditing) {
         result = await updateStudent({ ...formData, id: student.id })
       } else {
-        result = await createStudent(formData)
+        // Only include parent data if at least email is provided
+        const dataToSubmit = {
+          ...formData,
+          parent1: formData.parent1?.email ? formData.parent1 : undefined,
+          parent2: formData.parent2?.email ? formData.parent2 : undefined,
+        }
+        result = await createStudent(dataToSubmit)
       }
 
       if (result.success) {
-        if (!isEditing && result.tempPassword) {
-          setTempPassword(result.tempPassword)
+        if (!isEditing && (result.tempPassword || result.parentCredentials)) {
+          setTempPassword(result.tempPassword || null)
+          setParentCredentials(result.parentCredentials || null)
         } else {
           onOpenChange(false)
           router.refresh()
@@ -117,8 +143,15 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
     }
   }
 
+  const handleCopyParentPassword = async (email: string, password: string) => {
+    await navigator.clipboard.writeText(password)
+    setCopiedParent(email)
+    setTimeout(() => setCopiedParent(null), 2000)
+  }
+
   const handleClose = () => {
     setTempPassword(null)
+    setParentCredentials(null)
     setError(null)
     onOpenChange(false)
     router.refresh()
@@ -127,44 +160,87 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
   const inputClass = "neu-inset border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-white/20 rounded-xl h-11"
 
   // Show password after successful creation
-  if (tempPassword) {
+  if (tempPassword || parentCredentials) {
     return (
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="neu rounded-3xl border-0 sm:max-w-md">
+        <DialogContent className="neu rounded-3xl border-0 sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-xl">Student Created</DialogTitle>
+            <DialogTitle className="text-xl">Student Created Successfully</DialogTitle>
             <DialogDescription>
-              The student account has been created. Share these credentials with the student:
+              The student account has been created. Share these credentials:
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-              <p className="text-sm text-muted-foreground mb-1">Email</p>
-              <p className="font-medium">{formData.email}</p>
+            {/* Student credentials */}
+            <div className="space-y-2">
+              <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Student Credentials
+              </h4>
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-sm text-muted-foreground mb-1">Email</p>
+                <p className="font-medium">{formData.email}</p>
+              </div>
+
+              {tempPassword && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                  <p className="text-sm text-muted-foreground mb-1">Temporary Password</p>
+                  <div className="flex items-center gap-2">
+                    <code className="font-mono text-lg">{tempPassword}</code>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-lg"
+                      onClick={handleCopyPassword}
+                    >
+                      {copied ? (
+                        <Check className="h-4 w-4 text-emerald-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-              <p className="text-sm text-muted-foreground mb-1">Temporary Password</p>
-              <div className="flex items-center gap-2">
-                <code className="font-mono text-lg">{tempPassword}</code>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 rounded-lg"
-                  onClick={handleCopyPassword}
-                >
-                  {copied ? (
-                    <Check className="h-4 w-4 text-emerald-500" />
-                  ) : (
-                    <Copy className="h-4 w-4" />
-                  )}
-                </Button>
+            {/* Parent credentials */}
+            {parentCredentials && parentCredentials.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Parent/Guardian Credentials
+                </h4>
+                {parentCredentials.map((parent, index) => (
+                  <div key={parent.email} className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
+                    <p className="text-xs text-muted-foreground mb-1">
+                      Parent/Guardian {index + 1}
+                    </p>
+                    <p className="text-sm font-medium mb-2">{parent.email}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">Password:</span>
+                      <code className="font-mono">{parent.tempPassword}</code>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 rounded-lg"
+                        onClick={() => handleCopyParentPassword(parent.email, parent.tempPassword)}
+                      >
+                        {copiedParent === parent.email ? (
+                          <Check className="h-3 w-3 text-emerald-500" />
+                        ) : (
+                          <Copy className="h-3 w-3" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
+            )}
 
             <p className="text-xs text-muted-foreground">
-              ⚠️ This password will only be shown once. Make sure to save it.
+              ⚠️ These passwords will only be shown once. Make sure to save them.
             </p>
           </div>
 
@@ -374,6 +450,243 @@ export function StudentForm({ open, onOpenChange, student, classes }: StudentFor
               />
             </div>
           </div>
+
+          {/* Parent/Guardian Information - Only show when creating new student */}
+          {!isEditing && (
+            <div className="space-y-4">
+              <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                Parent/Guardian Information
+              </h4>
+              <p className="text-xs text-muted-foreground">
+                Add parent/guardian details to automatically create their accounts. They will be able to access the parent portal to monitor the student&apos;s progress.
+              </p>
+
+              {/* Parent 1 */}
+              <div className="p-4 rounded-xl bg-muted/30 space-y-4">
+                <h5 className="text-sm font-medium">Parent/Guardian 1</h5>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1FirstName">First Name</Label>
+                    <Input
+                      id="parent1FirstName"
+                      value={formData.parent1?.firstName || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, firstName: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="Parent first name"
+                      disabled={isPending}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1LastName">Last Name</Label>
+                    <Input
+                      id="parent1LastName"
+                      value={formData.parent1?.lastName || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, lastName: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="Parent last name"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1Email">Email *</Label>
+                    <Input
+                      id="parent1Email"
+                      type="email"
+                      value={formData.parent1?.email || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, email: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="parent@email.com"
+                      disabled={isPending}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1Phone">Phone</Label>
+                    <Input
+                      id="parent1Phone"
+                      value={formData.parent1?.phone || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, phone: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="+1 234 567 890"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1Relationship">Relationship</Label>
+                    <Select
+                      value={formData.parent1?.relationship || ""}
+                      onValueChange={(value) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, relationship: value } 
+                      })}
+                      disabled={isPending}
+                    >
+                      <SelectTrigger className={inputClass}>
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                      <SelectContent className="neu rounded-xl border-0">
+                        <SelectItem value="Father">Father</SelectItem>
+                        <SelectItem value="Mother">Mother</SelectItem>
+                        <SelectItem value="Guardian">Guardian</SelectItem>
+                        <SelectItem value="Grandparent">Grandparent</SelectItem>
+                        <SelectItem value="Uncle">Uncle</SelectItem>
+                        <SelectItem value="Aunt">Aunt</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent1Occupation">Occupation</Label>
+                    <Input
+                      id="parent1Occupation"
+                      value={formData.parent1?.occupation || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent1: { ...formData.parent1!, occupation: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="e.g. Engineer, Teacher"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Parent 2 */}
+              <div className="p-4 rounded-xl bg-muted/30 space-y-4">
+                <h5 className="text-sm font-medium">Parent/Guardian 2 (Optional)</h5>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2FirstName">First Name</Label>
+                    <Input
+                      id="parent2FirstName"
+                      value={formData.parent2?.firstName || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, firstName: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="Parent first name"
+                      disabled={isPending}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2LastName">Last Name</Label>
+                    <Input
+                      id="parent2LastName"
+                      value={formData.parent2?.lastName || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, lastName: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="Parent last name"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2Email">Email</Label>
+                    <Input
+                      id="parent2Email"
+                      type="email"
+                      value={formData.parent2?.email || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, email: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="parent@email.com"
+                      disabled={isPending}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2Phone">Phone</Label>
+                    <Input
+                      id="parent2Phone"
+                      value={formData.parent2?.phone || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, phone: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="+1 234 567 890"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2Relationship">Relationship</Label>
+                    <Select
+                      value={formData.parent2?.relationship || ""}
+                      onValueChange={(value) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, relationship: value } 
+                      })}
+                      disabled={isPending}
+                    >
+                      <SelectTrigger className={inputClass}>
+                        <SelectValue placeholder="Select relationship" />
+                      </SelectTrigger>
+                      <SelectContent className="neu rounded-xl border-0">
+                        <SelectItem value="Father">Father</SelectItem>
+                        <SelectItem value="Mother">Mother</SelectItem>
+                        <SelectItem value="Guardian">Guardian</SelectItem>
+                        <SelectItem value="Grandparent">Grandparent</SelectItem>
+                        <SelectItem value="Uncle">Uncle</SelectItem>
+                        <SelectItem value="Aunt">Aunt</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="parent2Occupation">Occupation</Label>
+                    <Input
+                      id="parent2Occupation"
+                      value={formData.parent2?.occupation || ""}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        parent2: { ...formData.parent2!, occupation: e.target.value } 
+                      })}
+                      className={inputClass}
+                      placeholder="e.g. Engineer, Teacher"
+                      disabled={isPending}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <DialogFooter className="gap-2 sm:gap-0">
             <Button

@@ -6,6 +6,15 @@ import { verifySchoolAccess, hashPassword } from "@/lib/auth"
 import { UserRole, Gender, EnrollmentStatus } from "@/app/generated/prisma/client"
 
 // Types
+export interface ParentInput {
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string
+  relationship?: string
+  occupation?: string
+}
+
 export interface CreateStudentInput {
   firstName: string
   lastName: string
@@ -18,6 +27,9 @@ export interface CreateStudentInput {
   address?: string
   classId?: string
   password?: string
+  // Parent/Guardian details
+  parent1?: ParentInput
+  parent2?: ParentInput
 }
 
 export interface UpdateStudentInput extends Partial<CreateStudentInput> {
@@ -205,6 +217,82 @@ export async function createStudent(data: CreateStudentInput) {
     const password = data.password || generateTempPassword()
     const passwordHash = await hashPassword(password)
 
+    // Helper function to create parent account
+    const createParentAccount = async (
+      tx: Parameters<Parameters<typeof prisma.$transaction>[0]>[0],
+      parentData: ParentInput,
+      studentProfileId: string,
+      schoolId: string
+    ) => {
+      // Check if parent email already exists
+      const existingParent = await tx.user.findUnique({
+        where: { email: parentData.email.toLowerCase() },
+        include: { parentProfile: true },
+      })
+
+      if (existingParent) {
+        // If parent exists, just link them to this student
+        if (existingParent.parentProfile) {
+          // Check if link already exists
+          const existingLink = await tx.parentStudent.findFirst({
+            where: {
+              parentId: existingParent.parentProfile.id,
+              studentId: studentProfileId,
+            },
+          })
+          
+          if (!existingLink) {
+            await tx.parentStudent.create({
+              data: {
+                parentId: existingParent.parentProfile.id,
+                studentId: studentProfileId,
+              },
+            })
+          }
+        }
+        return { isNew: false, email: parentData.email }
+      }
+
+      // Create new parent account
+      const parentPassword = generateTempPassword()
+      const parentPasswordHash = await hashPassword(parentPassword)
+
+      const parentUser = await tx.user.create({
+        data: {
+          email: parentData.email.toLowerCase(),
+          firstName: parentData.firstName,
+          lastName: parentData.lastName,
+          phone: parentData.phone || null,
+          passwordHash: parentPasswordHash,
+          role: UserRole.PARENT,
+          schoolId: schoolId,
+          isActive: true,
+          emailVerified: false,
+        },
+      })
+
+      const parentProfile = await tx.parentProfile.create({
+        data: {
+          userId: parentUser.id,
+          relationship: parentData.relationship || null,
+          occupation: parentData.occupation || null,
+        },
+      })
+
+      // Link parent to student
+      await tx.parentStudent.create({
+        data: {
+          parentId: parentProfile.id,
+          studentId: studentProfileId,
+        },
+      })
+
+      return { isNew: true, email: parentData.email, tempPassword: parentPassword }
+    }
+
+    // Track parent credentials for new parents
+    const parentCredentials: Array<{ email: string; tempPassword: string }> = []
+
     // Create user and profile in transaction
     const student = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -252,6 +340,21 @@ export async function createStudent(data: CreateStudentInput) {
         }
       }
 
+      // Create parent accounts if provided
+      if (data.parent1?.email) {
+        const result = await createParentAccount(tx, data.parent1, profile.id, auth.school!.id)
+        if (result.isNew && result.tempPassword) {
+          parentCredentials.push({ email: result.email, tempPassword: result.tempPassword })
+        }
+      }
+
+      if (data.parent2?.email) {
+        const result = await createParentAccount(tx, data.parent2, profile.id, auth.school!.id)
+        if (result.isNew && result.tempPassword) {
+          parentCredentials.push({ email: result.email, tempPassword: result.tempPassword })
+        }
+      }
+
       return { ...user, studentProfile: profile }
     })
 
@@ -260,6 +363,7 @@ export async function createStudent(data: CreateStudentInput) {
       success: true, 
       student,
       tempPassword: data.password ? undefined : password,
+      parentCredentials: parentCredentials.length > 0 ? parentCredentials : undefined,
     }
   } catch (error) {
     console.error("Error creating student:", error)
