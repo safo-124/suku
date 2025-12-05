@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
+import type { PlatformSettings as PlatformSettingsModel } from "@/app/generated/prisma/client"
 
 export type PlatformSettings = {
   general: {
@@ -75,7 +76,7 @@ const DEFAULT_SETTINGS: PlatformSettings = {
 }
 
 // Helper to convert DB record to PlatformSettings type
-function dbToSettings(record: NonNullable<Awaited<ReturnType<typeof prisma.platformSettings.findUnique>>>): PlatformSettings {
+function dbToSettings(record: PlatformSettingsModel): PlatformSettings {
   return {
     general: {
       platformName: record.platformName,
