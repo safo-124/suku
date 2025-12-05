@@ -234,3 +234,8 @@ export type Session = Prisma.SessionModel
  * 
  */
 export type VerificationToken = Prisma.VerificationTokenModel
+/**
+ * Model PlatformSettings
+ * 
+ */
+export type PlatformSettings = Prisma.PlatformSettingsModel

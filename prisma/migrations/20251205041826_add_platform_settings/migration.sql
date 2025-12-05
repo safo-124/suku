@@ -1,0 +1,30 @@
+-- CreateTable
+CREATE TABLE "platform_settings" (
+    "id" TEXT NOT NULL DEFAULT 'default',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "platformName" TEXT NOT NULL DEFAULT 'Suku',
+    "platformUrl" TEXT NOT NULL DEFAULT 'https://suku.app',
+    "supportEmail" TEXT NOT NULL DEFAULT 'support@suku.app',
+    "defaultTimezone" TEXT NOT NULL DEFAULT 'UTC',
+    "logoUrl" TEXT NOT NULL DEFAULT '',
+    "faviconUrl" TEXT NOT NULL DEFAULT '',
+    "primaryColor" TEXT NOT NULL DEFAULT '#ffffff',
+    "accentColor" TEXT NOT NULL DEFAULT '#6366f1',
+    "defaultTrialDays" INTEGER NOT NULL DEFAULT 14,
+    "defaultPlan" TEXT NOT NULL DEFAULT 'FREE',
+    "maxSchoolsPerAdmin" INTEGER NOT NULL DEFAULT 5,
+    "requireEmailVerification" BOOLEAN NOT NULL DEFAULT true,
+    "allowPublicRegistration" BOOLEAN NOT NULL DEFAULT true,
+    "enableMultiTenancy" BOOLEAN NOT NULL DEFAULT true,
+    "enableApiAccess" BOOLEAN NOT NULL DEFAULT true,
+    "maintenanceMode" BOOLEAN NOT NULL DEFAULT false,
+    "smtpHost" TEXT NOT NULL DEFAULT '',
+    "smtpPort" INTEGER NOT NULL DEFAULT 587,
+    "smtpUser" TEXT NOT NULL DEFAULT '',
+    "smtpSecure" BOOLEAN NOT NULL DEFAULT true,
+    "fromEmail" TEXT NOT NULL DEFAULT 'noreply@suku.app',
+    "fromName" TEXT NOT NULL DEFAULT 'Suku',
+
+    CONSTRAINT "platform_settings_pkey" PRIMARY KEY ("id")
+);

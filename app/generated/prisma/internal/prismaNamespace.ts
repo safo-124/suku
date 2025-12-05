@@ -422,7 +422,8 @@ export const ModelName = {
   Notification: 'Notification',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  PlatformSettings: 'PlatformSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -438,7 +439,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "school" | "subscription" | "user" | "teacherProfile" | "studentProfile" | "parentProfile" | "parentStudent" | "gradeDefinition" | "schoolLevel" | "levelSubject" | "gradeScale" | "promotionRule" | "academicYear" | "academicPeriod" | "class" | "subject" | "classSubject" | "period" | "timetableSlot" | "attendance" | "question" | "assignment" | "assignmentQuestion" | "assignmentSubmission" | "questionResponse" | "examResult" | "reportCard" | "studentEnrollment" | "studentSubject" | "feeCategory" | "feeStructure" | "studentFee" | "payment" | "message" | "pushToken" | "notification" | "account" | "session" | "verificationToken"
+    modelProps: "school" | "subscription" | "user" | "teacherProfile" | "studentProfile" | "parentProfile" | "parentStudent" | "gradeDefinition" | "schoolLevel" | "levelSubject" | "gradeScale" | "promotionRule" | "academicYear" | "academicPeriod" | "class" | "subject" | "classSubject" | "period" | "timetableSlot" | "attendance" | "question" | "assignment" | "assignmentQuestion" | "assignmentSubmission" | "questionResponse" | "examResult" | "reportCard" | "studentEnrollment" | "studentSubject" | "feeCategory" | "feeStructure" | "studentFee" | "payment" | "message" | "pushToken" | "notification" | "account" | "session" | "verificationToken" | "platformSettings"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -3328,6 +3329,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    PlatformSettings: {
+      payload: Prisma.$PlatformSettingsPayload<ExtArgs>
+      fields: Prisma.PlatformSettingsFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PlatformSettingsFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PlatformSettingsFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        findFirst: {
+          args: Prisma.PlatformSettingsFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PlatformSettingsFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        findMany: {
+          args: Prisma.PlatformSettingsFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>[]
+        }
+        create: {
+          args: Prisma.PlatformSettingsCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        createMany: {
+          args: Prisma.PlatformSettingsCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PlatformSettingsCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>[]
+        }
+        delete: {
+          args: Prisma.PlatformSettingsDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        update: {
+          args: Prisma.PlatformSettingsUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        deleteMany: {
+          args: Prisma.PlatformSettingsDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PlatformSettingsUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PlatformSettingsUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>[]
+        }
+        upsert: {
+          args: Prisma.PlatformSettingsUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PlatformSettingsPayload>
+        }
+        aggregate: {
+          args: Prisma.PlatformSettingsAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePlatformSettings>
+        }
+        groupBy: {
+          args: Prisma.PlatformSettingsGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformSettingsGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PlatformSettingsCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PlatformSettingsCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -3950,6 +4025,37 @@ export const VerificationTokenScalarFieldEnum = {
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
 
 
+export const PlatformSettingsScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  platformName: 'platformName',
+  platformUrl: 'platformUrl',
+  supportEmail: 'supportEmail',
+  defaultTimezone: 'defaultTimezone',
+  logoUrl: 'logoUrl',
+  faviconUrl: 'faviconUrl',
+  primaryColor: 'primaryColor',
+  accentColor: 'accentColor',
+  defaultTrialDays: 'defaultTrialDays',
+  defaultPlan: 'defaultPlan',
+  maxSchoolsPerAdmin: 'maxSchoolsPerAdmin',
+  requireEmailVerification: 'requireEmailVerification',
+  allowPublicRegistration: 'allowPublicRegistration',
+  enableMultiTenancy: 'enableMultiTenancy',
+  enableApiAccess: 'enableApiAccess',
+  maintenanceMode: 'maintenanceMode',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpUser: 'smtpUser',
+  smtpSecure: 'smtpSecure',
+  fromEmail: 'fromEmail',
+  fromName: 'fromName'
+} as const
+
+export type PlatformSettingsScalarFieldEnum = (typeof PlatformSettingsScalarFieldEnum)[keyof typeof PlatformSettingsScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -4401,6 +4507,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   session?: Prisma.SessionOmit
   verificationToken?: Prisma.VerificationTokenOmit
+  platformSettings?: Prisma.PlatformSettingsOmit
 }
 
 /* Types for Logging */

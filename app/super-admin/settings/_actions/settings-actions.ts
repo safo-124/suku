@@ -74,25 +74,73 @@ const DEFAULT_SETTINGS: PlatformSettings = {
   },
 }
 
-// In a real app, these would be stored in a database table
-// For now, we'll simulate with a simple in-memory store
-let cachedSettings: PlatformSettings | null = null
+// Helper to convert DB record to PlatformSettings type
+function dbToSettings(record: NonNullable<Awaited<ReturnType<typeof prisma.platformSettings.findUnique>>>): PlatformSettings {
+  return {
+    general: {
+      platformName: record.platformName,
+      platformUrl: record.platformUrl,
+      supportEmail: record.supportEmail,
+      defaultTimezone: record.defaultTimezone,
+    },
+    branding: {
+      logoUrl: record.logoUrl,
+      faviconUrl: record.faviconUrl,
+      primaryColor: record.primaryColor,
+      accentColor: record.accentColor,
+    },
+    defaults: {
+      defaultTrialDays: record.defaultTrialDays,
+      defaultPlan: record.defaultPlan,
+      maxSchoolsPerAdmin: record.maxSchoolsPerAdmin,
+      requireEmailVerification: record.requireEmailVerification,
+    },
+    features: {
+      allowPublicRegistration: record.allowPublicRegistration,
+      enableMultiTenancy: record.enableMultiTenancy,
+      enableApiAccess: record.enableApiAccess,
+      maintenanceMode: record.maintenanceMode,
+    },
+    email: {
+      smtpHost: record.smtpHost,
+      smtpPort: record.smtpPort,
+      smtpUser: record.smtpUser,
+      smtpSecure: record.smtpSecure,
+      fromEmail: record.fromEmail,
+      fromName: record.fromName,
+    },
+  }
+}
 
 export async function getSettings(): Promise<{ success: boolean; settings?: PlatformSettings; error?: string }> {
   try {
-    // In production, fetch from database
-    // const settingsRecord = await prisma.platformSettings.findFirst()
-    // For now, return defaults merged with any cached changes
-    
-    const settings = cachedSettings || DEFAULT_SETTINGS
-    
+    // Fetch from database, create default if doesn't exist
+    let record = await prisma.platformSettings.findUnique({
+      where: { id: "default" },
+    })
+
+    if (!record) {
+      // Create default settings
+      record = await prisma.platformSettings.create({
+        data: {
+          id: "default",
+          ...DEFAULT_SETTINGS.general,
+          ...DEFAULT_SETTINGS.branding,
+          ...DEFAULT_SETTINGS.defaults,
+          ...DEFAULT_SETTINGS.features,
+          ...DEFAULT_SETTINGS.email,
+        },
+      })
+    }
+
     return {
       success: true,
-      settings,
+      settings: dbToSettings(record),
     }
   } catch (error) {
     console.error("Failed to fetch settings:", error)
-    return { success: false, error: "Failed to fetch settings" }
+    // Return defaults if database fails
+    return { success: true, settings: DEFAULT_SETTINGS }
   }
 }
 
@@ -101,24 +149,57 @@ export async function updateSettings(
   data: Partial<PlatformSettings[keyof PlatformSettings]>
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Get current settings
-    const current = cachedSettings || DEFAULT_SETTINGS
+    // Map section data to flat DB fields
+    const updateData: Record<string, unknown> = {}
     
-    // Merge with new data
-    cachedSettings = {
-      ...current,
-      [section]: {
-        ...current[section],
-        ...data,
-      },
+    if (section === "general") {
+      const d = data as Partial<PlatformSettings["general"]>
+      if (d.platformName !== undefined) updateData.platformName = d.platformName
+      if (d.platformUrl !== undefined) updateData.platformUrl = d.platformUrl
+      if (d.supportEmail !== undefined) updateData.supportEmail = d.supportEmail
+      if (d.defaultTimezone !== undefined) updateData.defaultTimezone = d.defaultTimezone
+    } else if (section === "branding") {
+      const d = data as Partial<PlatformSettings["branding"]>
+      if (d.logoUrl !== undefined) updateData.logoUrl = d.logoUrl
+      if (d.faviconUrl !== undefined) updateData.faviconUrl = d.faviconUrl
+      if (d.primaryColor !== undefined) updateData.primaryColor = d.primaryColor
+      if (d.accentColor !== undefined) updateData.accentColor = d.accentColor
+    } else if (section === "defaults") {
+      const d = data as Partial<PlatformSettings["defaults"]>
+      if (d.defaultTrialDays !== undefined) updateData.defaultTrialDays = d.defaultTrialDays
+      if (d.defaultPlan !== undefined) updateData.defaultPlan = d.defaultPlan
+      if (d.maxSchoolsPerAdmin !== undefined) updateData.maxSchoolsPerAdmin = d.maxSchoolsPerAdmin
+      if (d.requireEmailVerification !== undefined) updateData.requireEmailVerification = d.requireEmailVerification
+    } else if (section === "features") {
+      const d = data as Partial<PlatformSettings["features"]>
+      if (d.allowPublicRegistration !== undefined) updateData.allowPublicRegistration = d.allowPublicRegistration
+      if (d.enableMultiTenancy !== undefined) updateData.enableMultiTenancy = d.enableMultiTenancy
+      if (d.enableApiAccess !== undefined) updateData.enableApiAccess = d.enableApiAccess
+      if (d.maintenanceMode !== undefined) updateData.maintenanceMode = d.maintenanceMode
+    } else if (section === "email") {
+      const d = data as Partial<PlatformSettings["email"]>
+      if (d.smtpHost !== undefined) updateData.smtpHost = d.smtpHost
+      if (d.smtpPort !== undefined) updateData.smtpPort = d.smtpPort
+      if (d.smtpUser !== undefined) updateData.smtpUser = d.smtpUser
+      if (d.smtpSecure !== undefined) updateData.smtpSecure = d.smtpSecure
+      if (d.fromEmail !== undefined) updateData.fromEmail = d.fromEmail
+      if (d.fromName !== undefined) updateData.fromName = d.fromName
     }
 
-    // In production, save to database
-    // await prisma.platformSettings.upsert({
-    //   where: { id: 'default' },
-    //   update: { settings: cachedSettings },
-    //   create: { id: 'default', settings: cachedSettings },
-    // })
+    // Upsert the settings record
+    await prisma.platformSettings.upsert({
+      where: { id: "default" },
+      update: updateData,
+      create: {
+        id: "default",
+        ...DEFAULT_SETTINGS.general,
+        ...DEFAULT_SETTINGS.branding,
+        ...DEFAULT_SETTINGS.defaults,
+        ...DEFAULT_SETTINGS.features,
+        ...DEFAULT_SETTINGS.email,
+        ...updateData,
+      },
+    })
 
     revalidatePath("/super-admin/settings")
     return { success: true }
@@ -130,7 +211,25 @@ export async function updateSettings(
 
 export async function resetSettings(): Promise<{ success: boolean; error?: string }> {
   try {
-    cachedSettings = { ...DEFAULT_SETTINGS }
+    // Reset to default values
+    await prisma.platformSettings.upsert({
+      where: { id: "default" },
+      update: {
+        ...DEFAULT_SETTINGS.general,
+        ...DEFAULT_SETTINGS.branding,
+        ...DEFAULT_SETTINGS.defaults,
+        ...DEFAULT_SETTINGS.features,
+        ...DEFAULT_SETTINGS.email,
+      },
+      create: {
+        id: "default",
+        ...DEFAULT_SETTINGS.general,
+        ...DEFAULT_SETTINGS.branding,
+        ...DEFAULT_SETTINGS.defaults,
+        ...DEFAULT_SETTINGS.features,
+        ...DEFAULT_SETTINGS.email,
+      },
+    })
     
     revalidatePath("/super-admin/settings")
     return { success: true }

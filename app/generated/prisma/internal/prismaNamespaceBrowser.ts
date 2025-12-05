@@ -89,7 +89,8 @@ export const ModelName = {
   Notification: 'Notification',
   Account: 'Account',
   Session: 'Session',
-  VerificationToken: 'VerificationToken'
+  VerificationToken: 'VerificationToken',
+  PlatformSettings: 'PlatformSettings'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -689,6 +690,37 @@ export const VerificationTokenScalarFieldEnum = {
 } as const
 
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const PlatformSettingsScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  platformName: 'platformName',
+  platformUrl: 'platformUrl',
+  supportEmail: 'supportEmail',
+  defaultTimezone: 'defaultTimezone',
+  logoUrl: 'logoUrl',
+  faviconUrl: 'faviconUrl',
+  primaryColor: 'primaryColor',
+  accentColor: 'accentColor',
+  defaultTrialDays: 'defaultTrialDays',
+  defaultPlan: 'defaultPlan',
+  maxSchoolsPerAdmin: 'maxSchoolsPerAdmin',
+  requireEmailVerification: 'requireEmailVerification',
+  allowPublicRegistration: 'allowPublicRegistration',
+  enableMultiTenancy: 'enableMultiTenancy',
+  enableApiAccess: 'enableApiAccess',
+  maintenanceMode: 'maintenanceMode',
+  smtpHost: 'smtpHost',
+  smtpPort: 'smtpPort',
+  smtpUser: 'smtpUser',
+  smtpSecure: 'smtpSecure',
+  fromEmail: 'fromEmail',
+  fromName: 'fromName'
+} as const
+
+export type PlatformSettingsScalarFieldEnum = (typeof PlatformSettingsScalarFieldEnum)[keyof typeof PlatformSettingsScalarFieldEnum]
 
 
 export const SortOrder = {

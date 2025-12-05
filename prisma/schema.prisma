@@ -1017,3 +1017,47 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verificationtokens")
 }
+
+// ============================================
+// PLATFORM SETTINGS (Super Admin)
+// ============================================
+
+model PlatformSettings {
+  id        String   @id @default("default")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // General
+  platformName    String @default("Suku")
+  platformUrl     String @default("https://suku.app")
+  supportEmail    String @default("support@suku.app")
+  defaultTimezone String @default("UTC")
+
+  // Branding
+  logoUrl      String @default("")
+  faviconUrl   String @default("")
+  primaryColor String @default("#ffffff")
+  accentColor  String @default("#6366f1")
+
+  // Defaults
+  defaultTrialDays          Int     @default(14)
+  defaultPlan               String  @default("FREE")
+  maxSchoolsPerAdmin        Int     @default(5)
+  requireEmailVerification  Boolean @default(true)
+
+  // Features
+  allowPublicRegistration Boolean @default(true)
+  enableMultiTenancy      Boolean @default(true)
+  enableApiAccess         Boolean @default(true)
+  maintenanceMode         Boolean @default(false)
+
+  // Email
+  smtpHost   String  @default("")
+  smtpPort   Int     @default(587)
+  smtpUser   String  @default("")
+  smtpSecure Boolean @default(true)
+  fromEmail  String  @default("noreply@suku.app")
+  fromName   String  @default("Suku")
+
+  @@map("platform_settings")
+}
