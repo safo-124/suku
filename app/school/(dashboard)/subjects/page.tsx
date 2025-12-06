@@ -1,8 +1,8 @@
 import { Metadata } from "next"
 import { BookOpen } from "lucide-react"
-import { headers } from "next/headers"
 import prisma from "@/lib/prisma"
 import { SubjectsClient } from "./_components/subjects-client"
+import { getCurrentSchoolSlug } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Subjects | School Admin",
@@ -10,8 +10,7 @@ export const metadata: Metadata = {
 }
 
 async function getSchoolData() {
-  const headersList = await headers()
-  const schoolSlug = headersList.get("x-school-slug")
+  const schoolSlug = await getCurrentSchoolSlug()
 
   if (!schoolSlug) {
     return null

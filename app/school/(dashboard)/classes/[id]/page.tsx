@@ -1,9 +1,9 @@
 import { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
-import { headers } from "next/headers"
 import prisma from "@/lib/prisma"
 import { ClassDetailClient } from "../_components/class-detail-client"
 import { Prisma } from "@/app/generated/prisma/client"
+import { getCurrentSchoolSlug } from "@/lib/auth"
 
 export const metadata: Metadata = {
   title: "Class Details | School Admin",
@@ -11,8 +11,7 @@ export const metadata: Metadata = {
 }
 
 async function getSchoolData() {
-  const headersList = await headers()
-  const schoolSlug = headersList.get("x-school-slug")
+  const schoolSlug = await getCurrentSchoolSlug()
 
   if (!schoolSlug) {
     return null

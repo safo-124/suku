@@ -155,6 +155,12 @@ export async function getCurrentSchoolSlug(): Promise<string | null> {
     }
   }
   
+  // Fallback to session (for Vercel deployments where headers may not persist)
+  const session = await getSession()
+  if (session?.user?.schoolSlug) {
+    return session.user.schoolSlug
+  }
+  
   return null
 }
 
