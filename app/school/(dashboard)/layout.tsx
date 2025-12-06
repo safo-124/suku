@@ -116,11 +116,10 @@ function SidebarNav() {
 function SidebarContent({ user, schoolName }: { user: SessionUser | null; schoolName: string }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const subdomain = searchParams.get("subdomain")
+  const subdomain = searchParams.get("subdomain") || user?.schoolSlug
   
-  // For logout, just go to /login - the proxy will handle the rewrite
-  // If using query param subdomain, preserve it
-  const logoutHref = subdomain ? `/login?subdomain=${subdomain}` : "/login"
+  // For logout, go to /school/login with subdomain preserved
+  const logoutHref = subdomain ? `/school/login?subdomain=${subdomain}` : "/school/login"
   
   const handleLogout = async () => {
     await logoutFromSchool()

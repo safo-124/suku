@@ -141,10 +141,14 @@ function SidebarContent({
   teacherInfo: TeacherInfo | null 
 }) {
   const router = useRouter()
+  const subdomain = user?.schoolSlug
+  
+  // For logout, go to /teacher/login with subdomain preserved
+  const logoutHref = subdomain ? `/teacher/login?subdomain=${subdomain}` : "/teacher/login"
   
   const handleLogout = async () => {
     await logoutTeacher()
-    router.push("/teacher/login")
+    router.push(logoutHref)
     router.refresh()
   }
 
