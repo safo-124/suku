@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition } from "react"
+import { useState, useTransition, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Lock, Eye, EyeOff, Shield, ArrowRight, Loader2, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils"
 import { setNewPassword } from "../login/_actions/auth-actions"
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const subdomain = searchParams.get("subdomain")
@@ -189,5 +189,32 @@ export default function ResetPasswordPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+function ResetPasswordLoading() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="mx-auto w-16 h-16 rounded-2xl neu-convex flex items-center justify-center mb-6">
+            <Shield className="h-8 w-8" />
+          </div>
+          <h1 className="text-2xl font-bold">Create New Password</h1>
+          <p className="text-muted-foreground mt-2">Loading...</p>
+        </div>
+        <div className="neu rounded-3xl p-8 flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordLoading />}>
+      <ResetPasswordContent />
+    </Suspense>
   )
 }
