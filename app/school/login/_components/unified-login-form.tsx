@@ -117,27 +117,32 @@ export function UnifiedLoginForm({ school, subdomain }: UnifiedLoginFormProps) {
           return
         }
         
-        // Check if user role matches selected role
+        // Get the user's actual role from the login result
         const userRole = result.user?.role?.toLowerCase()
         
-        // Map user roles to our role types
+        // Map database roles to our role types
         const roleMapping: Record<string, UserRole> = {
           'school_admin': 'admin',
           'teacher': 'teacher',
           'student': 'student',
         }
         
-        const mappedRole = roleMapping[userRole || '']
+        const actualRole = roleMapping[userRole || '']
         
-        if (mappedRole && mappedRole !== selectedRole) {
-          setError(`This account is registered as a ${roleConfig[mappedRole].title}. Please select the correct role.`)
+        // Check if user role matches selected role (optional validation)
+        if (actualRole && actualRole !== selectedRole) {
+          setError(`This account is registered as a ${roleConfig[actualRole].title}. Please select the correct role.`)
           return
         }
         
-        // Redirect to appropriate dashboard
-        const redirectPath = roleConfig[selectedRole].redirectPath
-        router.push(redirectPath)
-        router.refresh()
+        // Use the actual role from the database for redirect (not the selected role)
+        // This ensures we always redirect to the correct dashboard
+        const targetRole = actualRole || selectedRole
+        const basePath = roleConfig[targetRole].redirectPath
+        const redirectPath = subdomain ? `${basePath}?subdomain=${subdomain}` : basePath
+        
+        // Use window.location for a full page navigation to ensure clean routing
+        window.location.href = redirectPath
       } else {
         setError(result.error || "Login failed")
       }
