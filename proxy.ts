@@ -18,18 +18,25 @@ export default function proxy(request: NextRequest) {
 
   // Extract subdomain
   let subdomain = ""
-  if (hostname.includes(".") && !hostname.startsWith("localhost")) {
-    // Production: subdomain.domain.com
-    const parts = hostname.split(".")
-    if (parts.length >= 2) {
-      subdomain = parts[0]
-    }
-  } else {
-    // Development: Use query param for testing
-    // e.g., localhost:3000?subdomain=admin or localhost:3000?subdomain=springfield
+  
+  // Check if this is a Vercel preview/production URL (*.vercel.app)
+  // These don't support real subdomains, so we use query params only
+  const isVercelApp = hostname.endsWith(".vercel.app")
+  
+  if (isVercelApp || hostname.startsWith("localhost") || hostname.includes("localhost:")) {
+    // Development or Vercel: Use query param for subdomain
+    // e.g., localhost:3000?subdomain=admin or suku-swart.vercel.app?subdomain=springfield
     const subdomainParam = request.nextUrl.searchParams.get("subdomain")
     if (subdomainParam) {
       subdomain = subdomainParam
+    }
+  } else if (hostname.includes(".")) {
+    // Production with custom domain: subdomain.domain.com
+    // e.g., springfield.suku.app or admin.suku.app
+    const parts = hostname.split(".")
+    // Need at least 3 parts for a subdomain (sub.domain.tld)
+    if (parts.length >= 3) {
+      subdomain = parts[0]
     }
   }
 
