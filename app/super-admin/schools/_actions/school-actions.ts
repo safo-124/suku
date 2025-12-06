@@ -389,6 +389,7 @@ export async function resetSchoolAdminPassword(adminId: string) {
       where: { id: adminId },
       data: {
         passwordHash: hashedPwd,
+        mustResetPassword: true,
       },
     })
 

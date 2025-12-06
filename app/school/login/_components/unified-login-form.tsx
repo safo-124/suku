@@ -111,6 +111,12 @@ export function UnifiedLoginForm({ school, subdomain }: UnifiedLoginFormProps) {
       const result = await loginToSchool(formData.email, formData.password, subdomain)
 
       if (result.success) {
+        // Check if user must reset their password
+        if (result.mustResetPassword) {
+          router.push(`/school/reset-password?subdomain=${subdomain}`)
+          return
+        }
+        
         // Check if user role matches selected role
         const userRole = result.user?.role?.toLowerCase()
         

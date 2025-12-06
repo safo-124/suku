@@ -37,6 +37,7 @@ export type UserMinAggregateOutputType = {
   role: $Enums.UserRole | null
   isActive: boolean | null
   emailVerified: boolean | null
+  mustResetPassword: boolean | null
   schoolId: string | null
 }
 
@@ -53,6 +54,7 @@ export type UserMaxAggregateOutputType = {
   role: $Enums.UserRole | null
   isActive: boolean | null
   emailVerified: boolean | null
+  mustResetPassword: boolean | null
   schoolId: string | null
 }
 
@@ -69,6 +71,7 @@ export type UserCountAggregateOutputType = {
   role: number
   isActive: number
   emailVerified: number
+  mustResetPassword: number
   schoolId: number
   _all: number
 }
@@ -87,6 +90,7 @@ export type UserMinAggregateInputType = {
   role?: true
   isActive?: true
   emailVerified?: true
+  mustResetPassword?: true
   schoolId?: true
 }
 
@@ -103,6 +107,7 @@ export type UserMaxAggregateInputType = {
   role?: true
   isActive?: true
   emailVerified?: true
+  mustResetPassword?: true
   schoolId?: true
 }
 
@@ -119,6 +124,7 @@ export type UserCountAggregateInputType = {
   role?: true
   isActive?: true
   emailVerified?: true
+  mustResetPassword?: true
   schoolId?: true
   _all?: true
 }
@@ -208,6 +214,7 @@ export type UserGroupByOutputType = {
   role: $Enums.UserRole
   isActive: boolean
   emailVerified: boolean
+  mustResetPassword: boolean
   schoolId: string | null
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
@@ -245,6 +252,7 @@ export type UserWhereInput = {
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   isActive?: Prisma.BoolFilter<"User"> | boolean
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
+  mustResetPassword?: Prisma.BoolFilter<"User"> | boolean
   schoolId?: Prisma.StringNullableFilter<"User"> | string | null
   school?: Prisma.XOR<Prisma.SchoolNullableScalarRelationFilter, Prisma.SchoolWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
@@ -279,6 +287,7 @@ export type UserOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
+  mustResetPassword?: Prisma.SortOrder
   schoolId?: Prisma.SortOrderInput | Prisma.SortOrder
   school?: Prisma.SchoolOrderByWithRelationInput
   accounts?: Prisma.AccountOrderByRelationAggregateInput
@@ -316,6 +325,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   isActive?: Prisma.BoolFilter<"User"> | boolean
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
+  mustResetPassword?: Prisma.BoolFilter<"User"> | boolean
   schoolId?: Prisma.StringNullableFilter<"User"> | string | null
   school?: Prisma.XOR<Prisma.SchoolNullableScalarRelationFilter, Prisma.SchoolWhereInput> | null
   accounts?: Prisma.AccountListRelationFilter
@@ -350,6 +360,7 @@ export type UserOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
+  mustResetPassword?: Prisma.SortOrder
   schoolId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -372,6 +383,7 @@ export type UserScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumUserRoleWithAggregatesFilter<"User"> | $Enums.UserRole
   isActive?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  mustResetPassword?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   schoolId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
@@ -388,6 +400,7 @@ export type UserCreateInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -421,6 +434,7 @@ export type UserUncheckedCreateInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -454,6 +468,7 @@ export type UserUpdateInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -487,6 +502,7 @@ export type UserUncheckedUpdateInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -520,6 +536,7 @@ export type UserCreateManyInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
 }
 
@@ -536,6 +553,7 @@ export type UserUpdateManyMutationInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -551,6 +569,7 @@ export type UserUncheckedUpdateManyInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
@@ -577,6 +596,7 @@ export type UserCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
+  mustResetPassword?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
 }
 
@@ -593,6 +613,7 @@ export type UserMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
+  mustResetPassword?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
 }
 
@@ -609,6 +630,7 @@ export type UserMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
+  mustResetPassword?: Prisma.SortOrder
   schoolId?: Prisma.SortOrder
 }
 
@@ -931,6 +953,7 @@ export type UserCreateWithoutSchoolInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileCreateNestedOneWithoutUserInput
@@ -963,6 +986,7 @@ export type UserUncheckedCreateWithoutSchoolInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileUncheckedCreateNestedOneWithoutUserInput
@@ -1024,6 +1048,7 @@ export type UserScalarWhereInput = {
   role?: Prisma.EnumUserRoleFilter<"User"> | $Enums.UserRole
   isActive?: Prisma.BoolFilter<"User"> | boolean
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
+  mustResetPassword?: Prisma.BoolFilter<"User"> | boolean
   schoolId?: Prisma.StringNullableFilter<"User"> | string | null
 }
 
@@ -1040,6 +1065,7 @@ export type UserCreateWithoutTeacherProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1072,6 +1098,7 @@ export type UserUncheckedCreateWithoutTeacherProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1120,6 +1147,7 @@ export type UserUpdateWithoutTeacherProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1152,6 +1180,7 @@ export type UserUncheckedUpdateWithoutTeacherProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1184,6 +1213,7 @@ export type UserCreateWithoutStudentProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1216,6 +1246,7 @@ export type UserUncheckedCreateWithoutStudentProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1264,6 +1295,7 @@ export type UserUpdateWithoutStudentProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1296,6 +1328,7 @@ export type UserUncheckedUpdateWithoutStudentProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1328,6 +1361,7 @@ export type UserCreateWithoutParentProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1360,6 +1394,7 @@ export type UserUncheckedCreateWithoutParentProfileInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1408,6 +1443,7 @@ export type UserUpdateWithoutParentProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1440,6 +1476,7 @@ export type UserUncheckedUpdateWithoutParentProfileInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1472,6 +1509,7 @@ export type UserCreateWithoutClassTeacherOfInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1504,6 +1542,7 @@ export type UserUncheckedCreateWithoutClassTeacherOfInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1552,6 +1591,7 @@ export type UserUpdateWithoutClassTeacherOfInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1584,6 +1624,7 @@ export type UserUncheckedUpdateWithoutClassTeacherOfInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1616,6 +1657,7 @@ export type UserCreateWithoutClassSubjectsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1648,6 +1690,7 @@ export type UserUncheckedCreateWithoutClassSubjectsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1696,6 +1739,7 @@ export type UserUpdateWithoutClassSubjectsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1728,6 +1772,7 @@ export type UserUncheckedUpdateWithoutClassSubjectsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1760,6 +1805,7 @@ export type UserCreateWithoutTimetableSlotsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1792,6 +1838,7 @@ export type UserUncheckedCreateWithoutTimetableSlotsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1840,6 +1887,7 @@ export type UserUpdateWithoutTimetableSlotsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1872,6 +1920,7 @@ export type UserUncheckedUpdateWithoutTimetableSlotsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1904,6 +1953,7 @@ export type UserCreateWithoutAttendanceMarkedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -1936,6 +1986,7 @@ export type UserUncheckedCreateWithoutAttendanceMarkedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1984,6 +2035,7 @@ export type UserUpdateWithoutAttendanceMarkedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2016,6 +2068,7 @@ export type UserUncheckedUpdateWithoutAttendanceMarkedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2048,6 +2101,7 @@ export type UserCreateWithoutQuestionsCreatedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2080,6 +2134,7 @@ export type UserUncheckedCreateWithoutQuestionsCreatedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2128,6 +2183,7 @@ export type UserUpdateWithoutQuestionsCreatedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2160,6 +2216,7 @@ export type UserUncheckedUpdateWithoutQuestionsCreatedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2192,6 +2249,7 @@ export type UserCreateWithoutAssignmentsCreatedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2224,6 +2282,7 @@ export type UserUncheckedCreateWithoutAssignmentsCreatedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2272,6 +2331,7 @@ export type UserUpdateWithoutAssignmentsCreatedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2304,6 +2364,7 @@ export type UserUncheckedUpdateWithoutAssignmentsCreatedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2336,6 +2397,7 @@ export type UserCreateWithoutPromotionsApprovedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2368,6 +2430,7 @@ export type UserUncheckedCreateWithoutPromotionsApprovedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2416,6 +2479,7 @@ export type UserUpdateWithoutPromotionsApprovedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2448,6 +2512,7 @@ export type UserUncheckedUpdateWithoutPromotionsApprovedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2480,6 +2545,7 @@ export type UserCreateWithoutApprovedStudentSubjectsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2512,6 +2578,7 @@ export type UserUncheckedCreateWithoutApprovedStudentSubjectsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2560,6 +2627,7 @@ export type UserUpdateWithoutApprovedStudentSubjectsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2592,6 +2660,7 @@ export type UserUncheckedUpdateWithoutApprovedStudentSubjectsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2624,6 +2693,7 @@ export type UserCreateWithoutMessagesSentInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2656,6 +2726,7 @@ export type UserUncheckedCreateWithoutMessagesSentInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2693,6 +2764,7 @@ export type UserCreateWithoutMessagesReceivedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2725,6 +2797,7 @@ export type UserUncheckedCreateWithoutMessagesReceivedInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2773,6 +2846,7 @@ export type UserUpdateWithoutMessagesSentInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2805,6 +2879,7 @@ export type UserUncheckedUpdateWithoutMessagesSentInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2848,6 +2923,7 @@ export type UserUpdateWithoutMessagesReceivedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -2880,6 +2956,7 @@ export type UserUncheckedUpdateWithoutMessagesReceivedInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -2912,6 +2989,7 @@ export type UserCreateWithoutPushTokensInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -2944,6 +3022,7 @@ export type UserUncheckedCreateWithoutPushTokensInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -2992,6 +3071,7 @@ export type UserUpdateWithoutPushTokensInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -3024,6 +3104,7 @@ export type UserUncheckedUpdateWithoutPushTokensInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -3056,6 +3137,7 @@ export type UserCreateWithoutNotificationsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -3088,6 +3170,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -3136,6 +3219,7 @@ export type UserUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -3168,6 +3252,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -3200,6 +3285,7 @@ export type UserCreateWithoutAccountsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileCreateNestedOneWithoutUserInput
@@ -3232,6 +3318,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3280,6 +3367,7 @@ export type UserUpdateWithoutAccountsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUpdateOneWithoutUserNestedInput
@@ -3312,6 +3400,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3344,6 +3433,7 @@ export type UserCreateWithoutSessionsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   school?: Prisma.SchoolCreateNestedOneWithoutUsersInput
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileCreateNestedOneWithoutUserInput
@@ -3376,6 +3466,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: string | null
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   teacherProfile?: Prisma.TeacherProfileUncheckedCreateNestedOneWithoutUserInput
@@ -3424,6 +3515,7 @@ export type UserUpdateWithoutSessionsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   school?: Prisma.SchoolUpdateOneWithoutUsersNestedInput
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUpdateOneWithoutUserNestedInput
@@ -3456,6 +3548,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   schoolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3488,6 +3581,7 @@ export type UserCreateManySchoolInput = {
   role: $Enums.UserRole
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
 }
 
 export type UserUpdateWithoutSchoolInput = {
@@ -3503,6 +3597,7 @@ export type UserUpdateWithoutSchoolInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUpdateOneWithoutUserNestedInput
@@ -3535,6 +3630,7 @@ export type UserUncheckedUpdateWithoutSchoolInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   teacherProfile?: Prisma.TeacherProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -3567,6 +3663,7 @@ export type UserUncheckedUpdateManyWithoutSchoolInput = {
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  mustResetPassword?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -3730,6 +3827,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   role?: boolean
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: boolean
   school?: boolean | Prisma.User$schoolArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -3765,6 +3863,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: boolean
   school?: boolean | Prisma.User$schoolArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -3782,6 +3881,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   role?: boolean
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: boolean
   school?: boolean | Prisma.User$schoolArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
@@ -3799,10 +3899,11 @@ export type UserSelectScalar = {
   role?: boolean
   isActive?: boolean
   emailVerified?: boolean
+  mustResetPassword?: boolean
   schoolId?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "avatar" | "role" | "isActive" | "emailVerified" | "schoolId", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "email" | "passwordHash" | "firstName" | "lastName" | "phone" | "avatar" | "role" | "isActive" | "emailVerified" | "mustResetPassword" | "schoolId", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   school?: boolean | Prisma.User$schoolArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -3866,6 +3967,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     role: $Enums.UserRole
     isActive: boolean
     emailVerified: boolean
+    mustResetPassword: boolean
     schoolId: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
@@ -4320,6 +4422,7 @@ export interface UserFieldRefs {
   readonly role: Prisma.FieldRef<"User", 'UserRole'>
   readonly isActive: Prisma.FieldRef<"User", 'Boolean'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
+  readonly mustResetPassword: Prisma.FieldRef<"User", 'Boolean'>
   readonly schoolId: Prisma.FieldRef<"User", 'String'>
 }
     

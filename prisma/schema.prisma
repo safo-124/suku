@@ -197,6 +197,7 @@ model User {
   role          UserRole
   isActive      Boolean  @default(true)
   emailVerified Boolean  @default(false)
+  mustResetPassword Boolean @default(false) // Force password change after admin reset
 
   // School association (null for SUPER_ADMIN)
   schoolId String?

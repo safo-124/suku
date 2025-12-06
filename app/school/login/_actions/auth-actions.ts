@@ -105,6 +105,7 @@ export async function loginToSchool(
 
     return {
       success: true,
+      mustResetPassword: user.mustResetPassword,
       user: {
         id: user.id,
         email: user.email,
@@ -162,17 +163,71 @@ export async function changePassword(
       return { success: false, error: "New password must be at least 8 characters" }
     }
 
-    // Hash and update
+    // Hash and update, and clear the mustResetPassword flag
     const hashedPassword = await hashPassword(newPassword)
     await prisma.user.update({
       where: { id: user.id },
-      data: { passwordHash: hashedPassword },
+      data: { 
+        passwordHash: hashedPassword,
+        mustResetPassword: false,
+      },
     })
 
     return { success: true }
   } catch (error) {
     console.error("Change password error:", error)
     return { success: false, error: "Failed to change password" }
+  }
+}
+
+// Set new password (for forced password reset - doesn't require old password)
+export async function setNewPassword(
+  newPassword: string,
+  confirmPassword: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await getSession()
+    if (!session) {
+      return { success: false, error: "Not authenticated" }
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    })
+
+    if (!user) {
+      return { success: false, error: "User not found" }
+    }
+
+    // Only allow this if the user must reset their password
+    if (!user.mustResetPassword) {
+      return { success: false, error: "Password reset not required" }
+    }
+
+    // Validate passwords match
+    if (newPassword !== confirmPassword) {
+      return { success: false, error: "Passwords do not match" }
+    }
+
+    // Validate new password
+    if (newPassword.length < 8) {
+      return { success: false, error: "Password must be at least 8 characters" }
+    }
+
+    // Hash and update, and clear the mustResetPassword flag
+    const hashedPassword = await hashPassword(newPassword)
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { 
+        passwordHash: hashedPassword,
+        mustResetPassword: false,
+      },
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error("Set new password error:", error)
+    return { success: false, error: "Failed to set new password" }
   }
 }
 

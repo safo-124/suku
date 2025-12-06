@@ -117,6 +117,9 @@ function SidebarContent({ user, schoolName }: { user: SessionUser | null; school
   const router = useRouter()
   const searchParams = useSearchParams()
   const subdomain = searchParams.get("subdomain")
+  
+  // For logout, just go to /login - the proxy will handle the rewrite
+  // If using query param subdomain, preserve it
   const logoutHref = subdomain ? `/login?subdomain=${subdomain}` : "/login"
   
   const handleLogout = async () => {

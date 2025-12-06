@@ -551,7 +551,10 @@ export async function resetStudentPassword(studentId: string) {
 
     await prisma.user.update({
       where: { id: studentId },
-      data: { passwordHash },
+      data: { 
+        passwordHash,
+        mustResetPassword: true, // Force password change on next login
+      },
     })
 
     return { success: true, tempPassword }

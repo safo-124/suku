@@ -245,5 +245,6 @@ export async function requireAuth(requiredRoles?: UserRole[]) {
 export interface AuthResult {
   success: boolean
   error?: string
+  mustResetPassword?: boolean
   user?: SessionUser
 }

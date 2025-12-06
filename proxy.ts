@@ -23,12 +23,29 @@ export default function proxy(request: NextRequest) {
   // These don't support real subdomains, so we use query params only
   const isVercelApp = hostname.endsWith(".vercel.app")
   
-  if (isVercelApp || hostname.startsWith("localhost") || hostname.includes("localhost:")) {
-    // Development or Vercel: Use query param for subdomain
-    // e.g., localhost:3000?subdomain=admin or suku-swart.vercel.app?subdomain=springfield
+  // Check if this is a localhost domain (for local development with subdomains)
+  // e.g., beacon-school.localhost:3000 or just localhost:3000
+  const isLocalhost = hostname.includes("localhost")
+  
+  if (isVercelApp) {
+    // Vercel: Use query param for subdomain only
     const subdomainParam = request.nextUrl.searchParams.get("subdomain")
     if (subdomainParam) {
       subdomain = subdomainParam
+    }
+  } else if (isLocalhost) {
+    // Local development: check for subdomain.localhost or ?subdomain= param
+    // First check query param
+    const subdomainParam = request.nextUrl.searchParams.get("subdomain")
+    if (subdomainParam) {
+      subdomain = subdomainParam
+    } else {
+      // Check for subdomain.localhost:port pattern
+      const hostnameWithoutPort = hostname.split(":")[0]
+      if (hostnameWithoutPort.endsWith(".localhost")) {
+        // Extract subdomain from beacon-school.localhost
+        subdomain = hostnameWithoutPort.replace(".localhost", "")
+      }
     }
   } else if (hostname.includes(".")) {
     // Production with custom domain: subdomain.domain.com

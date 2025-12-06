@@ -409,7 +409,10 @@ export async function resetTeacherPassword(teacherId: string) {
 
     await prisma.user.update({
       where: { id: teacherId },
-      data: { passwordHash },
+      data: { 
+        passwordHash,
+        mustResetPassword: true, // Force password change on next login
+      },
     })
 
     return { success: true, tempPassword }
