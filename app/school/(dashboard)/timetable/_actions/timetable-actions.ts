@@ -425,14 +425,8 @@ export async function getTimetableData() {
       orderBy: { name: "asc" },
     })
 
-    // Serialize Decimal fields in classSubjects for client components
-    const classes = classesWithSubjects.map(cls => ({
-      ...cls,
-      classSubjects: cls.classSubjects.map(cs => ({
-        ...cs,
-        hoursPerWeek: Number(cs.hoursPerWeek),
-      })),
-    }))
+    // Serialize to plain JSON to avoid Decimal serialization issues with client components
+    const classes = JSON.parse(JSON.stringify(classesWithSubjects))
 
     return { 
       success: true, 
@@ -555,11 +549,8 @@ export async function getClassSubjectAllocations(classId: string) {
       orderBy: { subject: { name: "asc" } },
     })
 
-    // Convert Decimal to number for client component serialization
-    const serializedAllocations = allocations.map(a => ({
-      ...a,
-      hoursPerWeek: Number(a.hoursPerWeek),
-    }))
+    // Serialize to plain JSON to avoid Decimal serialization issues with client components
+    const serializedAllocations = JSON.parse(JSON.stringify(allocations))
 
     return { success: true, allocations: serializedAllocations, periodDurationMinutes }
   } catch (error) {
