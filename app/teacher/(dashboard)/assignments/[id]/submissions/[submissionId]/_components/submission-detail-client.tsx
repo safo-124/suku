@@ -564,7 +564,7 @@ export function SubmissionDetailClient({
                     )}
                     
                     {/* Score display for graded items */}
-                    {response?.teacherScore !== null && (
+                    {response && response.teacherScore !== null && (
                       <div className="flex items-center gap-2 mt-4 text-sm">
                         <span className="text-muted-foreground">Score:</span>
                         <span className="font-semibold">{response.teacherScore}/{q.marks}</span>
