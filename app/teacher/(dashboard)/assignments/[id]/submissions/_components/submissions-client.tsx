@@ -81,7 +81,7 @@ export function SubmissionsClient({
     const name = `${s.firstName} ${s.lastName}`.toLowerCase()
     return !searchQuery || 
       name.includes(searchQuery.toLowerCase()) ||
-      s.studentId.toLowerCase().includes(searchQuery.toLowerCase())
+      (s.studentId?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
   })
   
   // Stats

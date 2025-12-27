@@ -39,20 +39,19 @@ export async function getTeacherAssignments() {
     // Get related data
     const classSubjectIds = [...new Set(assignments.map(a => a.classSubjectId))]
     
-    const [classSubjects, submissionCounts] = await Promise.all([
-      prisma.classSubject.findMany({
-        where: { id: { in: classSubjectIds } },
-        include: {
-          class: true,
-          subject: true,
-        },
-      }),
-      prisma.assignmentSubmission.groupBy({
-        by: ["assignmentId"],
-        where: { assignmentId: { in: assignments.map(a => a.id) } },
-        _count: { id: true },
-      }),
-    ])
+    const classSubjects = await prisma.classSubject.findMany({
+      where: { id: { in: classSubjectIds } },
+      include: {
+        class: true,
+        subject: true,
+      },
+    })
+    
+    const submissionCounts = await prisma.assignmentSubmission.groupBy({
+      by: ["assignmentId"],
+      where: { assignmentId: { in: assignments.map(a => a.id) } },
+      _count: { id: true },
+    }) as unknown as Array<{ assignmentId: string; _count: { id: number } }>
     
     const classSubjectMap = new Map(classSubjects.map(cs => [cs.id, cs]))
     const submissionCountMap = new Map(submissionCounts.map(sc => [sc.assignmentId, sc._count.id]))
@@ -118,26 +117,26 @@ export async function getSubjectAssignments(classSubjectId: string) {
     // Get submission counts and question counts
     const assignmentIds = assignments.map(a => a.id)
     
-    const [submissionCounts, questionCounts, gradedCounts] = await Promise.all([
-      prisma.assignmentSubmission.groupBy({
-        by: ["assignmentId"],
-        where: { assignmentId: { in: assignmentIds } },
-        _count: { id: true },
-      }),
-      prisma.assignmentQuestion.groupBy({
-        by: ["assignmentId"],
-        where: { assignmentId: { in: assignmentIds } },
-        _count: { id: true },
-      }),
-      prisma.assignmentSubmission.groupBy({
-        by: ["assignmentId"],
-        where: { 
-          assignmentId: { in: assignmentIds },
-          isGraded: true,
-        },
-        _count: { id: true },
-      }),
-    ])
+    const submissionCounts = await prisma.assignmentSubmission.groupBy({
+      by: ["assignmentId"],
+      where: { assignmentId: { in: assignmentIds } },
+      _count: { id: true },
+    }) as unknown as Array<{ assignmentId: string; _count: { id: number } }>
+    
+    const questionCounts = await prisma.assignmentQuestion.groupBy({
+      by: ["assignmentId"],
+      where: { assignmentId: { in: assignmentIds } },
+      _count: { id: true },
+    }) as unknown as Array<{ assignmentId: string; _count: { id: number } }>
+    
+    const gradedCounts = await prisma.assignmentSubmission.groupBy({
+      by: ["assignmentId"],
+      where: { 
+        assignmentId: { in: assignmentIds },
+        isGraded: true,
+      },
+      _count: { id: true },
+    }) as unknown as Array<{ assignmentId: string; _count: { id: number } }>
     
     const submissionCountMap = new Map(submissionCounts.map(sc => [sc.assignmentId, sc._count.id]))
     const questionCountMap = new Map(questionCounts.map(qc => [qc.assignmentId, qc._count.id]))
@@ -397,7 +396,7 @@ export async function addQuestionToAssignment(data: {
         subjectId: assignment.classSubject.subjectId,
         type: data.type,
         questionText: data.questionText,
-        options: data.options || null,
+        options: data.options ?? undefined,
         correctAnswer: data.correctAnswer,
         marks: data.marks,
         createdById: auth.session.user.id,
