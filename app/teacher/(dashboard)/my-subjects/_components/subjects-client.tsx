@@ -147,6 +147,11 @@ export function SubjectsClient({ subjects }: { subjects: Subject[] }) {
                             Students
                           </Button>
                         </Link>
+                        <Link href={`/teacher/my-subjects/${subject.id}/assignments${linkPrefix}`} className="flex-1">
+                          <Button variant="secondary" className="w-full rounded-xl neu-sm hover:neu">
+                            Assignments
+                          </Button>
+                        </Link>
                         <Link href={`/teacher/my-subjects/${subject.id}/grades${linkPrefix}`} className="flex-1">
                           <Button variant="secondary" className="w-full rounded-xl neu-sm hover:neu">
                             Grades

@@ -4,9 +4,9 @@ import prisma from "@/lib/prisma"
 import { getSession, getCurrentSchoolSlug } from "@/lib/auth"
 import { UserRole, AttendanceStatus } from "@/app/generated/prisma/client"
 
-// Verify student access
+// Verify student access - uses student-specific session cookie
 async function verifyStudentAccess() {
-  const session = await getSession()
+  const session = await getSession(UserRole.STUDENT)
   
   if (!session) {
     return { success: false, error: "Not authenticated" }

@@ -5,6 +5,45 @@ import prisma from "@/lib/prisma"
 import { verifySchoolAccess, hashPassword } from "@/lib/auth"
 import { UserRole, Gender, EnrollmentStatus } from "@/app/generated/prisma/client"
 
+// Generate unique student ID (format: STU-YYMM-XXXXX where YY=year, MM=month)
+async function generateStudentId(schoolId: string): Promise<string> {
+  const now = new Date()
+  const year = String(now.getFullYear()).slice(-2) // Last 2 digits of year
+  const month = String(now.getMonth() + 1).padStart(2, "0")
+  const prefix = `STU-${year}${month}`
+  
+  // Get the count of students in this school
+  const studentCount = await prisma.studentProfile.count({
+    where: {
+      user: { schoolId },
+    },
+  })
+  
+  // Generate sequential ID with padding
+  const nextNumber = studentCount + 1
+  const paddedNumber = String(nextNumber).padStart(5, "0")
+  let studentId = `${prefix}-${paddedNumber}`
+  
+  // Check for collision and increment if needed
+  let attempts = 0
+  while (attempts < 100) {
+    const existing = await prisma.studentProfile.findFirst({
+      where: {
+        studentId,
+        user: { schoolId },
+      },
+    })
+    
+    if (!existing) break
+    
+    attempts++
+    const newNumber = studentCount + attempts + 1
+    studentId = `${prefix}-${String(newNumber).padStart(5, "0")}`
+  }
+  
+  return studentId
+}
+
 // Types
 export interface ParentInput {
   firstName: string
@@ -293,6 +332,9 @@ export async function createStudent(data: CreateStudentInput) {
     // Track parent credentials for new parents
     const parentCredentials: Array<{ email: string; tempPassword: string }> = []
 
+    // Generate student ID if not provided
+    const studentId = data.studentId || await generateStudentId(auth.school!.id)
+
     // Create user and profile in transaction
     const student = await prisma.$transaction(async (tx) => {
       const user = await tx.user.create({
@@ -312,7 +354,7 @@ export async function createStudent(data: CreateStudentInput) {
       const profile = await tx.studentProfile.create({
         data: {
           userId: user.id,
-          studentId: data.studentId || null,
+          studentId,
           dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : null,
           gender: data.gender || null,
           bloodGroup: data.bloodGroup || null,
@@ -631,4 +673,50 @@ type StudentWithProfile = {
       gradeLevel: number
     } | null
   } | null
+}
+
+// Function to assign student IDs to existing students who don't have one
+export async function assignMissingStudentIds() {
+  try {
+    const session = await getSession()
+    if (!session?.user?.schoolId) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const schoolId = session.user.schoolId
+
+    // Find all student profiles without a student ID
+    const studentsWithoutId = await prisma.studentProfile.findMany({
+      where: {
+        schoolId: schoolId,
+        studentId: null
+      },
+      select: { id: true }
+    })
+
+    if (studentsWithoutId.length === 0) {
+      return { success: true, message: "All students already have student IDs", updated: 0 }
+    }
+
+    // Update each student with a new student ID
+    let updatedCount = 0
+    for (const student of studentsWithoutId) {
+      const newStudentId = await generateStudentId(schoolId)
+      await prisma.studentProfile.update({
+        where: { id: student.id },
+        data: { studentId: newStudentId }
+      })
+      updatedCount++
+    }
+
+    revalidatePath("/school/students")
+    return { 
+      success: true, 
+      message: `Successfully assigned student IDs to ${updatedCount} students`,
+      updated: updatedCount 
+    }
+  } catch (error) {
+    console.error("Error assigning missing student IDs:", error)
+    return { success: false, error: "Failed to assign student IDs" }
+  }
 }

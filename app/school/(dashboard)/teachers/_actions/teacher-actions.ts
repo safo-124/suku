@@ -5,6 +5,42 @@ import prisma from "@/lib/prisma"
 import { verifySchoolAccess, hashPassword } from "@/lib/auth"
 import { UserRole } from "@/app/generated/prisma/client"
 
+// Generate unique employee ID for teachers (format: TCH-XXXXX)
+async function generateEmployeeId(schoolId: string): Promise<string> {
+  const prefix = "TCH"
+  
+  // Get the count of teachers in this school
+  const teacherCount = await prisma.teacherProfile.count({
+    where: {
+      user: { schoolId },
+    },
+  })
+  
+  // Generate sequential ID with padding
+  const nextNumber = teacherCount + 1
+  const paddedNumber = String(nextNumber).padStart(5, "0")
+  let employeeId = `${prefix}-${paddedNumber}`
+  
+  // Check for collision and increment if needed
+  let attempts = 0
+  while (attempts < 100) {
+    const existing = await prisma.teacherProfile.findFirst({
+      where: {
+        employeeId,
+        user: { schoolId },
+      },
+    })
+    
+    if (!existing) break
+    
+    attempts++
+    const newNumber = teacherCount + attempts + 1
+    employeeId = `${prefix}-${String(newNumber).padStart(5, "0")}`
+  }
+  
+  return employeeId
+}
+
 // Types
 export interface CreateTeacherInput {
   firstName: string
@@ -186,6 +222,9 @@ export async function createTeacher(data: CreateTeacherInput) {
       }
     }
 
+    // Generate employee ID if not provided
+    const employeeId = data.employeeId || await generateEmployeeId(auth.school!.id)
+
     // Generate temporary password if not provided
     const password = data.password || generateTempPassword()
     const passwordHash = await hashPassword(password)
@@ -209,7 +248,7 @@ export async function createTeacher(data: CreateTeacherInput) {
       const profile = await tx.teacherProfile.create({
         data: {
           userId: user.id,
-          employeeId: data.employeeId || null,
+          employeeId,
           qualification: data.qualification || null,
           specialization: data.specialization || null,
           joinDate: data.joinDate ? new Date(data.joinDate) : null,
@@ -822,4 +861,50 @@ type TeacherWithProfile = {
     class: { name: string }
     subject: { name: string }
   }[]
+}
+
+// Function to assign employee IDs to existing teachers who don't have one
+export async function assignMissingEmployeeIds() {
+  try {
+    const session = await getSession()
+    if (!session?.user?.schoolId) {
+      return { success: false, error: "Unauthorized" }
+    }
+
+    const schoolId = session.user.schoolId
+
+    // Find all teacher profiles without an employee ID
+    const teachersWithoutId = await prisma.teacherProfile.findMany({
+      where: {
+        schoolId: schoolId,
+        employeeId: null
+      },
+      select: { id: true }
+    })
+
+    if (teachersWithoutId.length === 0) {
+      return { success: true, message: "All teachers already have employee IDs", updated: 0 }
+    }
+
+    // Update each teacher with a new employee ID
+    let updatedCount = 0
+    for (const teacher of teachersWithoutId) {
+      const newEmployeeId = await generateEmployeeId(schoolId)
+      await prisma.teacherProfile.update({
+        where: { id: teacher.id },
+        data: { employeeId: newEmployeeId }
+      })
+      updatedCount++
+    }
+
+    revalidatePath("/school/teachers")
+    return { 
+      success: true, 
+      message: `Successfully assigned employee IDs to ${updatedCount} teachers`,
+      updated: updatedCount 
+    }
+  } catch (error) {
+    console.error("Error assigning missing employee IDs:", error)
+    return { success: false, error: "Failed to assign employee IDs" }
+  }
 }

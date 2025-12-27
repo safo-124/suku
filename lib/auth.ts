@@ -22,9 +22,38 @@ export interface Session {
   expires: Date
 }
 
-// Cookie settings
-const SESSION_COOKIE_NAME = "suku_session"
+// Cookie settings - use role-specific cookies to allow multiple logins
+const SESSION_COOKIE_PREFIX = "suku_session"
 const SESSION_EXPIRY_DAYS = 7
+
+// Get cookie name based on role
+function getSessionCookieName(role: UserRole): string {
+  switch (role) {
+    case UserRole.SUPER_ADMIN:
+      return `${SESSION_COOKIE_PREFIX}_admin`
+    case UserRole.SCHOOL_ADMIN:
+      return `${SESSION_COOKIE_PREFIX}_school_admin`
+    case UserRole.TEACHER:
+      return `${SESSION_COOKIE_PREFIX}_teacher`
+    case UserRole.STUDENT:
+      return `${SESSION_COOKIE_PREFIX}_student`
+    case UserRole.PARENT:
+      return `${SESSION_COOKIE_PREFIX}_parent`
+    default:
+      return `${SESSION_COOKIE_PREFIX}_user`
+  }
+}
+
+// All possible session cookie names for checking/cleanup
+const ALL_SESSION_COOKIES = [
+  `${SESSION_COOKIE_PREFIX}_admin`,
+  `${SESSION_COOKIE_PREFIX}_school_admin`,
+  `${SESSION_COOKIE_PREFIX}_teacher`,
+  `${SESSION_COOKIE_PREFIX}_student`,
+  `${SESSION_COOKIE_PREFIX}_parent`,
+  `${SESSION_COOKIE_PREFIX}_user`,
+  "suku_session", // Legacy cookie for migration
+]
 
 // Password hashing
 export async function hashPassword(password: string): Promise<string> {
@@ -46,7 +75,7 @@ function generateSessionToken(): string {
 }
 
 // Create a new session for a user
-export async function createSession(userId: string): Promise<string> {
+export async function createSession(userId: string, role: UserRole): Promise<string> {
   const token = generateSessionToken()
   const expires = new Date(Date.now() + SESSION_EXPIRY_DAYS * 24 * 60 * 60 * 1000)
 
@@ -58,9 +87,10 @@ export async function createSession(userId: string): Promise<string> {
     },
   })
 
-  // Set the cookie
+  // Set the role-specific cookie
   const cookieStore = await cookies()
-  cookieStore.set(SESSION_COOKIE_NAME, token, {
+  const cookieName = getSessionCookieName(role)
+  cookieStore.set(cookieName, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
@@ -71,15 +101,40 @@ export async function createSession(userId: string): Promise<string> {
   return token
 }
 
-// Get the current session
-export async function getSession(): Promise<Session | null> {
+// Get the current session - checks role-specific cookie or all cookies
+export async function getSession(forRole?: UserRole): Promise<Session | null> {
   const cookieStore = await cookies()
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value
-
-  if (!token) {
+  
+  // If a specific role is requested, check only that cookie
+  if (forRole) {
+    const cookieName = getSessionCookieName(forRole)
+    const token = cookieStore.get(cookieName)?.value
+    if (token) {
+      return getSessionFromToken(token, cookieName, cookieStore)
+    }
     return null
   }
+  
+  // Otherwise, check all role-specific cookies
+  for (const cookieName of ALL_SESSION_COOKIES) {
+    const token = cookieStore.get(cookieName)?.value
+    if (token) {
+      const session = await getSessionFromToken(token, cookieName, cookieStore)
+      if (session) {
+        return session
+      }
+    }
+  }
+  
+  return null
+}
 
+// Helper to get session from a specific token
+async function getSessionFromToken(
+  token: string, 
+  cookieName: string, 
+  cookieStore: Awaited<ReturnType<typeof cookies>>
+): Promise<Session | null> {
   const session = await prisma.session.findUnique({
     where: { sessionToken: token },
     include: {
@@ -98,7 +153,7 @@ export async function getSession(): Promise<Session | null> {
 
   if (!session || session.expires < new Date()) {
     // Session expired or not found, clean up cookie
-    cookieStore.delete(SESSION_COOKIE_NAME)
+    cookieStore.delete(cookieName)
     if (session) {
       await prisma.session.delete({ where: { sessionToken: token } }).catch(() => {})
     }
@@ -120,14 +175,32 @@ export async function getSession(): Promise<Session | null> {
   }
 }
 
-// Destroy the current session
-export async function destroySession(): Promise<void> {
-  const cookieStore = await cookies()
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value
+// Get session for a specific role (useful for portals)
+export async function getSessionForRole(role: UserRole): Promise<Session | null> {
+  return getSession(role)
+}
 
-  if (token) {
-    await prisma.session.delete({ where: { sessionToken: token } }).catch(() => {})
-    cookieStore.delete(SESSION_COOKIE_NAME)
+// Destroy the current session - can specify role to destroy specific session
+export async function destroySession(forRole?: UserRole): Promise<void> {
+  const cookieStore = await cookies()
+  
+  if (forRole) {
+    // Destroy only the specific role's session
+    const cookieName = getSessionCookieName(forRole)
+    const token = cookieStore.get(cookieName)?.value
+    if (token) {
+      await prisma.session.delete({ where: { sessionToken: token } }).catch(() => {})
+      cookieStore.delete(cookieName)
+    }
+  } else {
+    // Destroy all sessions (for complete logout)
+    for (const cookieName of ALL_SESSION_COOKIES) {
+      const token = cookieStore.get(cookieName)?.value
+      if (token) {
+        await prisma.session.delete({ where: { sessionToken: token } }).catch(() => {})
+        cookieStore.delete(cookieName)
+      }
+    }
   }
 }
 
@@ -199,21 +272,36 @@ export async function verifySchoolAccess(requiredRoles?: UserRole[]): Promise<{
   school?: Awaited<ReturnType<typeof getCurrentSchool>>
   error?: string
 }> {
-  const session = await getSession()
-
-  if (!session) {
-    return { success: false, error: "Not authenticated" }
+  let session: Session | null = null
+  
+  // If specific roles are required, try to find a session for one of those roles first
+  if (requiredRoles && requiredRoles.length > 0) {
+    for (const role of requiredRoles) {
+      session = await getSession(role)
+      if (session) break
+    }
+    
+    // If no session found for required roles, return error
+    if (!session) {
+      // Check if there's any session at all (for better error message)
+      const anySession = await getSession()
+      if (anySession) {
+        return { success: false, error: "Insufficient permissions" }
+      }
+      return { success: false, error: "Not authenticated" }
+    }
+  } else {
+    // No specific role required, get any session
+    session = await getSession()
+    if (!session) {
+      return { success: false, error: "Not authenticated" }
+    }
   }
 
   // Super admin has access to everything
   if (session.user.role === UserRole.SUPER_ADMIN) {
     const school = await getCurrentSchool()
     return { success: true, session, school }
-  }
-
-  // Check role if specified
-  if (requiredRoles && !requiredRoles.includes(session.user.role)) {
-    return { success: false, error: "Insufficient permissions" }
   }
 
   // Get current school from subdomain

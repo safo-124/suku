@@ -9,7 +9,8 @@ import {
   Calendar,
   Settings as SettingsIcon,
   Layers,
-  ListOrdered
+  ListOrdered,
+  Database
 } from "lucide-react"
 import { SchoolProfileForm } from "./school-profile-form"
 import { GradeScaleManager } from "./grade-scale-manager"
@@ -17,6 +18,7 @@ import { PromotionRulesManager } from "./promotion-rules-manager"
 import { AcademicYearManager } from "./academic-year-manager"
 import { SchoolLevelsManager } from "./school-levels-manager"
 import { GradeDefinitionsManager } from "./grade-definitions-manager"
+import { DataManagement } from "./data-management"
 
 interface SchoolProfile {
   id: string
@@ -141,6 +143,7 @@ const tabs = [
   { id: "grades", label: "Grade Scale", icon: GraduationCap },
   { id: "promotion", label: "Promotion Rules", icon: TrendingUp },
   { id: "academic", label: "Academic Years", icon: Calendar },
+  { id: "data", label: "Data Management", icon: Database },
 ]
 
 export function SettingsClient({
@@ -211,6 +214,10 @@ export function SettingsClient({
         
         {activeTab === "academic" && (
           <AcademicYearManager years={academicYears} />
+        )}
+
+        {activeTab === "data" && (
+          <DataManagement />
         )}
       </div>
     </div>

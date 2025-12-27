@@ -100,8 +100,8 @@ export async function loginToSchool(
       return { success: false, error: "Invalid email or password" }
     }
 
-    // Create session
-    await createSession(user.id)
+    // Create session with role-specific cookie
+    await createSession(user.id, user.role)
 
     return {
       success: true,
@@ -123,13 +123,25 @@ export async function loginToSchool(
   }
 }
 
-// Logout action
+// Logout action - destroys session for the current user's role
 export async function logoutFromSchool(): Promise<void> {
-  await destroySession()
+  const session = await getSession()
+  if (session) {
+    await destroySession(session.user.role)
+  } else {
+    // Fallback: destroy all sessions
+    await destroySession()
+  }
 }
 
-// Get current user session
+// Get current user session for school admin
 export async function getCurrentUser() {
+  // First try to get school admin session specifically
+  const schoolAdminSession = await getSession(UserRole.SCHOOL_ADMIN)
+  if (schoolAdminSession) {
+    return schoolAdminSession
+  }
+  // Fallback to any session for backwards compatibility
   return getSession()
 }
 

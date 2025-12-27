@@ -268,6 +268,14 @@ function SchoolLayoutContent({
           return
         }
 
+        // Verify user is a school admin
+        if (session.user.role !== "SCHOOL_ADMIN") {
+          console.error("User is not a school admin")
+          const loginPath = subdomain ? `/login?subdomain=${subdomain}` : "/school/login"
+          router.push(loginPath)
+          return
+        }
+
         setUser(session.user)
         setSchoolName(session.user.schoolName || subdomain || "School")
       } catch (error) {

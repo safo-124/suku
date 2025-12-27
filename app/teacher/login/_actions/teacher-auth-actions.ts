@@ -105,8 +105,8 @@ export async function loginAsTeacher(
       return { success: false, error: "Invalid email or password" }
     }
 
-    // Create session
-    await createSession(user.id)
+    // Create session with role-specific cookie
+    await createSession(user.id, user.role)
 
     return {
       success: true,
@@ -127,14 +127,14 @@ export async function loginAsTeacher(
   }
 }
 
-// Logout action
+// Logout action - destroys only the teacher session
 export async function logoutTeacher(): Promise<void> {
-  await destroySession()
+  await destroySession(UserRole.TEACHER)
 }
 
-// Get current teacher session
+// Get current teacher session - checks teacher-specific cookie
 export async function getCurrentTeacher() {
-  const session = await getSession()
+  const session = await getSession(UserRole.TEACHER)
   
   if (!session || session.user.role !== UserRole.TEACHER) {
     return null

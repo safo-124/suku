@@ -67,9 +67,16 @@ export function DashboardClient({ data }: { data: DashboardData }) {
     <div className="space-y-8">
       {/* Welcome Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          Welcome back, {data.student.firstName}! 👋
-        </h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Welcome back, {data.student.firstName}! 👋
+          </h1>
+          {data.student.studentId && (
+            <Badge variant="outline" className="text-sm font-mono">
+              {data.student.studentId}
+            </Badge>
+          )}
+        </div>
         <p className="text-muted-foreground mt-1">
           Here&apos;s what&apos;s happening with your studies today.
         </p>

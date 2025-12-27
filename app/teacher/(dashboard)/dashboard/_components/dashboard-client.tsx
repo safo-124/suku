@@ -26,6 +26,7 @@ interface DashboardData {
     lastName: string
     email: string
     avatar: string | null
+    employeeId: string | null
   }
   stats: {
     subjectsTeaching: number
@@ -63,9 +64,16 @@ export function DashboardClient({ data }: { data: DashboardData }) {
     <div className="space-y-8">
       {/* Welcome Section */}
       <div>
-        <h1 className="text-3xl font-bold">
-          Welcome back, {data.teacher.firstName}!
-        </h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="text-3xl font-bold">
+            Welcome back, {data.teacher.firstName}!
+          </h1>
+          {data.teacher.employeeId && (
+            <Badge variant="outline" className="text-sm font-mono">
+              {data.teacher.employeeId}
+            </Badge>
+          )}
+        </div>
         <p className="text-muted-foreground mt-1">
           Here's what's happening with your classes today.
         </p>

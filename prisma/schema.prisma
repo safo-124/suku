@@ -62,11 +62,14 @@ enum QuestionType {
   MCQ
   TRUE_FALSE
   SHORT_ANSWER
+  ESSAY
 }
 
 enum AssignmentType {
   HOMEWORK
+  CLASSWORK
   TEST
+  EXAM
   QUIZ
 }
 

@@ -5,9 +5,9 @@ import { getSession, hashPassword, verifyPassword } from "@/lib/auth"
 import { UserRole, AttendanceStatus } from "@/app/generated/prisma/client"
 import { revalidatePath } from "next/cache"
 
-// Verify teacher access
+// Verify teacher access - uses teacher-specific session cookie
 async function verifyTeacherAccess() {
-  const session = await getSession()
+  const session = await getSession(UserRole.TEACHER)
   
   if (!session) {
     return { success: false, error: "Not authenticated" }
@@ -247,6 +247,7 @@ export async function getTeacherDashboard() {
           lastName: user.lastName,
           email: user.email,
           avatar: user.avatar,
+          employeeId: teacherProfile?.employeeId || null,
         },
         stats: {
           subjectsTeaching: classSubjects.length,
@@ -465,6 +466,227 @@ export async function getSubjectStudents(classSubjectId: string) {
   } catch (error) {
     console.error("Error fetching students:", error)
     return { success: false, error: "Failed to fetch students" }
+  }
+}
+
+// Get grades for a specific class-subject the teacher teaches
+export async function getSubjectGrades(classSubjectId: string, periodId?: string) {
+  const auth = await verifyTeacherAccess()
+  
+  if (!auth.success || !auth.session) {
+    return { success: false, error: auth.error }
+  }
+  
+  try {
+    // Verify teacher teaches this subject
+    const classSubject = await prisma.classSubject.findFirst({
+      where: {
+        id: classSubjectId,
+        teacherId: auth.session.user.id,
+      },
+      include: {
+        class: true,
+        subject: true,
+      },
+    })
+    
+    if (!classSubject) {
+      return { success: false, error: "You don't teach this subject" }
+    }
+    
+    // Get academic periods for the school
+    const academicPeriods = await prisma.academicPeriod.findMany({
+      where: {
+        academicYear: {
+          schoolId: auth.session.user.schoolId!,
+        },
+      },
+      orderBy: { startDate: "desc" },
+    })
+    
+    const selectedPeriodId = periodId || academicPeriods[0]?.id
+    
+    // Get students in this class
+    const studentProfiles = await prisma.studentProfile.findMany({
+      where: {
+        classId: classSubject.classId,
+      },
+    })
+    
+    const userIds = studentProfiles.map(s => s.userId)
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        isActive: true,
+      },
+      orderBy: [
+        { firstName: "asc" },
+        { lastName: "asc" },
+      ],
+    })
+    
+    const userMap = new Map(users.map(u => [u.id, u]))
+    
+    // Get exam results for this class-subject and period
+    const studentIds = studentProfiles.map(s => s.id)
+    let examResults: Array<{
+      id: string
+      studentId: string
+      examType: string
+      score: number
+      maxScore: number
+      grade: string | null
+      remarks: string | null
+    }> = []
+    
+    if (selectedPeriodId && studentIds.length > 0) {
+      const rawResults = await prisma.examResult.findMany({
+        where: {
+          classSubjectId: classSubjectId,
+          academicPeriodId: selectedPeriodId,
+          studentId: { in: studentIds },
+        },
+      })
+      
+      examResults = rawResults.map(r => ({
+        id: r.id,
+        studentId: r.studentId,
+        examType: r.examType,
+        score: Number(r.score),
+        maxScore: Number(r.maxScore),
+        grade: r.grade,
+        remarks: r.remarks,
+      }))
+    }
+    
+    // Group exam results by student
+    const resultsByStudent = new Map<string, typeof examResults>()
+    for (const result of examResults) {
+      const existing = resultsByStudent.get(result.studentId) || []
+      existing.push(result)
+      resultsByStudent.set(result.studentId, existing)
+    }
+    
+    // Sort students by name
+    const sortedStudents = studentProfiles.sort((a, b) => {
+      const userA = userMap.get(a.userId)
+      const userB = userMap.get(b.userId)
+      const firstNameCompare = (userA?.firstName || "").localeCompare(userB?.firstName || "")
+      if (firstNameCompare !== 0) return firstNameCompare
+      return (userA?.lastName || "").localeCompare(userB?.lastName || "")
+    })
+    
+    return {
+      success: true,
+      classSubject: {
+        id: classSubject.id,
+        className: classSubject.class.name,
+        subjectName: classSubject.subject.name,
+        subjectCode: classSubject.subject.code,
+      },
+      academicPeriods: academicPeriods.map(ap => ({
+        id: ap.id,
+        name: ap.name,
+        type: ap.type,
+      })),
+      selectedPeriodId,
+      students: sortedStudents.map(s => {
+        const user = userMap.get(s.userId)
+        const results = resultsByStudent.get(s.id) || []
+        
+        return {
+          id: s.id,
+          userId: s.userId,
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          studentId: s.studentId,
+          isActive: user?.isActive || false,
+          examResults: results,
+        }
+      }),
+    }
+  } catch (error) {
+    console.error("Error fetching subject grades:", error)
+    return { success: false, error: "Failed to fetch grades" }
+  }
+}
+
+// Save or update a student's grade for a specific subject
+export async function saveStudentGrade(data: {
+  classSubjectId: string
+  studentId: string
+  periodId: string
+  examType: string
+  score: number
+  maxScore: number
+  grade?: string
+  remarks?: string
+}) {
+  const auth = await verifyTeacherAccess()
+  
+  if (!auth.success || !auth.session) {
+    return { success: false, error: auth.error }
+  }
+  
+  try {
+    // Verify teacher teaches this subject
+    const classSubject = await prisma.classSubject.findFirst({
+      where: {
+        id: data.classSubjectId,
+        teacherId: auth.session.user.id,
+      },
+    })
+    
+    if (!classSubject) {
+      return { success: false, error: "You don't teach this subject" }
+    }
+    
+    // Check if result already exists
+    const existingResult = await prisma.examResult.findFirst({
+      where: {
+        classSubjectId: data.classSubjectId,
+        studentId: data.studentId,
+        academicPeriodId: data.periodId,
+        examType: data.examType,
+      },
+    })
+    
+    if (existingResult) {
+      // Update existing
+      await prisma.examResult.update({
+        where: { id: existingResult.id },
+        data: {
+          score: data.score,
+          maxScore: data.maxScore,
+          grade: data.grade,
+          remarks: data.remarks,
+        },
+      })
+    } else {
+      // Create new
+      await prisma.examResult.create({
+        data: {
+          classSubjectId: data.classSubjectId,
+          studentId: data.studentId,
+          academicPeriodId: data.periodId,
+          examType: data.examType,
+          score: data.score,
+          maxScore: data.maxScore,
+          grade: data.grade,
+          remarks: data.remarks,
+        },
+      })
+    }
+    
+    revalidatePath(`/teacher/my-subjects/${data.classSubjectId}/grades`)
+    
+    return { success: true }
+  } catch (error) {
+    console.error("Error saving grade:", error)
+    return { success: false, error: "Failed to save grade" }
   }
 }
 

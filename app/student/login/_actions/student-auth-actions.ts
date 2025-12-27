@@ -109,8 +109,8 @@ export async function loginAsStudent(
       return { success: false, error: "Invalid email or password" }
     }
 
-    // Create session
-    await createSession(user.id)
+    // Create session with role-specific cookie
+    await createSession(user.id, user.role)
 
     return {
       success: true,
@@ -131,14 +131,15 @@ export async function loginAsStudent(
   }
 }
 
-// Logout action
+// Logout action - destroys only the student session
 export async function logoutStudent(): Promise<void> {
-  await destroySession()
+  await destroySession(UserRole.STUDENT)
 }
 
 // Get current student session
+// Get current student session - checks student-specific cookie
 export async function getCurrentStudent() {
-  const session = await getSession()
+  const session = await getSession(UserRole.STUDENT)
   
   if (!session || session.user.role !== UserRole.STUDENT) {
     return null
@@ -153,7 +154,7 @@ export async function changeStudentPassword(
   newPassword: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const session = await getSession()
+    const session = await getSession(UserRole.STUDENT)
     if (!session || session.user.role !== UserRole.STUDENT) {
       return { success: false, error: "Not authenticated" }
     }

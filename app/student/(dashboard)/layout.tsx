@@ -19,6 +19,7 @@ import {
   Award,
   User,
   Loader2,
+  FileText,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -40,6 +41,7 @@ import type { SessionUser } from "@/lib/auth"
 const baseMenuItems = [
   { title: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
   { title: "My Subjects", icon: BookOpen, path: "/subjects" },
+  { title: "Assignments", icon: FileText, path: "/assignments" },
   { title: "Grades & Results", icon: Award, path: "/grades" },
   { title: "Attendance", icon: ClipboardList, path: "/attendance" },
   { title: "Timetable", icon: Calendar, path: "/timetable" },
