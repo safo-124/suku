@@ -43,7 +43,7 @@ interface Assignment {
   hasSubmitted: boolean
   isGraded: boolean
   totalScore: number | null
-  submittedAt: Date | null
+  submittedAt?: Date | null
   isLate: boolean
   createdAt: Date
 }
