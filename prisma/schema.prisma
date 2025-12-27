@@ -544,6 +544,9 @@ model ClassSubject {
   teacherId String?
   teacher   User?   @relation("SubjectTeacher", fields: [teacherId], references: [id])
 
+  // Weekly time allocation in hours (for timetable generation and salary calculations)
+  hoursPerWeek Decimal @default(0) @db.Decimal(4, 2)
+
   // Relations
   timetableSlots TimetableSlot[]
   assignments    Assignment[]

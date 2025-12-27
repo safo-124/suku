@@ -365,7 +365,8 @@ export const ClassSubjectScalarFieldEnum = {
   updatedAt: 'updatedAt',
   classId: 'classId',
   subjectId: 'subjectId',
-  teacherId: 'teacherId'
+  teacherId: 'teacherId',
+  hoursPerWeek: 'hoursPerWeek'
 } as const
 
 export type ClassSubjectScalarFieldEnum = (typeof ClassSubjectScalarFieldEnum)[keyof typeof ClassSubjectScalarFieldEnum]

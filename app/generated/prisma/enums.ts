@@ -74,7 +74,8 @@ export type AttendanceStatus = (typeof AttendanceStatus)[keyof typeof Attendance
 export const QuestionType = {
   MCQ: 'MCQ',
   TRUE_FALSE: 'TRUE_FALSE',
-  SHORT_ANSWER: 'SHORT_ANSWER'
+  SHORT_ANSWER: 'SHORT_ANSWER',
+  ESSAY: 'ESSAY'
 } as const
 
 export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType]
@@ -82,7 +83,9 @@ export type QuestionType = (typeof QuestionType)[keyof typeof QuestionType]
 
 export const AssignmentType = {
   HOMEWORK: 'HOMEWORK',
+  CLASSWORK: 'CLASSWORK',
   TEST: 'TEST',
+  EXAM: 'EXAM',
   QUIZ: 'QUIZ'
 } as const
 

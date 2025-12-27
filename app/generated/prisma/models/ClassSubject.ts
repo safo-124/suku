@@ -20,8 +20,18 @@ export type ClassSubjectModel = runtime.Types.Result.DefaultSelection<Prisma.$Cl
 
 export type AggregateClassSubject = {
   _count: ClassSubjectCountAggregateOutputType | null
+  _avg: ClassSubjectAvgAggregateOutputType | null
+  _sum: ClassSubjectSumAggregateOutputType | null
   _min: ClassSubjectMinAggregateOutputType | null
   _max: ClassSubjectMaxAggregateOutputType | null
+}
+
+export type ClassSubjectAvgAggregateOutputType = {
+  hoursPerWeek: runtime.Decimal | null
+}
+
+export type ClassSubjectSumAggregateOutputType = {
+  hoursPerWeek: runtime.Decimal | null
 }
 
 export type ClassSubjectMinAggregateOutputType = {
@@ -31,6 +41,7 @@ export type ClassSubjectMinAggregateOutputType = {
   classId: string | null
   subjectId: string | null
   teacherId: string | null
+  hoursPerWeek: runtime.Decimal | null
 }
 
 export type ClassSubjectMaxAggregateOutputType = {
@@ -40,6 +51,7 @@ export type ClassSubjectMaxAggregateOutputType = {
   classId: string | null
   subjectId: string | null
   teacherId: string | null
+  hoursPerWeek: runtime.Decimal | null
 }
 
 export type ClassSubjectCountAggregateOutputType = {
@@ -49,9 +61,18 @@ export type ClassSubjectCountAggregateOutputType = {
   classId: number
   subjectId: number
   teacherId: number
+  hoursPerWeek: number
   _all: number
 }
 
+
+export type ClassSubjectAvgAggregateInputType = {
+  hoursPerWeek?: true
+}
+
+export type ClassSubjectSumAggregateInputType = {
+  hoursPerWeek?: true
+}
 
 export type ClassSubjectMinAggregateInputType = {
   id?: true
@@ -60,6 +81,7 @@ export type ClassSubjectMinAggregateInputType = {
   classId?: true
   subjectId?: true
   teacherId?: true
+  hoursPerWeek?: true
 }
 
 export type ClassSubjectMaxAggregateInputType = {
@@ -69,6 +91,7 @@ export type ClassSubjectMaxAggregateInputType = {
   classId?: true
   subjectId?: true
   teacherId?: true
+  hoursPerWeek?: true
 }
 
 export type ClassSubjectCountAggregateInputType = {
@@ -78,6 +101,7 @@ export type ClassSubjectCountAggregateInputType = {
   classId?: true
   subjectId?: true
   teacherId?: true
+  hoursPerWeek?: true
   _all?: true
 }
 
@@ -119,6 +143,18 @@ export type ClassSubjectAggregateArgs<ExtArgs extends runtime.Types.Extensions.I
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ClassSubjectAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ClassSubjectSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ClassSubjectMinAggregateInputType
@@ -149,6 +185,8 @@ export type ClassSubjectGroupByArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   _count?: ClassSubjectCountAggregateInputType | true
+  _avg?: ClassSubjectAvgAggregateInputType
+  _sum?: ClassSubjectSumAggregateInputType
   _min?: ClassSubjectMinAggregateInputType
   _max?: ClassSubjectMaxAggregateInputType
 }
@@ -160,7 +198,10 @@ export type ClassSubjectGroupByOutputType = {
   classId: string
   subjectId: string
   teacherId: string | null
+  hoursPerWeek: runtime.Decimal
   _count: ClassSubjectCountAggregateOutputType | null
+  _avg: ClassSubjectAvgAggregateOutputType | null
+  _sum: ClassSubjectSumAggregateOutputType | null
   _min: ClassSubjectMinAggregateOutputType | null
   _max: ClassSubjectMaxAggregateOutputType | null
 }
@@ -190,6 +231,7 @@ export type ClassSubjectWhereInput = {
   classId?: Prisma.StringFilter<"ClassSubject"> | string
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
+  hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   teacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -205,6 +247,7 @@ export type ClassSubjectOrderByWithRelationInput = {
   classId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrderInput | Prisma.SortOrder
+  hoursPerWeek?: Prisma.SortOrder
   class?: Prisma.ClassOrderByWithRelationInput
   subject?: Prisma.SubjectOrderByWithRelationInput
   teacher?: Prisma.UserOrderByWithRelationInput
@@ -224,6 +267,7 @@ export type ClassSubjectWhereUniqueInput = Prisma.AtLeast<{
   classId?: Prisma.StringFilter<"ClassSubject"> | string
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
+  hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   teacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -239,9 +283,12 @@ export type ClassSubjectOrderByWithAggregationInput = {
   classId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrderInput | Prisma.SortOrder
+  hoursPerWeek?: Prisma.SortOrder
   _count?: Prisma.ClassSubjectCountOrderByAggregateInput
+  _avg?: Prisma.ClassSubjectAvgOrderByAggregateInput
   _max?: Prisma.ClassSubjectMaxOrderByAggregateInput
   _min?: Prisma.ClassSubjectMinOrderByAggregateInput
+  _sum?: Prisma.ClassSubjectSumOrderByAggregateInput
 }
 
 export type ClassSubjectScalarWhereWithAggregatesInput = {
@@ -254,12 +301,14 @@ export type ClassSubjectScalarWhereWithAggregatesInput = {
   classId?: Prisma.StringWithAggregatesFilter<"ClassSubject"> | string
   subjectId?: Prisma.StringWithAggregatesFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableWithAggregatesFilter<"ClassSubject"> | string | null
+  hoursPerWeek?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -275,6 +324,7 @@ export type ClassSubjectUncheckedCreateInput = {
   classId: string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -284,6 +334,7 @@ export type ClassSubjectUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -299,6 +350,7 @@ export type ClassSubjectUncheckedUpdateInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -311,12 +363,14 @@ export type ClassSubjectCreateManyInput = {
   classId: string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUncheckedUpdateManyInput = {
@@ -326,6 +380,7 @@ export type ClassSubjectUncheckedUpdateManyInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectListRelationFilter = {
@@ -350,6 +405,11 @@ export type ClassSubjectCountOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  hoursPerWeek?: Prisma.SortOrder
+}
+
+export type ClassSubjectAvgOrderByAggregateInput = {
+  hoursPerWeek?: Prisma.SortOrder
 }
 
 export type ClassSubjectMaxOrderByAggregateInput = {
@@ -359,6 +419,7 @@ export type ClassSubjectMaxOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  hoursPerWeek?: Prisma.SortOrder
 }
 
 export type ClassSubjectMinOrderByAggregateInput = {
@@ -368,6 +429,11 @@ export type ClassSubjectMinOrderByAggregateInput = {
   classId?: Prisma.SortOrder
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
+  hoursPerWeek?: Prisma.SortOrder
+}
+
+export type ClassSubjectSumOrderByAggregateInput = {
+  hoursPerWeek?: Prisma.SortOrder
 }
 
 export type ClassSubjectNullableScalarRelationFilter = {
@@ -554,6 +620,7 @@ export type ClassSubjectCreateWithoutTeacherInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -567,6 +634,7 @@ export type ClassSubjectUncheckedCreateWithoutTeacherInput = {
   updatedAt?: Date | string
   classId: string
   subjectId: string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -608,12 +676,14 @@ export type ClassSubjectScalarWhereInput = {
   classId?: Prisma.StringFilter<"ClassSubject"> | string
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
+  hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateWithoutClassInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -627,6 +697,7 @@ export type ClassSubjectUncheckedCreateWithoutClassInput = {
   updatedAt?: Date | string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -662,6 +733,7 @@ export type ClassSubjectCreateWithoutSubjectInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -675,6 +747,7 @@ export type ClassSubjectUncheckedCreateWithoutSubjectInput = {
   updatedAt?: Date | string
   classId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -710,6 +783,7 @@ export type ClassSubjectCreateWithoutTimetableSlotsInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -724,6 +798,7 @@ export type ClassSubjectUncheckedCreateWithoutTimetableSlotsInput = {
   classId: string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -748,6 +823,7 @@ export type ClassSubjectUpdateWithoutTimetableSlotsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -762,6 +838,7 @@ export type ClassSubjectUncheckedUpdateWithoutTimetableSlotsInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -770,6 +847,7 @@ export type ClassSubjectCreateWithoutAssignmentsInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -784,6 +862,7 @@ export type ClassSubjectUncheckedCreateWithoutAssignmentsInput = {
   classId: string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -808,6 +887,7 @@ export type ClassSubjectUpdateWithoutAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -822,6 +902,7 @@ export type ClassSubjectUncheckedUpdateWithoutAssignmentsInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -830,6 +911,7 @@ export type ClassSubjectCreateWithoutExamResultsInput = {
   id?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -844,6 +926,7 @@ export type ClassSubjectUncheckedCreateWithoutExamResultsInput = {
   classId: string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -868,6 +951,7 @@ export type ClassSubjectUpdateWithoutExamResultsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -882,6 +966,7 @@ export type ClassSubjectUncheckedUpdateWithoutExamResultsInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -892,12 +977,14 @@ export type ClassSubjectCreateManyTeacherInput = {
   updatedAt?: Date | string
   classId: string
   subjectId: string
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutTeacherInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -911,6 +998,7 @@ export type ClassSubjectUncheckedUpdateWithoutTeacherInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -922,6 +1010,7 @@ export type ClassSubjectUncheckedUpdateManyWithoutTeacherInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateManyClassInput = {
@@ -930,12 +1019,14 @@ export type ClassSubjectCreateManyClassInput = {
   updatedAt?: Date | string
   subjectId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutClassInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -949,6 +1040,7 @@ export type ClassSubjectUncheckedUpdateWithoutClassInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -960,6 +1052,7 @@ export type ClassSubjectUncheckedUpdateManyWithoutClassInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateManySubjectInput = {
@@ -968,12 +1061,14 @@ export type ClassSubjectCreateManySubjectInput = {
   updatedAt?: Date | string
   classId: string
   teacherId?: string | null
+  hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutSubjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -987,6 +1082,7 @@ export type ClassSubjectUncheckedUpdateWithoutSubjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -998,6 +1094,7 @@ export type ClassSubjectUncheckedUpdateManyWithoutSubjectInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 
@@ -1056,6 +1153,7 @@ export type ClassSubjectSelect<ExtArgs extends runtime.Types.Extensions.Internal
   classId?: boolean
   subjectId?: boolean
   teacherId?: boolean
+  hoursPerWeek?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1072,6 +1170,7 @@ export type ClassSubjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   subjectId?: boolean
   teacherId?: boolean
+  hoursPerWeek?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1084,6 +1183,7 @@ export type ClassSubjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   classId?: boolean
   subjectId?: boolean
   teacherId?: boolean
+  hoursPerWeek?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1096,9 +1196,10 @@ export type ClassSubjectSelectScalar = {
   classId?: boolean
   subjectId?: boolean
   teacherId?: boolean
+  hoursPerWeek?: boolean
 }
 
-export type ClassSubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "classId" | "subjectId" | "teacherId", ExtArgs["result"]["classSubject"]>
+export type ClassSubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "classId" | "subjectId" | "teacherId" | "hoursPerWeek", ExtArgs["result"]["classSubject"]>
 export type ClassSubjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
@@ -1136,6 +1237,7 @@ export type $ClassSubjectPayload<ExtArgs extends runtime.Types.Extensions.Intern
     classId: string
     subjectId: string
     teacherId: string | null
+    hoursPerWeek: runtime.Decimal
   }, ExtArgs["result"]["classSubject"]>
   composites: {}
 }
@@ -1571,6 +1673,7 @@ export interface ClassSubjectFieldRefs {
   readonly classId: Prisma.FieldRef<"ClassSubject", 'String'>
   readonly subjectId: Prisma.FieldRef<"ClassSubject", 'String'>
   readonly teacherId: Prisma.FieldRef<"ClassSubject", 'String'>
+  readonly hoursPerWeek: Prisma.FieldRef<"ClassSubject", 'Decimal'>
 }
     
 
