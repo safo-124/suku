@@ -678,12 +678,12 @@ type StudentWithProfile = {
 // Function to assign student IDs to existing students who don't have one
 export async function assignMissingStudentIds() {
   try {
-    const session = await getSession()
-    if (!session?.user?.schoolId) {
-      return { success: false, error: "Unauthorized" }
+    const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+    if (!auth.success || !auth.school) {
+      return { success: false, error: auth.error || "Unauthorized" }
     }
 
-    const schoolId = session.user.schoolId
+    const schoolId = auth.school.id
 
     // Find all student profiles without a student ID
     const studentsWithoutId = await prisma.studentProfile.findMany({
