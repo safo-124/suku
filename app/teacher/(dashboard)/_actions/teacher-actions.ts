@@ -590,7 +590,6 @@ export async function getSubjectGrades(classSubjectId: string, periodId?: string
       academicPeriods: academicPeriods.map(ap => ({
         id: ap.id,
         name: ap.name,
-        type: ap.type,
       })),
       selectedPeriodId,
       students: sortedStudents.map(s => {
