@@ -134,7 +134,7 @@ export function SubmissionDetailClient({
   
   // Calculate current total
   const currentTotal = questions.reduce((sum, q) => {
-    if (q.response?.teacherScore !== null) {
+    if (q.response && q.response.teacherScore !== null) {
       return sum + (q.response.teacherScore || 0)
     }
     if (essayScores[q.questionId]?.score !== undefined) {
@@ -535,7 +535,7 @@ export function SubmissionDetailClient({
                                   feedback: e.target.value,
                                 }
                               })}
-                              className="rounded-xl neu-inset border-0 min-h-[80px]"
+                              className="rounded-xl neu-inset border-0 min-h-20"
                             />
                           </div>
                         </div>
@@ -624,7 +624,7 @@ export function SubmissionDetailClient({
                   placeholder="Add a note explaining the correction..."
                   value={correctionFeedback}
                   onChange={(e) => setCorrectionFeedback(e.target.value)}
-                  className="rounded-xl min-h-[80px]"
+                  className="rounded-xl min-h-20"
                 />
               </div>
             </div>
