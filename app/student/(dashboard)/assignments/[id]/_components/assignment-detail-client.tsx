@@ -71,7 +71,7 @@ interface Assignment {
 
 interface Submission {
   id: string
-  submittedAt: Date
+  submittedAt: Date | null
   isLate: boolean
   isGraded: boolean
   totalScore: number | null
@@ -332,7 +332,7 @@ export function AssignmentDetailClient({
                   }
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Submitted {format(new Date(submission!.submittedAt), "MMMM d, yyyy 'at' h:mm a")}
+                  Submitted {submission?.submittedAt && format(new Date(submission.submittedAt as unknown as string), "MMMM d, yyyy 'at' h:mm a")}
                   {submission?.isLate && " (Late submission)"}
                 </p>
               </div>
@@ -453,7 +453,7 @@ export function AssignmentDetailClient({
                             onChange={(e) => setAnswers({ ...answers, [q.questionId]: e.target.value })}
                             className={cn(
                               "rounded-xl neu-inset border-0",
-                              q.type === "ESSAY" ? "min-h-[150px]" : "min-h-[80px]"
+                              q.type === "ESSAY" ? "min-h-[150px]" : "min-h-20"
                             )}
                           />
                         )}
