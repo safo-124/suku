@@ -93,12 +93,15 @@ export async function getStudentAssignments() {
     const submissionMap = new Map(submissions.map(s => [s.assignmentId, s]))
     
     // Get question counts
-    const questionCounts = await prisma.assignmentQuestion.groupBy({
+    const questionCountsRaw = await prisma.assignmentQuestion.groupBy({
       by: ["assignmentId"],
       where: { assignmentId: { in: assignments.map(a => a.id) } },
       _count: { id: true },
     })
-    const questionCountMap = new Map(questionCounts.map(qc => [qc.assignmentId, qc._count.id]))
+    const questionCounts = questionCountsRaw as unknown as { assignmentId: string; _count: { id: number } }[]
+    const questionCountMap = new Map(
+      questionCounts.map(qc => [qc.assignmentId, qc._count.id])
+    )
     
     return {
       success: true,
