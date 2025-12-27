@@ -384,45 +384,46 @@ export async function getTimetableData() {
   }
 
   try {
-    const [periods, classes, teachers, subjects] = await Promise.all([
-      prisma.period.findMany({
-        where: { schoolId: auth.school.id },
-        orderBy: { order: "asc" },
-      }),
-      prisma.class.findMany({
-        where: { 
-          schoolId: auth.school.id,
-        },
-        include: {
-          classSubjects: {
-            include: {
-              subject: true,
-              teacher: {
-                select: { id: true, firstName: true, lastName: true },
-              },
+    const periods = await prisma.period.findMany({
+      where: { schoolId: auth.school.id },
+      orderBy: { order: "asc" },
+    })
+
+    const classes = await prisma.class.findMany({
+      where: { 
+        schoolId: auth.school.id,
+      },
+      include: {
+        classSubjects: {
+          include: {
+            subject: true,
+            teacher: {
+              select: { id: true, firstName: true, lastName: true },
             },
           },
         },
-        orderBy: [{ gradeLevel: "asc" }, { name: "asc" }],
-      }),
-      prisma.user.findMany({
-        where: {
-          schoolId: auth.school.id,
-          role: UserRole.TEACHER,
-          isActive: true,
-        },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-        },
-        orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
-      }),
-      prisma.subject.findMany({
-        where: { schoolId: auth.school.id },
-        orderBy: { name: "asc" },
-      }),
-    ])
+      },
+      orderBy: [{ gradeLevel: "asc" }, { name: "asc" }],
+    })
+
+    const teachers = await prisma.user.findMany({
+      where: {
+        schoolId: auth.school.id,
+        role: UserRole.TEACHER,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+      },
+      orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    })
+
+    const subjects = await prisma.subject.findMany({
+      where: { schoolId: auth.school.id },
+      orderBy: { name: "asc" },
+    })
 
     // Serialize Decimal fields in classSubjects for client components
     const serializedClasses = classes.map(cls => ({
