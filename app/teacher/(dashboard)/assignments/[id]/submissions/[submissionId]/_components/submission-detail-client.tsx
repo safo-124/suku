@@ -326,7 +326,7 @@ export function SubmissionDetailClient({
             </div>
             <div>
               <p className="text-sm font-medium">
-                {format(new Date(submission.submittedAt), "MMM d, h:mm a")}
+                {submission.submittedAt && format(new Date(submission.submittedAt as unknown as string), "MMM d, h:mm a")}
               </p>
               <p className="text-xs text-muted-foreground">
                 Submitted {submission.isLate && "(Late)"}
