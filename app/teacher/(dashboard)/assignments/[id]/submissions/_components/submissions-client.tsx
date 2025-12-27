@@ -35,13 +35,13 @@ interface Student {
   id: string
   firstName: string
   lastName: string
-  studentId: string
+  studentId: string | null
   hasSubmitted: boolean
-  submittedAt: Date | null
+  submittedAt?: Date | null
   isLate: boolean
   isGraded: boolean
   totalScore: number | null
-  submissionId: string | null
+  submissionId?: string | null
 }
 
 interface Assignment {

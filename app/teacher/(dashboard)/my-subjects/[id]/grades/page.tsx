@@ -72,7 +72,6 @@ interface Student {
 interface AcademicPeriod {
   id: string
   name: string
-  type: string
 }
 
 interface ClassSubjectInfo {
