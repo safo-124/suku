@@ -866,17 +866,17 @@ type TeacherWithProfile = {
 // Function to assign employee IDs to existing teachers who don't have one
 export async function assignMissingEmployeeIds() {
   try {
-    const session = await getSession()
-    if (!session?.user?.schoolId) {
-      return { success: false, error: "Unauthorized" }
+    const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+    if (!auth.success || !auth.school) {
+      return { success: false, error: auth.error || "Unauthorized" }
     }
 
-    const schoolId = session.user.schoolId
+    const schoolId = auth.school.id
 
     // Find all teacher profiles without an employee ID
     const teachersWithoutId = await prisma.teacherProfile.findMany({
       where: {
-        schoolId: schoolId,
+        user: { schoolId: schoolId },
         employeeId: null
       },
       select: { id: true }
