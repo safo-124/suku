@@ -688,7 +688,7 @@ export async function assignMissingStudentIds() {
     // Find all student profiles without a student ID
     const studentsWithoutId = await prisma.studentProfile.findMany({
       where: {
-        schoolId: schoolId,
+        user: { schoolId: schoolId },
         studentId: null
       },
       select: { id: true }
