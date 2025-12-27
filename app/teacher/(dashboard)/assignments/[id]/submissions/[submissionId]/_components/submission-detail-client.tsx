@@ -67,7 +67,7 @@ interface Question {
 
 interface Submission {
   id: string
-  submittedAt: Date
+  submittedAt: Date | null
   isLate: boolean
   isGraded: boolean
   totalScore: number
