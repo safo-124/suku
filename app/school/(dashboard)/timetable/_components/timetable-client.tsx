@@ -362,7 +362,8 @@ export function TimetableClient() {
           isValid: result.isValid ?? false,
           message: result.message ?? "",
           totalAvailableSlots: result.totalAvailableSlots,
-          totalAllocatedPeriods: result.totalAllocatedPeriods,
+          totalAllocatedHours: result.totalAllocatedHours,
+          totalPeriodsNeeded: result.totalPeriodsNeeded,
         })
       }
     } catch (error) {
