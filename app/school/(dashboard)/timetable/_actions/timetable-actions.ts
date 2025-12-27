@@ -389,7 +389,7 @@ export async function getTimetableData() {
       orderBy: { order: "asc" },
     })
 
-    const classes = await prisma.class.findMany({
+    const classesWithSubjects = await prisma.class.findMany({
       where: { 
         schoolId: auth.school.id,
       },
@@ -426,7 +426,7 @@ export async function getTimetableData() {
     })
 
     // Serialize Decimal fields in classSubjects for client components
-    const serializedClasses = classes.map(cls => ({
+    const classes = classesWithSubjects.map(cls => ({
       ...cls,
       classSubjects: cls.classSubjects.map(cs => ({
         ...cs,
@@ -437,7 +437,7 @@ export async function getTimetableData() {
     return { 
       success: true, 
       periods, 
-      classes: serializedClasses, 
+      classes, 
       teachers,
       subjects,
     }
