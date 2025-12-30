@@ -456,6 +456,12 @@ model AcademicPeriod {
   startDate DateTime
   endDate   DateTime
 
+  // Attendance configuration
+  totalSchoolDays    Int      @default(0)  // Calculated or manually set school days for this period
+  excludeWeekends    Boolean  @default(true)  // Whether to exclude weekends from calculation
+  excludeSaturday    Boolean  @default(true)  // Exclude Saturdays
+  excludeSunday      Boolean  @default(true)  // Exclude Sundays
+
   // Relations
   assignments Assignment[]
   examResults ExamResult[]

@@ -13,11 +13,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Save,
+  BarChart3,
+  Users,
+  Percent,
+  TrendingUp,
 } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { markClassAttendance } from "../../../_actions/teacher-actions"
 
@@ -42,20 +48,60 @@ interface Student {
   remarks: string | null
 }
 
+interface StudentSummary {
+  id: string
+  userId: string
+  studentId: string | null
+  firstName: string
+  lastName: string
+  avatar: string | null
+  stats: {
+    present: number
+    absent: number
+    late: number
+    excused: number
+  }
+  totalMarked: number
+  totalSchoolDays: number
+  attendancePercent: number
+}
+
+interface AttendanceSummary {
+  periods: { id: string; name: string }[]
+  period: {
+    id: string
+    name: string
+    totalSchoolDays: number
+    startDate: Date
+    endDate: Date
+  }
+  students: StudentSummary[]
+  classStats: {
+    present: number
+    absent: number
+    late: number
+    excused: number
+  }
+  classAttendanceRate: number
+}
+
 export function AttendanceClient({ 
   className, 
   classId,
   date,
-  students 
+  students,
+  summary
 }: { 
   className: string
   classId: string
   date: string
-  students: Student[] 
+  students: Student[]
+  summary: AttendanceSummary | null
 }) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const subdomain = searchParams.get("subdomain")
+  const [activeTab, setActiveTab] = useState("daily")
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
@@ -147,6 +193,18 @@ export function AttendanceClient({
 
   const isToday = date === new Date().toISOString().split("T")[0]
 
+  const handlePeriodChange = (periodId: string) => {
+    const baseUrl = `/teacher/my-class/attendance?periodId=${periodId}`
+    const newUrl = subdomain ? `${baseUrl}&subdomain=${subdomain}` : baseUrl
+    router.push(newUrl)
+  }
+
+  const getAttendanceColor = (percent: number) => {
+    if (percent >= 90) return "text-green-600"
+    if (percent >= 75) return "text-yellow-600"
+    return "text-red-600"
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -157,11 +215,30 @@ export function AttendanceClient({
             {className}
           </p>
         </div>
-        <Button
-          onClick={handleSave}
-          disabled={isPending}
-          className="rounded-xl neu-convex"
-        >
+      </div>
+
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="neu-flat p-1 rounded-xl">
+          <TabsTrigger value="daily" className="rounded-lg gap-2">
+            <Calendar className="h-4 w-4" />
+            Daily Marking
+          </TabsTrigger>
+          <TabsTrigger value="summary" className="rounded-lg gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Term Summary
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Daily Marking Tab */}
+        <TabsContent value="daily" className="mt-6 space-y-6">
+          {/* Save Button */}
+          <div className="flex justify-end">
+            <Button
+              onClick={handleSave}
+              disabled={isPending}
+              className="rounded-xl bg-green-600 hover:bg-green-700 text-white"
+            >
           {isPending ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -384,6 +461,175 @@ export function AttendanceClient({
           )
         }))}
       </div>
+        </TabsContent>
+
+        {/* Term Summary Tab */}
+        <TabsContent value="summary" className="mt-6 space-y-6">
+          {summary ? (
+            <>
+              {/* Period Selector */}
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <Select 
+                    value={summary.period.id} 
+                    onValueChange={handlePeriodChange}
+                  >
+                    <SelectTrigger className="w-[200px] neu-inset rounded-xl">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {summary.periods.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="text-sm text-muted-foreground">
+                    {new Date(summary.period.startDate).toLocaleDateString()} - {new Date(summary.period.endDate).toLocaleDateString()}
+                  </div>
+                </div>
+                <Badge variant="outline">
+                  {summary.period.totalSchoolDays} school days
+                </Badge>
+              </div>
+
+              {/* Class Stats */}
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="neu-flat rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg">
+                      <Percent className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className={cn("text-2xl font-bold", getAttendanceColor(summary.classAttendanceRate))}>
+                        {summary.classAttendanceRate}%
+                      </p>
+                      <p className="text-xs text-muted-foreground">Class Rate</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="neu-flat rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-green-600">{summary.classStats.present}</p>
+                      <p className="text-xs text-muted-foreground">Present</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="neu-flat rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+                      <XCircle className="h-5 w-5 text-red-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-red-600">{summary.classStats.absent}</p>
+                      <p className="text-xs text-muted-foreground">Absent</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="neu-flat rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+                      <Clock className="h-5 w-5 text-yellow-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-yellow-600">{summary.classStats.late}</p>
+                      <p className="text-xs text-muted-foreground">Late</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="neu-flat rounded-xl p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-blue-600">{summary.classStats.excused}</p>
+                      <p className="text-xs text-muted-foreground">Excused</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Student List with Stats */}
+              <div className="neu-flat rounded-2xl overflow-hidden">
+                <div className="p-4 border-b flex items-center justify-between">
+                  <h3 className="font-semibold flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Student Attendance Summary
+                  </h3>
+                  <Badge variant="secondary">{summary.students.length} students</Badge>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-accent/50">
+                      <tr>
+                        <th className="text-left p-4 font-medium">Student</th>
+                        <th className="text-center p-4 font-medium text-green-600">Present</th>
+                        <th className="text-center p-4 font-medium text-red-600">Absent</th>
+                        <th className="text-center p-4 font-medium text-yellow-600">Late</th>
+                        <th className="text-center p-4 font-medium text-blue-600">Excused</th>
+                        <th className="text-center p-4 font-medium">Marked</th>
+                        <th className="text-right p-4 font-medium">Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {summary.students.map((student) => (
+                        <tr key={student.id} className="hover:bg-accent/30">
+                          <td className="p-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage src={student.avatar || ""} />
+                                <AvatarFallback className="bg-foreground text-background text-xs">
+                                  {student.firstName.charAt(0)}{student.lastName.charAt(0)}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <p className="font-medium">{student.firstName} {student.lastName}</p>
+                                {student.studentId && (
+                                  <p className="text-xs text-muted-foreground">{student.studentId}</p>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="p-4 text-center font-medium text-green-600">{student.stats.present}</td>
+                          <td className="p-4 text-center font-medium text-red-600">{student.stats.absent}</td>
+                          <td className="p-4 text-center font-medium text-yellow-600">{student.stats.late}</td>
+                          <td className="p-4 text-center font-medium text-blue-600">{student.stats.excused}</td>
+                          <td className="p-4 text-center text-muted-foreground">
+                            {student.totalMarked}/{student.totalSchoolDays}
+                          </td>
+                          <td className="p-4 text-right">
+                            <Badge className={cn(
+                              student.attendancePercent >= 90
+                                ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                                : student.attendancePercent >= 75
+                                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                            )}>
+                              {student.attendancePercent}%
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          ) : (
+            <div className="neu-flat rounded-2xl p-12 text-center">
+              <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <h3 className="font-semibold mb-2">No Summary Available</h3>
+              <p className="text-muted-foreground">
+                The attendance summary will be available once the school admin configures the academic periods.
+              </p>
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

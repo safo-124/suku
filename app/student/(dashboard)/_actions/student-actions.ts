@@ -435,6 +435,148 @@ export async function getStudentAttendance(month?: number, year?: number) {
   }
 }
 
+// Get student attendance summary for the term/period
+export async function getStudentAttendanceSummary(periodId?: string) {
+  const auth = await verifyStudentAccess()
+  
+  if (!auth.success || !auth.session) {
+    return { success: false, error: auth.error }
+  }
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: auth.session.user.id },
+      include: {
+        studentProfile: true,
+      },
+    })
+    
+    if (!user || !user.studentProfile || !user.studentProfile.classId) {
+      return { success: false, error: "Student profile not found" }
+    }
+
+    // Get class info
+    const classData = await prisma.class.findUnique({
+      where: { id: user.studentProfile.classId },
+    })
+
+    if (!classData) {
+      return { success: false, error: "Class not found" }
+    }
+
+    // Get academic year
+    const academicYear = await prisma.academicYear.findFirst({
+      where: { id: classData.academicYearId },
+    })
+
+    if (!academicYear) {
+      return { success: false, error: "Academic year not found" }
+    }
+
+    // Get the period
+    let period: { 
+      id: string; 
+      name: string; 
+      startDate: Date; 
+      endDate: Date; 
+      totalSchoolDays: number 
+    } | null = null
+    
+    if (periodId) {
+      period = await prisma.academicPeriod.findFirst({
+        where: { id: periodId, academicYearId: academicYear.id },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      })
+    } else {
+      // Get current or latest period
+      period = await prisma.academicPeriod.findFirst({
+        where: {
+          academicYearId: academicYear.id,
+          startDate: { lte: new Date() },
+          endDate: { gte: new Date() },
+        },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      }) || await prisma.academicPeriod.findFirst({
+        where: { academicYearId: academicYear.id },
+        orderBy: { order: "desc" },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      })
+    }
+
+    if (!period) {
+      return { success: false, error: "No academic period found" }
+    }
+
+    // Get all periods for selector
+    const periods = await prisma.academicPeriod.findMany({
+      where: { academicYearId: academicYear.id },
+      orderBy: { order: "asc" },
+      select: { id: true, name: true },
+    })
+
+    // Get attendance records for the period
+    const attendanceRecords = await prisma.attendance.findMany({
+      where: {
+        studentId: user.studentProfile.id,
+        classId: user.studentProfile.classId,
+        date: {
+          gte: period.startDate,
+          lte: period.endDate,
+        },
+      },
+      orderBy: { date: "desc" },
+    })
+
+    // Calculate stats
+    const stats = {
+      present: 0,
+      absent: 0,
+      late: 0,
+      excused: 0,
+    }
+
+    for (const record of attendanceRecords) {
+      switch (record.status) {
+        case "PRESENT": stats.present++; break
+        case "ABSENT": stats.absent++; break
+        case "LATE": stats.late++; break
+        case "EXCUSED": stats.excused++; break
+      }
+    }
+
+    const totalMarked = stats.present + stats.absent + stats.late + stats.excused
+    const presentCount = stats.present + stats.late
+    const attendancePercent = totalMarked > 0 
+      ? Math.round((presentCount / totalMarked) * 100)
+      : 0
+
+    return {
+      success: true,
+      className: classData.name,
+      periods,
+      period: {
+        id: period.id,
+        name: period.name,
+        totalSchoolDays: period.totalSchoolDays,
+        startDate: period.startDate,
+        endDate: period.endDate,
+      },
+      stats,
+      totalMarked,
+      attendancePercent,
+      recentRecords: attendanceRecords.slice(0, 10).map(r => ({
+        id: r.id,
+        date: r.date,
+        status: r.status,
+        notes: r.notes,
+      })),
+    }
+  } catch (error) {
+    console.error("Error fetching attendance summary:", error)
+    return { success: false, error: "Failed to fetch attendance summary" }
+  }
+}
+
 // Get student grades/results
 export async function getStudentGrades(periodId?: string) {
   const auth = await verifyStudentAccess()

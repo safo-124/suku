@@ -87,11 +87,12 @@ export async function SchoolsTable() {
             Get started by creating your first school. Each school gets its own
             subdomain and can be managed independently.
           </p>
-          <Link href="/super-admin/schools/new">
-            <button className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-foreground text-background font-medium hover:opacity-90 transition-opacity">
-              <Building2 className="h-4 w-4" />
-              Create First School
-            </button>
+          <Link 
+            href="/super-admin/schools/new"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-foreground text-background font-medium hover:opacity-90 transition-opacity"
+          >
+            <Building2 className="h-4 w-4" />
+            Create First School
           </Link>
         </div>
       </div>

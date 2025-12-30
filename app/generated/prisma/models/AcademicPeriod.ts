@@ -28,10 +28,12 @@ export type AggregateAcademicPeriod = {
 
 export type AcademicPeriodAvgAggregateOutputType = {
   order: number | null
+  totalSchoolDays: number | null
 }
 
 export type AcademicPeriodSumAggregateOutputType = {
   order: number | null
+  totalSchoolDays: number | null
 }
 
 export type AcademicPeriodMinAggregateOutputType = {
@@ -43,6 +45,10 @@ export type AcademicPeriodMinAggregateOutputType = {
   order: number | null
   startDate: Date | null
   endDate: Date | null
+  totalSchoolDays: number | null
+  excludeWeekends: boolean | null
+  excludeSaturday: boolean | null
+  excludeSunday: boolean | null
 }
 
 export type AcademicPeriodMaxAggregateOutputType = {
@@ -54,6 +60,10 @@ export type AcademicPeriodMaxAggregateOutputType = {
   order: number | null
   startDate: Date | null
   endDate: Date | null
+  totalSchoolDays: number | null
+  excludeWeekends: boolean | null
+  excludeSaturday: boolean | null
+  excludeSunday: boolean | null
 }
 
 export type AcademicPeriodCountAggregateOutputType = {
@@ -65,16 +75,22 @@ export type AcademicPeriodCountAggregateOutputType = {
   order: number
   startDate: number
   endDate: number
+  totalSchoolDays: number
+  excludeWeekends: number
+  excludeSaturday: number
+  excludeSunday: number
   _all: number
 }
 
 
 export type AcademicPeriodAvgAggregateInputType = {
   order?: true
+  totalSchoolDays?: true
 }
 
 export type AcademicPeriodSumAggregateInputType = {
   order?: true
+  totalSchoolDays?: true
 }
 
 export type AcademicPeriodMinAggregateInputType = {
@@ -86,6 +102,10 @@ export type AcademicPeriodMinAggregateInputType = {
   order?: true
   startDate?: true
   endDate?: true
+  totalSchoolDays?: true
+  excludeWeekends?: true
+  excludeSaturday?: true
+  excludeSunday?: true
 }
 
 export type AcademicPeriodMaxAggregateInputType = {
@@ -97,6 +117,10 @@ export type AcademicPeriodMaxAggregateInputType = {
   order?: true
   startDate?: true
   endDate?: true
+  totalSchoolDays?: true
+  excludeWeekends?: true
+  excludeSaturday?: true
+  excludeSunday?: true
 }
 
 export type AcademicPeriodCountAggregateInputType = {
@@ -108,6 +132,10 @@ export type AcademicPeriodCountAggregateInputType = {
   order?: true
   startDate?: true
   endDate?: true
+  totalSchoolDays?: true
+  excludeWeekends?: true
+  excludeSaturday?: true
+  excludeSunday?: true
   _all?: true
 }
 
@@ -206,6 +234,10 @@ export type AcademicPeriodGroupByOutputType = {
   order: number
   startDate: Date
   endDate: Date
+  totalSchoolDays: number
+  excludeWeekends: boolean
+  excludeSaturday: boolean
+  excludeSunday: boolean
   _count: AcademicPeriodCountAggregateOutputType | null
   _avg: AcademicPeriodAvgAggregateOutputType | null
   _sum: AcademicPeriodSumAggregateOutputType | null
@@ -240,6 +272,10 @@ export type AcademicPeriodWhereInput = {
   order?: Prisma.IntFilter<"AcademicPeriod"> | number
   startDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
   endDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
+  totalSchoolDays?: Prisma.IntFilter<"AcademicPeriod"> | number
+  excludeWeekends?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSaturday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSunday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   assignments?: Prisma.AssignmentListRelationFilter
   examResults?: Prisma.ExamResultListRelationFilter
@@ -255,6 +291,10 @@ export type AcademicPeriodOrderByWithRelationInput = {
   order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
+  excludeWeekends?: Prisma.SortOrder
+  excludeSaturday?: Prisma.SortOrder
+  excludeSunday?: Prisma.SortOrder
   academicYear?: Prisma.AcademicYearOrderByWithRelationInput
   assignments?: Prisma.AssignmentOrderByRelationAggregateInput
   examResults?: Prisma.ExamResultOrderByRelationAggregateInput
@@ -273,6 +313,10 @@ export type AcademicPeriodWhereUniqueInput = Prisma.AtLeast<{
   order?: Prisma.IntFilter<"AcademicPeriod"> | number
   startDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
   endDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
+  totalSchoolDays?: Prisma.IntFilter<"AcademicPeriod"> | number
+  excludeWeekends?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSaturday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSunday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
   academicYear?: Prisma.XOR<Prisma.AcademicYearScalarRelationFilter, Prisma.AcademicYearWhereInput>
   assignments?: Prisma.AssignmentListRelationFilter
   examResults?: Prisma.ExamResultListRelationFilter
@@ -288,6 +332,10 @@ export type AcademicPeriodOrderByWithAggregationInput = {
   order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
+  excludeWeekends?: Prisma.SortOrder
+  excludeSaturday?: Prisma.SortOrder
+  excludeSunday?: Prisma.SortOrder
   _count?: Prisma.AcademicPeriodCountOrderByAggregateInput
   _avg?: Prisma.AcademicPeriodAvgOrderByAggregateInput
   _max?: Prisma.AcademicPeriodMaxOrderByAggregateInput
@@ -307,6 +355,10 @@ export type AcademicPeriodScalarWhereWithAggregatesInput = {
   order?: Prisma.IntWithAggregatesFilter<"AcademicPeriod"> | number
   startDate?: Prisma.DateTimeWithAggregatesFilter<"AcademicPeriod"> | Date | string
   endDate?: Prisma.DateTimeWithAggregatesFilter<"AcademicPeriod"> | Date | string
+  totalSchoolDays?: Prisma.IntWithAggregatesFilter<"AcademicPeriod"> | number
+  excludeWeekends?: Prisma.BoolWithAggregatesFilter<"AcademicPeriod"> | boolean
+  excludeSaturday?: Prisma.BoolWithAggregatesFilter<"AcademicPeriod"> | boolean
+  excludeSunday?: Prisma.BoolWithAggregatesFilter<"AcademicPeriod"> | boolean
 }
 
 export type AcademicPeriodCreateInput = {
@@ -317,6 +369,10 @@ export type AcademicPeriodCreateInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutPeriodsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultCreateNestedManyWithoutAcademicPeriodInput
@@ -332,6 +388,10 @@ export type AcademicPeriodUncheckedCreateInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardUncheckedCreateNestedManyWithoutAcademicPeriodInput
@@ -345,6 +405,10 @@ export type AcademicPeriodUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutPeriodsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUpdateManyWithoutAcademicPeriodNestedInput
@@ -360,6 +424,10 @@ export type AcademicPeriodUncheckedUpdateInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUncheckedUpdateManyWithoutAcademicPeriodNestedInput
@@ -374,6 +442,10 @@ export type AcademicPeriodCreateManyInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
 }
 
 export type AcademicPeriodUpdateManyMutationInput = {
@@ -384,6 +456,10 @@ export type AcademicPeriodUpdateManyMutationInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type AcademicPeriodUncheckedUpdateManyInput = {
@@ -395,6 +471,10 @@ export type AcademicPeriodUncheckedUpdateManyInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type AcademicPeriodListRelationFilter = {
@@ -416,10 +496,15 @@ export type AcademicPeriodCountOrderByAggregateInput = {
   order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
+  excludeWeekends?: Prisma.SortOrder
+  excludeSaturday?: Prisma.SortOrder
+  excludeSunday?: Prisma.SortOrder
 }
 
 export type AcademicPeriodAvgOrderByAggregateInput = {
   order?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
 }
 
 export type AcademicPeriodMaxOrderByAggregateInput = {
@@ -431,6 +516,10 @@ export type AcademicPeriodMaxOrderByAggregateInput = {
   order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
+  excludeWeekends?: Prisma.SortOrder
+  excludeSaturday?: Prisma.SortOrder
+  excludeSunday?: Prisma.SortOrder
 }
 
 export type AcademicPeriodMinOrderByAggregateInput = {
@@ -442,10 +531,15 @@ export type AcademicPeriodMinOrderByAggregateInput = {
   order?: Prisma.SortOrder
   startDate?: Prisma.SortOrder
   endDate?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
+  excludeWeekends?: Prisma.SortOrder
+  excludeSaturday?: Prisma.SortOrder
+  excludeSunday?: Prisma.SortOrder
 }
 
 export type AcademicPeriodSumOrderByAggregateInput = {
   order?: Prisma.SortOrder
+  totalSchoolDays?: Prisma.SortOrder
 }
 
 export type AcademicPeriodScalarRelationFilter = {
@@ -545,6 +639,10 @@ export type AcademicPeriodCreateWithoutAcademicYearInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   assignments?: Prisma.AssignmentCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardCreateNestedManyWithoutAcademicPeriodInput
@@ -558,6 +656,10 @@ export type AcademicPeriodUncheckedCreateWithoutAcademicYearInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardUncheckedCreateNestedManyWithoutAcademicPeriodInput
@@ -601,6 +703,10 @@ export type AcademicPeriodScalarWhereInput = {
   order?: Prisma.IntFilter<"AcademicPeriod"> | number
   startDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
   endDate?: Prisma.DateTimeFilter<"AcademicPeriod"> | Date | string
+  totalSchoolDays?: Prisma.IntFilter<"AcademicPeriod"> | number
+  excludeWeekends?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSaturday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
+  excludeSunday?: Prisma.BoolFilter<"AcademicPeriod"> | boolean
 }
 
 export type AcademicPeriodCreateWithoutAssignmentsInput = {
@@ -611,6 +717,10 @@ export type AcademicPeriodCreateWithoutAssignmentsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutPeriodsInput
   examResults?: Prisma.ExamResultCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardCreateNestedManyWithoutAcademicPeriodInput
@@ -625,6 +735,10 @@ export type AcademicPeriodUncheckedCreateWithoutAssignmentsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardUncheckedCreateNestedManyWithoutAcademicPeriodInput
 }
@@ -653,6 +767,10 @@ export type AcademicPeriodUpdateWithoutAssignmentsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutPeriodsNestedInput
   examResults?: Prisma.ExamResultUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUpdateManyWithoutAcademicPeriodNestedInput
@@ -667,6 +785,10 @@ export type AcademicPeriodUncheckedUpdateWithoutAssignmentsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUncheckedUpdateManyWithoutAcademicPeriodNestedInput
 }
@@ -679,6 +801,10 @@ export type AcademicPeriodCreateWithoutExamResultsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutPeriodsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardCreateNestedManyWithoutAcademicPeriodInput
@@ -693,6 +819,10 @@ export type AcademicPeriodUncheckedCreateWithoutExamResultsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutAcademicPeriodInput
   reportCards?: Prisma.ReportCardUncheckedCreateNestedManyWithoutAcademicPeriodInput
 }
@@ -721,6 +851,10 @@ export type AcademicPeriodUpdateWithoutExamResultsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutPeriodsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUpdateManyWithoutAcademicPeriodNestedInput
@@ -735,6 +869,10 @@ export type AcademicPeriodUncheckedUpdateWithoutExamResultsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUncheckedUpdateManyWithoutAcademicPeriodNestedInput
 }
@@ -747,6 +885,10 @@ export type AcademicPeriodCreateWithoutReportCardsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear: Prisma.AcademicYearCreateNestedOneWithoutPeriodsInput
   assignments?: Prisma.AssignmentCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultCreateNestedManyWithoutAcademicPeriodInput
@@ -761,6 +903,10 @@ export type AcademicPeriodUncheckedCreateWithoutReportCardsInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutAcademicPeriodInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutAcademicPeriodInput
 }
@@ -789,6 +935,10 @@ export type AcademicPeriodUpdateWithoutReportCardsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   academicYear?: Prisma.AcademicYearUpdateOneRequiredWithoutPeriodsNestedInput
   assignments?: Prisma.AssignmentUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUpdateManyWithoutAcademicPeriodNestedInput
@@ -803,6 +953,10 @@ export type AcademicPeriodUncheckedUpdateWithoutReportCardsInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutAcademicPeriodNestedInput
 }
@@ -815,6 +969,10 @@ export type AcademicPeriodCreateManyAcademicYearInput = {
   order: number
   startDate: Date | string
   endDate: Date | string
+  totalSchoolDays?: number
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
 }
 
 export type AcademicPeriodUpdateWithoutAcademicYearInput = {
@@ -825,6 +983,10 @@ export type AcademicPeriodUpdateWithoutAcademicYearInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignments?: Prisma.AssignmentUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUpdateManyWithoutAcademicPeriodNestedInput
@@ -838,6 +1000,10 @@ export type AcademicPeriodUncheckedUpdateWithoutAcademicYearInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutAcademicPeriodNestedInput
   reportCards?: Prisma.ReportCardUncheckedUpdateManyWithoutAcademicPeriodNestedInput
@@ -851,6 +1017,10 @@ export type AcademicPeriodUncheckedUpdateManyWithoutAcademicYearInput = {
   order?: Prisma.IntFieldUpdateOperationsInput | number
   startDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  totalSchoolDays?: Prisma.IntFieldUpdateOperationsInput | number
+  excludeWeekends?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSaturday?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  excludeSunday?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -911,6 +1081,10 @@ export type AcademicPeriodSelect<ExtArgs extends runtime.Types.Extensions.Intern
   order?: boolean
   startDate?: boolean
   endDate?: boolean
+  totalSchoolDays?: boolean
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.AcademicPeriod$assignmentsArgs<ExtArgs>
   examResults?: boolean | Prisma.AcademicPeriod$examResultsArgs<ExtArgs>
@@ -927,6 +1101,10 @@ export type AcademicPeriodSelectCreateManyAndReturn<ExtArgs extends runtime.Type
   order?: boolean
   startDate?: boolean
   endDate?: boolean
+  totalSchoolDays?: boolean
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["academicPeriod"]>
 
@@ -939,6 +1117,10 @@ export type AcademicPeriodSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
   order?: boolean
   startDate?: boolean
   endDate?: boolean
+  totalSchoolDays?: boolean
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["academicPeriod"]>
 
@@ -951,9 +1133,13 @@ export type AcademicPeriodSelectScalar = {
   order?: boolean
   startDate?: boolean
   endDate?: boolean
+  totalSchoolDays?: boolean
+  excludeWeekends?: boolean
+  excludeSaturday?: boolean
+  excludeSunday?: boolean
 }
 
-export type AcademicPeriodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "academicYearId" | "name" | "order" | "startDate" | "endDate", ExtArgs["result"]["academicPeriod"]>
+export type AcademicPeriodOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "academicYearId" | "name" | "order" | "startDate" | "endDate" | "totalSchoolDays" | "excludeWeekends" | "excludeSaturday" | "excludeSunday", ExtArgs["result"]["academicPeriod"]>
 export type AcademicPeriodInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   academicYear?: boolean | Prisma.AcademicYearDefaultArgs<ExtArgs>
   assignments?: boolean | Prisma.AcademicPeriod$assignmentsArgs<ExtArgs>
@@ -985,6 +1171,10 @@ export type $AcademicPeriodPayload<ExtArgs extends runtime.Types.Extensions.Inte
     order: number
     startDate: Date
     endDate: Date
+    totalSchoolDays: number
+    excludeWeekends: boolean
+    excludeSaturday: boolean
+    excludeSunday: boolean
   }, ExtArgs["result"]["academicPeriod"]>
   composites: {}
 }
@@ -1420,6 +1610,10 @@ export interface AcademicPeriodFieldRefs {
   readonly order: Prisma.FieldRef<"AcademicPeriod", 'Int'>
   readonly startDate: Prisma.FieldRef<"AcademicPeriod", 'DateTime'>
   readonly endDate: Prisma.FieldRef<"AcademicPeriod", 'DateTime'>
+  readonly totalSchoolDays: Prisma.FieldRef<"AcademicPeriod", 'Int'>
+  readonly excludeWeekends: Prisma.FieldRef<"AcademicPeriod", 'Boolean'>
+  readonly excludeSaturday: Prisma.FieldRef<"AcademicPeriod", 'Boolean'>
+  readonly excludeSunday: Prisma.FieldRef<"AcademicPeriod", 'Boolean'>
 }
     
 

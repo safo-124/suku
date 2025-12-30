@@ -1820,3 +1820,180 @@ export async function writeClassTeacherRemarks(
     return { success: false, error: "Failed to save remarks" }
   }
 }
+
+// Get attendance summary for my class (for term/semester overview)
+export async function getMyClassAttendanceSummary(periodId?: string) {
+  const auth = await verifyTeacherAccess()
+  
+  if (!auth.success || !auth.session) {
+    return { success: false, error: auth.error }
+  }
+  
+  try {
+    const myClass = await prisma.class.findFirst({
+      where: {
+        classTeacherId: auth.session.user.id,
+      },
+    })
+    
+    if (!myClass) {
+      return { success: false, error: "You are not assigned as a class teacher" }
+    }
+
+    // Get academic year
+    const academicYear = await prisma.academicYear.findFirst({
+      where: { id: myClass.academicYearId },
+    })
+
+    if (!academicYear) {
+      return { success: false, error: "Academic year not found" }
+    }
+
+    // Get the period
+    let period: { 
+      id: string; 
+      name: string; 
+      startDate: Date; 
+      endDate: Date; 
+      totalSchoolDays: number 
+    } | null = null
+    
+    if (periodId) {
+      period = await prisma.academicPeriod.findFirst({
+        where: { id: periodId, academicYearId: academicYear.id },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      })
+    } else {
+      // Get current or latest period
+      period = await prisma.academicPeriod.findFirst({
+        where: {
+          academicYearId: academicYear.id,
+          startDate: { lte: new Date() },
+          endDate: { gte: new Date() },
+        },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      }) || await prisma.academicPeriod.findFirst({
+        where: { academicYearId: academicYear.id },
+        orderBy: { order: "desc" },
+        select: { id: true, name: true, startDate: true, endDate: true, totalSchoolDays: true },
+      })
+    }
+
+    if (!period) {
+      return { success: false, error: "No academic period found" }
+    }
+
+    // Get all periods for selector
+    const periods = await prisma.academicPeriod.findMany({
+      where: { academicYearId: academicYear.id },
+      orderBy: { order: "asc" },
+      select: { id: true, name: true },
+    })
+
+    // Get all students in the class
+    const studentProfiles = await prisma.studentProfile.findMany({
+      where: { classId: myClass.id },
+    })
+
+    const userIds = studentProfiles.map(s => s.userId)
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, firstName: true, lastName: true, avatar: true },
+    })
+    const userMap = new Map(users.map(u => [u.id, u]))
+
+    // Get attendance records for all students in this period
+    const studentIds = studentProfiles.map(s => s.id)
+    const attendanceRecords = await prisma.attendance.findMany({
+      where: {
+        studentId: { in: studentIds },
+        classId: myClass.id,
+        date: {
+          gte: period.startDate,
+          lte: period.endDate,
+        },
+      },
+    })
+
+    // Group attendance by student
+    const attendanceByStudent = new Map<string, { present: number; absent: number; late: number; excused: number }>()
+    
+    for (const record of attendanceRecords) {
+      if (!attendanceByStudent.has(record.studentId)) {
+        attendanceByStudent.set(record.studentId, { present: 0, absent: 0, late: 0, excused: 0 })
+      }
+      const stats = attendanceByStudent.get(record.studentId)!
+      switch (record.status) {
+        case "PRESENT": stats.present++; break
+        case "ABSENT": stats.absent++; break
+        case "LATE": stats.late++; break
+        case "EXCUSED": stats.excused++; break
+      }
+    }
+
+    // Build student summaries
+    const studentSummaries = studentProfiles
+      .map(student => {
+        const user = userMap.get(student.userId)
+        const stats = attendanceByStudent.get(student.id) || { present: 0, absent: 0, late: 0, excused: 0 }
+        const totalMarked = stats.present + stats.absent + stats.late + stats.excused
+        const presentCount = stats.present + stats.late // Late still counts as present for percentage
+        const attendancePercent = totalMarked > 0 
+          ? Math.round((presentCount / totalMarked) * 100)
+          : 0
+        
+        return {
+          id: student.id,
+          userId: student.userId,
+          studentId: student.studentId,
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          avatar: user?.avatar || null,
+          stats,
+          totalMarked,
+          totalSchoolDays: period.totalSchoolDays,
+          attendancePercent,
+        }
+      })
+      .sort((a, b) => a.lastName.localeCompare(b.lastName) || a.firstName.localeCompare(b.firstName))
+
+    // Calculate class totals
+    const classStats = {
+      present: 0,
+      absent: 0,
+      late: 0,
+      excused: 0,
+    }
+    for (const stats of attendanceByStudent.values()) {
+      classStats.present += stats.present
+      classStats.absent += stats.absent
+      classStats.late += stats.late
+      classStats.excused += stats.excused
+    }
+
+    const totalRecords = classStats.present + classStats.absent + classStats.late + classStats.excused
+    const classAttendanceRate = totalRecords > 0 
+      ? Math.round(((classStats.present + classStats.late) / totalRecords) * 100) 
+      : 0
+
+    return {
+      success: true,
+      className: myClass.name,
+      classId: myClass.id,
+      periods,
+      period: {
+        id: period.id,
+        name: period.name,
+        totalSchoolDays: period.totalSchoolDays,
+        startDate: period.startDate,
+        endDate: period.endDate,
+      },
+      students: studentSummaries,
+      classStats,
+      classAttendanceRate,
+    }
+  } catch (error) {
+    console.error("Error fetching attendance summary:", error)
+    return { success: false, error: "Failed to fetch attendance summary" }
+  }
+}

@@ -1,6 +1,10 @@
 import { Metadata } from "next"
 import { ClipboardList } from "lucide-react"
-import { getSchoolAttendanceOverview } from "./_actions/attendance-actions"
+import { 
+  getSchoolAttendanceOverview, 
+  getAcademicPeriodsWithAttendance,
+  getPeriodAttendanceStats 
+} from "./_actions/attendance-actions"
 import { AttendanceClient } from "./_components/attendance-client"
 
 export const metadata: Metadata = {
@@ -16,7 +20,11 @@ export default async function AttendancePage({ searchParams }: PageProps) {
   const params = await searchParams
   const date = params.date || new Date().toISOString().split("T")[0]
   
-  const result = await getSchoolAttendanceOverview(date)
+  const [result, periodsResult, periodStatsResult] = await Promise.all([
+    getSchoolAttendanceOverview(date),
+    getAcademicPeriodsWithAttendance(),
+    getPeriodAttendanceStats(),
+  ])
   
   if (!result.success) {
     return (
@@ -66,6 +74,14 @@ export default async function AttendancePage({ searchParams }: PageProps) {
         initialDate={result.date!}
         levels={result.levels!}
         overallStats={result.overallStats!}
+        periods={periodsResult.success ? periodsResult.periods! : []}
+        academicYear={periodsResult.success ? periodsResult.academicYear! : null}
+        periodStats={periodStatsResult.success ? {
+          period: periodStatsResult.period!,
+          summary: periodStatsResult.summary!,
+          stats: periodStatsResult.stats!,
+          attendanceRate: periodStatsResult.attendanceRate!,
+        } : null}
       />
     </div>
   )

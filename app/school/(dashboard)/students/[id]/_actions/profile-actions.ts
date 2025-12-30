@@ -395,9 +395,10 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
     }
 
     // Build individual grades list
+    type WeightsType = { homeworkWeight: number; classworkWeight: number; testWeight: number; quizWeight: number; examWeight: number; classTestWeight: number; midTermWeight: number; endOfTermWeight: number; assignmentWeight: number; projectWeight: number }
     const grades = examResults.map(er => {
       const csData = classSubjectMap.get(er.classSubjectId)
-      const weightKey = examTypeToWeightKey[er.examType] as keyof typeof csData.weights | undefined
+      const weightKey = examTypeToWeightKey[er.examType] as keyof WeightsType | undefined
       const weight = csData && weightKey ? csData.weights[weightKey] : 0
       
       return {

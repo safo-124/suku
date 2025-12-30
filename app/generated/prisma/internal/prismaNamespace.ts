@@ -3653,7 +3653,11 @@ export const AcademicPeriodScalarFieldEnum = {
   name: 'name',
   order: 'order',
   startDate: 'startDate',
-  endDate: 'endDate'
+  endDate: 'endDate',
+  totalSchoolDays: 'totalSchoolDays',
+  excludeWeekends: 'excludeWeekends',
+  excludeSaturday: 'excludeSaturday',
+  excludeSunday: 'excludeSunday'
 } as const
 
 export type AcademicPeriodScalarFieldEnum = (typeof AcademicPeriodScalarFieldEnum)[keyof typeof AcademicPeriodScalarFieldEnum]

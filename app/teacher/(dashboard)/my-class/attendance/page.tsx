@@ -1,14 +1,18 @@
-import { getMyClassAttendance } from "../../_actions/teacher-actions"
+import { getMyClassAttendance, getMyClassAttendanceSummary } from "../../_actions/teacher-actions"
 import { AttendanceClient } from "./_components/attendance-client"
 import { ClipboardList, AlertCircle } from "lucide-react"
 
 export default async function MyClassAttendancePage({
   searchParams,
 }: {
-  searchParams: Promise<{ date?: string }>
+  searchParams: Promise<{ date?: string; periodId?: string }>
 }) {
   const params = await searchParams
-  const result = await getMyClassAttendance(params.date)
+  
+  const [result, summaryResult] = await Promise.all([
+    getMyClassAttendance(params.date),
+    getMyClassAttendanceSummary(params.periodId),
+  ])
   
   if (!result.success) {
     return (
@@ -46,6 +50,13 @@ export default async function MyClassAttendancePage({
       classId={result.classId || ""}
       date={result.date || new Date().toISOString().split("T")[0]}
       students={result.students || []}
+      summary={summaryResult.success ? {
+        periods: summaryResult.periods!,
+        period: summaryResult.period!,
+        students: summaryResult.students!,
+        classStats: summaryResult.classStats!,
+        classAttendanceRate: summaryResult.classAttendanceRate!,
+      } : null}
     />
   )
 }

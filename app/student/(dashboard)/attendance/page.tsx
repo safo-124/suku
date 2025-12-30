@@ -1,16 +1,19 @@
-import { getStudentAttendance } from "../_actions/student-actions"
+import { getStudentAttendance, getStudentAttendanceSummary } from "../_actions/student-actions"
 import { AttendanceClient } from "./_components/attendance-client"
 
 export default async function StudentAttendancePage({
   searchParams,
 }: {
-  searchParams: Promise<{ month?: string; year?: string }>
+  searchParams: Promise<{ month?: string; year?: string; periodId?: string }>
 }) {
   const params = await searchParams
   const month = params.month ? parseInt(params.month) : undefined
   const year = params.year ? parseInt(params.year) : undefined
   
-  const result = await getStudentAttendance(month, year)
+  const [result, summaryResult] = await Promise.all([
+    getStudentAttendance(month, year),
+    getStudentAttendanceSummary(params.periodId),
+  ])
   
   if (!result.success) {
     return (
@@ -30,6 +33,15 @@ export default async function StudentAttendancePage({
       stats={result.stats!}
       month={result.month!}
       year={result.year!}
+      summary={summaryResult.success ? {
+        className: summaryResult.className!,
+        periods: summaryResult.periods!,
+        period: summaryResult.period!,
+        stats: summaryResult.stats!,
+        totalMarked: summaryResult.totalMarked!,
+        attendancePercent: summaryResult.attendancePercent!,
+        recentRecords: summaryResult.recentRecords!,
+      } : null}
     />
   )
 }
