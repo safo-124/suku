@@ -658,7 +658,7 @@ export function TimetableClient() {
                 </p>
               </div>
               {!isEditingPeriods ? (
-                <Button onClick={startEditingPeriods} className="neu-convex rounded-xl">
+                <Button onClick={startEditingPeriods} className="bg-green-600 hover:bg-green-700 text-white rounded-xl">
                   <Pencil className="h-4 w-4 mr-2" />
                   {periods.length > 0 ? "Edit Periods" : "Setup Periods"}
                 </Button>

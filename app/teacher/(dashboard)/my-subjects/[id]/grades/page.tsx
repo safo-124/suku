@@ -18,11 +18,13 @@ import {
   List,
   FileText,
   TrendingUp,
-  Percent
+  Percent,
+  Settings2,
+  PieChart
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import {
   Select,
@@ -45,9 +47,20 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
-import { getSubjectGrades, saveStudentGrade } from "../../../_actions/teacher-actions"
+import { getSubjectGrades, saveStudentGrade, updateGradeWeights } from "../../../_actions/teacher-actions"
 
 interface ExamResult {
   id: string
@@ -79,7 +92,44 @@ interface ClassSubjectInfo {
   className: string
   subjectName: string
   subjectCode: string | null
+  homeworkWeight: number
+  classworkWeight: number
+  testWeight: number
+  quizWeight: number
+  examWeight: number
+  classTestWeight: number
+  midTermWeight: number
+  endOfTermWeight: number
+  assignmentWeight: number
+  projectWeight: number
 }
+
+interface GradeWeights {
+  homeworkWeight: number
+  classworkWeight: number
+  testWeight: number
+  quizWeight: number
+  examWeight: number
+  classTestWeight: number
+  midTermWeight: number
+  endOfTermWeight: number
+  assignmentWeight: number
+  projectWeight: number
+}
+
+// Grade weight categories with colors
+const WEIGHT_CATEGORIES = [
+  { key: "homeworkWeight", label: "Homework", color: "bg-blue-500" },
+  { key: "classworkWeight", label: "Classwork", color: "bg-emerald-500" },
+  { key: "testWeight", label: "Test", color: "bg-orange-500" },
+  { key: "quizWeight", label: "Quiz", color: "bg-purple-500" },
+  { key: "examWeight", label: "Exam", color: "bg-red-500" },
+  { key: "classTestWeight", label: "Class Test", color: "bg-cyan-500" },
+  { key: "midTermWeight", label: "Mid-Term", color: "bg-indigo-500" },
+  { key: "endOfTermWeight", label: "End of Term", color: "bg-pink-500" },
+  { key: "assignmentWeight", label: "Assignment", color: "bg-teal-500" },
+  { key: "projectWeight", label: "Project", color: "bg-amber-500" },
+] as const
 
 const EXAM_TYPES = [
   { value: "HOMEWORK", label: "Homework", maxScore: 100, color: "bg-blue-500" },
@@ -113,8 +163,26 @@ export default function SubjectGradesPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [editingStudent, setEditingStudent] = useState<string | null>(null)
   const [editScore, setEditScore] = useState<string>("")
+  const [editMaxScore, setEditMaxScore] = useState<string>("")
+  const [editComment, setEditComment] = useState<string>("")
   const [isSaving, setIsSaving] = useState(false)
   const [viewMode, setViewMode] = useState<"single" | "comprehensive">("single")
+  
+  // Grade weights state
+  const [isWeightsDialogOpen, setIsWeightsDialogOpen] = useState(false)
+  const [gradeWeights, setGradeWeights] = useState<GradeWeights>({
+    homeworkWeight: 10,
+    classworkWeight: 10,
+    testWeight: 10,
+    quizWeight: 10,
+    examWeight: 10,
+    classTestWeight: 10,
+    midTermWeight: 15,
+    endOfTermWeight: 15,
+    assignmentWeight: 5,
+    projectWeight: 5,
+  })
+  const [isSavingWeights, setIsSavingWeights] = useState(false)
   
   const loadGrades = async (periodId?: string) => {
     try {
@@ -127,6 +195,21 @@ export default function SubjectGradesPage() {
         setAcademicPeriods(result.academicPeriods || [])
         if (result.selectedPeriodId && !selectedPeriodId) {
           setSelectedPeriodId(result.selectedPeriodId)
+        }
+        // Set grade weights from the class subject
+        if (result.classSubject) {
+          setGradeWeights({
+            homeworkWeight: result.classSubject.homeworkWeight ?? 10,
+            classworkWeight: result.classSubject.classworkWeight ?? 10,
+            testWeight: result.classSubject.testWeight ?? 10,
+            quizWeight: result.classSubject.quizWeight ?? 10,
+            examWeight: result.classSubject.examWeight ?? 10,
+            classTestWeight: result.classSubject.classTestWeight ?? 10,
+            midTermWeight: result.classSubject.midTermWeight ?? 15,
+            endOfTermWeight: result.classSubject.endOfTermWeight ?? 15,
+            assignmentWeight: result.classSubject.assignmentWeight ?? 5,
+            projectWeight: result.classSubject.projectWeight ?? 5,
+          })
         }
       } else {
         setError(result.error || "Failed to load grades")
@@ -151,10 +234,24 @@ export default function SubjectGradesPage() {
     return student.examResults.find(r => r.examType === examType) || null
   }
   
-  // Calculate comprehensive stats for a student
+  // Calculate comprehensive stats for a student using weighted averages
   const getStudentComprehensiveGrades = (student: Student) => {
-    const gradeCategories = ["HOMEWORK", "CLASSWORK", "TEST", "QUIZ", "EXAM"]
-    const categoryScores: Record<string, { score: number; maxScore: number; percentage: number } | null> = {}
+    const gradeCategories = ["HOMEWORK", "CLASSWORK", "TEST", "QUIZ", "EXAM", "CLASS_TEST", "MID_TERM", "END_OF_TERM", "ASSIGNMENT", "PROJECT"]
+    const categoryScores: Record<string, { score: number; maxScore: number; percentage: number; weight: number } | null> = {}
+    
+    // Map categories to their weights
+    const categoryWeights: Record<string, number> = {
+      HOMEWORK: gradeWeights.homeworkWeight,
+      CLASSWORK: gradeWeights.classworkWeight,
+      TEST: gradeWeights.testWeight,
+      QUIZ: gradeWeights.quizWeight,
+      EXAM: gradeWeights.examWeight,
+      CLASS_TEST: gradeWeights.classTestWeight,
+      MID_TERM: gradeWeights.midTermWeight,
+      END_OF_TERM: gradeWeights.endOfTermWeight,
+      ASSIGNMENT: gradeWeights.assignmentWeight,
+      PROJECT: gradeWeights.projectWeight,
+    }
     
     for (const category of gradeCategories) {
       const results = student.examResults.filter(r => r.examType === category)
@@ -165,41 +262,104 @@ export default function SubjectGradesPage() {
           score: totalScore,
           maxScore: totalMaxScore,
           percentage: totalMaxScore > 0 ? (totalScore / totalMaxScore) * 100 : 0,
+          weight: categoryWeights[category] || 0,
         }
       } else {
         categoryScores[category] = null
       }
     }
     
-    // Calculate overall average
-    const validCategories = Object.values(categoryScores).filter(Boolean) as { percentage: number }[]
-    const overallPercentage = validCategories.length > 0
-      ? validCategories.reduce((sum, c) => sum + c.percentage, 0) / validCategories.length
-      : 0
+    // Calculate weighted overall percentage
+    // Only include categories that have grades
+    let totalWeight = 0
+    let weightedSum = 0
+    
+    for (const category of gradeCategories) {
+      const categoryData = categoryScores[category]
+      if (categoryData) {
+        // Normalize the weight based on which categories have grades
+        totalWeight += categoryData.weight
+        weightedSum += categoryData.percentage * categoryData.weight
+      }
+    }
+    
+    // Calculate the weighted average (normalizing for missing categories)
+    const overallPercentage = totalWeight > 0 ? weightedSum / totalWeight : 0
     
     return {
       categories: categoryScores,
       overallPercentage,
       overallGrade: calculateGrade(overallPercentage, 100),
+      weights: gradeWeights,
     }
   }
+  
+  // Handle saving grade weights
+  const handleSaveWeights = async () => {
+    const total = gradeWeights.homeworkWeight + gradeWeights.classworkWeight + 
+                  gradeWeights.testWeight + gradeWeights.quizWeight + gradeWeights.examWeight +
+                  gradeWeights.classTestWeight + gradeWeights.midTermWeight + 
+                  gradeWeights.endOfTermWeight + gradeWeights.assignmentWeight + 
+                  gradeWeights.projectWeight
+    
+    if (Math.abs(total - 100) > 0.01) {
+      toast.error(`Weights must total 100%. Current total: ${total.toFixed(1)}%`)
+      return
+    }
+    
+    setIsSavingWeights(true)
+    
+    try {
+      const result = await updateGradeWeights({
+        classSubjectId,
+        ...gradeWeights,
+      })
+      
+      if (result.success) {
+        toast.success("Grade weights updated successfully")
+        setIsWeightsDialogOpen(false)
+        loadGrades(selectedPeriodId)
+      } else {
+        toast.error(result.error || "Failed to update weights")
+      }
+    } catch (err) {
+      toast.error("An error occurred while saving weights")
+    } finally {
+      setIsSavingWeights(false)
+    }
+  }
+  
+  const totalWeight = gradeWeights.homeworkWeight + gradeWeights.classworkWeight + 
+                      gradeWeights.testWeight + gradeWeights.quizWeight + gradeWeights.examWeight +
+                      gradeWeights.classTestWeight + gradeWeights.midTermWeight + 
+                      gradeWeights.endOfTermWeight + gradeWeights.assignmentWeight + 
+                      gradeWeights.projectWeight
   
   const handleStartEdit = (studentId: string) => {
     const student = students.find(s => s.id === studentId)
     const existingResult = student ? getStudentScoreForExamType(student, selectedExamType) : null
+    const examTypeConfig = EXAM_TYPES.find(t => t.value === selectedExamType)
     setEditingStudent(studentId)
     setEditScore(existingResult ? existingResult.score.toString() : "")
+    setEditMaxScore(existingResult ? existingResult.maxScore.toString() : (examTypeConfig?.maxScore?.toString() || "100"))
+    setEditComment(existingResult?.remarks || "")
   }
   
   const handleCancelEdit = () => {
     setEditingStudent(null)
     setEditScore("")
+    setEditMaxScore("")
+    setEditComment("")
   }
   
   const handleSaveGrade = async (studentId: string) => {
     const score = parseFloat(editScore)
-    const examTypeConfig = EXAM_TYPES.find(t => t.value === selectedExamType)
-    const maxScore = examTypeConfig?.maxScore || 100
+    const maxScore = parseFloat(editMaxScore)
+    
+    if (isNaN(maxScore) || maxScore <= 0) {
+      toast.error("Max score must be a positive number")
+      return
+    }
     
     if (isNaN(score) || score < 0 || score > maxScore) {
       toast.error(`Score must be between 0 and ${maxScore}`)
@@ -217,6 +377,7 @@ export default function SubjectGradesPage() {
         score,
         maxScore,
         grade: calculateGrade(score, maxScore),
+        remarks: editComment.trim() || undefined,
       })
       
       if (result.success) {
@@ -308,12 +469,139 @@ export default function SubjectGradesPage() {
         </div>
         
         <div className="flex items-center gap-2">
+          <Dialog open={isWeightsDialogOpen} onOpenChange={setIsWeightsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="rounded-xl neu-sm hover:neu">
+                <Settings2 className="h-4 w-4 mr-2" />
+                Grade Weights
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[500px]">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <PieChart className="h-5 w-5" />
+                  Configure Grade Weights
+                </DialogTitle>
+                <DialogDescription>
+                  Set how much each assessment type contributes to the final grade.
+                  Weights must total 100%.
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6 py-4 max-h-[60vh] overflow-y-auto">
+                {/* Current Distribution Visual */}
+                <div className="flex h-4 rounded-full overflow-hidden">
+                  {WEIGHT_CATEGORIES.map((category) => {
+                    const weight = gradeWeights[category.key as keyof GradeWeights];
+                    if (weight === 0) return null;
+                    return (
+                      <div 
+                        key={category.key}
+                        className={`${category.color} transition-all`}
+                        style={{ width: `${weight}%` }}
+                        title={`${category.label}: ${weight}%`}
+                      />
+                    );
+                  })}
+                </div>
+                
+                {/* Total indicator */}
+                <div className={cn(
+                  "text-center text-sm font-medium rounded-lg py-2 sticky top-0 z-10",
+                  Math.abs(totalWeight - 100) < 0.01 
+                    ? "bg-green-500/10 text-green-600" 
+                    : "bg-red-500/10 text-red-600"
+                )}>
+                  Total: {totalWeight}%
+                  {Math.abs(totalWeight - 100) >= 0.01 && (
+                    <span className="ml-2">
+                      ({totalWeight > 100 ? "+" : ""}{(totalWeight - 100).toFixed(1)}% {totalWeight > 100 ? "over" : "needed"})
+                    </span>
+                  )}
+                </div>
+                
+                {/* All Weight Categories */}
+                <div className="grid gap-4">
+                  {WEIGHT_CATEGORIES.map((category) => (
+                    <div key={category.key} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="flex items-center gap-2">
+                          <div className={`w-3 h-3 rounded ${category.color}`} />
+                          {category.label}
+                        </Label>
+                        <span className="text-sm font-medium tabular-nums">
+                          {gradeWeights[category.key as keyof GradeWeights]}%
+                        </span>
+                      </div>
+                      <Slider
+                        value={[gradeWeights[category.key as keyof GradeWeights]]}
+                        onValueChange={(values: number[]) => 
+                          setGradeWeights(prev => ({ 
+                            ...prev, 
+                            [category.key]: values[0] 
+                          }))
+                        }
+                        max={100}
+                        step={5}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <DialogFooter>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsWeightsDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleSaveWeights}
+                  disabled={isSavingWeights || Math.abs(totalWeight - 100) >= 0.01}
+                >
+                  {isSavingWeights ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="h-4 w-4 mr-2" />
+                      Save Weights
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          
           <Badge className="rounded-lg px-3 py-1.5 neu-sm">
             <Award className="h-4 w-4 mr-2" />
             {students.length} {students.length === 1 ? "Student" : "Students"}
           </Badge>
         </div>
       </div>
+      
+      {/* Grade Weights Info Card */}
+      <Card className="neu rounded-2xl border-0 bg-muted/30">
+        <CardContent className="py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <PieChart className="h-4 w-4" />
+              <span>Grade Distribution:</span>
+            </div>
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              {WEIGHT_CATEGORIES.filter(cat => gradeWeights[cat.key as keyof GradeWeights] > 0).map((category) => (
+                <div key={category.key} className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded ${category.color}`} />
+                  <span>{category.label}: <strong>{gradeWeights[category.key as keyof GradeWeights]}%</strong></span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
@@ -661,6 +949,7 @@ export default function SubjectGradesPage() {
                     <TableHead>Student ID</TableHead>
                     <TableHead className="text-center">Score</TableHead>
                     <TableHead className="text-center">Grade</TableHead>
+                    <TableHead className="min-w-[200px]">Comments</TableHead>
                     <TableHead className="text-center w-[100px]">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -692,15 +981,26 @@ export default function SubjectGradesPage() {
                         </TableCell>
                         <TableCell className="text-center">
                           {isEditing ? (
-                            <Input
-                              type="number"
-                              value={editScore}
-                              onChange={(e) => setEditScore(e.target.value)}
-                              className="w-20 h-8 mx-auto text-center"
-                              min={0}
-                              max={examTypeConfig?.maxScore || 100}
-                              autoFocus
-                            />
+                            <div className="flex items-center justify-center gap-1">
+                              <Input
+                                type="number"
+                                value={editScore}
+                                onChange={(e) => setEditScore(e.target.value)}
+                                className="w-16 h-8 text-center"
+                                min={0}
+                                placeholder="Score"
+                                autoFocus
+                              />
+                              <span className="text-muted-foreground">/</span>
+                              <Input
+                                type="number"
+                                value={editMaxScore}
+                                onChange={(e) => setEditMaxScore(e.target.value)}
+                                className="w-16 h-8 text-center"
+                                min={1}
+                                placeholder="Max"
+                              />
+                            </div>
                           ) : (
                             <span className={cn(
                               "font-semibold",
@@ -727,6 +1027,24 @@ export default function SubjectGradesPage() {
                             </Badge>
                           ) : (
                             <span className="text-muted-foreground">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {isEditing ? (
+                            <Input
+                              type="text"
+                              value={editComment}
+                              onChange={(e) => setEditComment(e.target.value)}
+                              className="h-8 text-sm"
+                              placeholder="Add comment..."
+                            />
+                          ) : (
+                            <span className={cn(
+                              "text-sm",
+                              result?.remarks ? "" : "text-muted-foreground italic"
+                            )}>
+                              {result?.remarks || "No comment"}
+                            </span>
                           )}
                         </TableCell>
                         <TableCell className="text-center">

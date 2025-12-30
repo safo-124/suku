@@ -3699,7 +3699,17 @@ export const ClassSubjectScalarFieldEnum = {
   classId: 'classId',
   subjectId: 'subjectId',
   teacherId: 'teacherId',
-  hoursPerWeek: 'hoursPerWeek'
+  hoursPerWeek: 'hoursPerWeek',
+  homeworkWeight: 'homeworkWeight',
+  classworkWeight: 'classworkWeight',
+  testWeight: 'testWeight',
+  quizWeight: 'quizWeight',
+  examWeight: 'examWeight',
+  classTestWeight: 'classTestWeight',
+  midTermWeight: 'midTermWeight',
+  endOfTermWeight: 'endOfTermWeight',
+  assignmentWeight: 'assignmentWeight',
+  projectWeight: 'projectWeight'
 } as const
 
 export type ClassSubjectScalarFieldEnum = (typeof ClassSubjectScalarFieldEnum)[keyof typeof ClassSubjectScalarFieldEnum]

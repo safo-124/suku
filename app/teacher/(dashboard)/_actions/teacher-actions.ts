@@ -586,6 +586,17 @@ export async function getSubjectGrades(classSubjectId: string, periodId?: string
         className: classSubject.class.name,
         subjectName: classSubject.subject.name,
         subjectCode: classSubject.subject.code,
+        // Grade weight configuration
+        homeworkWeight: Number(classSubject.homeworkWeight),
+        classworkWeight: Number(classSubject.classworkWeight),
+        testWeight: Number(classSubject.testWeight),
+        quizWeight: Number(classSubject.quizWeight),
+        examWeight: Number(classSubject.examWeight),
+        classTestWeight: Number(classSubject.classTestWeight),
+        midTermWeight: Number(classSubject.midTermWeight),
+        endOfTermWeight: Number(classSubject.endOfTermWeight),
+        assignmentWeight: Number(classSubject.assignmentWeight),
+        projectWeight: Number(classSubject.projectWeight),
       },
       academicPeriods: academicPeriods.map(ap => ({
         id: ap.id,
@@ -686,6 +697,83 @@ export async function saveStudentGrade(data: {
   } catch (error) {
     console.error("Error saving grade:", error)
     return { success: false, error: "Failed to save grade" }
+  }
+}
+
+// Update grade weight configuration for a class-subject
+export async function updateGradeWeights(data: {
+  classSubjectId: string
+  homeworkWeight: number
+  classworkWeight: number
+  testWeight: number
+  quizWeight: number
+  examWeight: number
+  classTestWeight: number
+  midTermWeight: number
+  endOfTermWeight: number
+  assignmentWeight: number
+  projectWeight: number
+}) {
+  const auth = await verifyTeacherAccess()
+  
+  if (!auth.success || !auth.session) {
+    return { success: false, error: auth.error }
+  }
+  
+  // Validate that weights sum to 100
+  const totalWeight = data.homeworkWeight + data.classworkWeight + data.testWeight + 
+                      data.quizWeight + data.examWeight + data.classTestWeight + 
+                      data.midTermWeight + data.endOfTermWeight + 
+                      data.assignmentWeight + data.projectWeight
+  if (Math.abs(totalWeight - 100) > 0.01) {
+    return { success: false, error: `Grade weights must total 100%. Current total: ${totalWeight}%` }
+  }
+  
+  // Validate individual weights are non-negative
+  const allWeights = [data.homeworkWeight, data.classworkWeight, data.testWeight, 
+                      data.quizWeight, data.examWeight, data.classTestWeight,
+                      data.midTermWeight, data.endOfTermWeight, 
+                      data.assignmentWeight, data.projectWeight]
+  if (allWeights.some(w => w < 0)) {
+    return { success: false, error: "Grade weights cannot be negative" }
+  }
+  
+  try {
+    // Verify teacher teaches this subject
+    const classSubject = await prisma.classSubject.findFirst({
+      where: {
+        id: data.classSubjectId,
+        teacherId: auth.session.user.id,
+      },
+    })
+    
+    if (!classSubject) {
+      return { success: false, error: "You don't teach this subject" }
+    }
+    
+    // Update the grade weights
+    await prisma.classSubject.update({
+      where: { id: data.classSubjectId },
+      data: {
+        homeworkWeight: data.homeworkWeight,
+        classworkWeight: data.classworkWeight,
+        testWeight: data.testWeight,
+        quizWeight: data.quizWeight,
+        examWeight: data.examWeight,
+        classTestWeight: data.classTestWeight,
+        midTermWeight: data.midTermWeight,
+        endOfTermWeight: data.endOfTermWeight,
+        assignmentWeight: data.assignmentWeight,
+        projectWeight: data.projectWeight,
+      },
+    })
+    
+    revalidatePath(`/teacher/my-subjects/${data.classSubjectId}/grades`)
+    
+    return { success: true }
+  } catch (error) {
+    console.error("Error updating grade weights:", error)
+    return { success: false, error: "Failed to update grade weights" }
   }
 }
 
@@ -1059,7 +1147,7 @@ export async function markClassAttendance(
   }
 }
 
-// Get grades overview for my class
+// Get comprehensive grades overview for my class (class teacher view)
 export async function getMyClassGrades(periodId?: string) {
   const auth = await verifyTeacherAccess()
   
@@ -1068,7 +1156,7 @@ export async function getMyClassGrades(periodId?: string) {
   }
   
   try {
-    // Use separate queries for Prisma Accelerate compatibility
+    // Get the class where this teacher is the class teacher
     const myClass = await prisma.class.findFirst({
       where: {
         classTeacherId: auth.session.user.id,
@@ -1079,10 +1167,35 @@ export async function getMyClassGrades(periodId?: string) {
       return { success: false, error: "You are not assigned as a class teacher" }
     }
     
-    // Get class subjects and subjects
+    // Get class subjects with grade weights and teacher info
     const classSubjects = await prisma.classSubject.findMany({
       where: { classId: myClass.id }
     })
+    
+    // Get subject teachers
+    const teacherIds = classSubjects.map(cs => cs.teacherId).filter(Boolean) as string[]
+    const teachers = teacherIds.length > 0 
+      ? await prisma.user.findMany({ 
+          where: { id: { in: teacherIds } },
+          select: { id: true, firstName: true, lastName: true }
+        })
+      : []
+    const teacherMap = new Map(teachers.map(t => [t.id, t]))
+    
+    // Create a map of classSubject weights
+    const classSubjectWeights = new Map(classSubjects.map(cs => [cs.id, {
+      homeworkWeight: Number(cs.homeworkWeight),
+      classworkWeight: Number(cs.classworkWeight),
+      testWeight: Number(cs.testWeight),
+      quizWeight: Number(cs.quizWeight),
+      examWeight: Number(cs.examWeight),
+      classTestWeight: Number(cs.classTestWeight),
+      midTermWeight: Number(cs.midTermWeight),
+      endOfTermWeight: Number(cs.endOfTermWeight),
+      assignmentWeight: Number(cs.assignmentWeight),
+      projectWeight: Number(cs.projectWeight),
+    }]))
+    
     const subjectIds = classSubjects.map(cs => cs.subjectId)
     const subjects = subjectIds.length > 0 
       ? await prisma.subject.findMany({ where: { id: { in: subjectIds } } })
@@ -1115,10 +1228,25 @@ export async function getMyClassGrades(periodId?: string) {
     })
     const userMap = new Map(users.map(u => [u.id, u]))
     
-    // Get exam results if period selected
+    // Get all exam results if period selected (with remarks)
     const studentIds = studentProfiles.map(s => s.id)
-    let examResultsByStudent = new Map<string, Array<{ classSubjectId: string; score: number | null; grade: string | null }>>()
-    let reportCardsByStudent = new Map<string, { totalScore: number | null; averageScore: number | null; position: number | null; passStatus: string | null }>()
+    let allExamResults: Array<{
+      id: string
+      studentId: string
+      classSubjectId: string
+      examType: string
+      score: number
+      maxScore: number
+      grade: string | null
+      remarks: string | null
+    }> = []
+    
+    let reportCardsByStudent = new Map<string, { 
+      totalScore: number | null
+      averageScore: number | null
+      position: number | null
+      passStatus: string | null 
+    }>()
     
     if (selectedPeriodId && studentIds.length > 0) {
       const examResults = await prisma.examResult.findMany({
@@ -1128,16 +1256,16 @@ export async function getMyClassGrades(periodId?: string) {
         },
       })
       
-      // Group exam results by student
-      for (const er of examResults) {
-        const existing = examResultsByStudent.get(er.studentId) || []
-        existing.push({
-          classSubjectId: er.classSubjectId,
-          score: er.score ? Number(er.score) : null,
-          grade: er.grade,
-        })
-        examResultsByStudent.set(er.studentId, existing)
-      }
+      allExamResults = examResults.map(er => ({
+        id: er.id,
+        studentId: er.studentId,
+        classSubjectId: er.classSubjectId,
+        examType: er.examType,
+        score: Number(er.score),
+        maxScore: Number(er.maxScore),
+        grade: er.grade,
+        remarks: er.remarks,
+      }))
       
       const reportCards = await prisma.reportCard.findMany({
         where: {
@@ -1156,6 +1284,44 @@ export async function getMyClassGrades(periodId?: string) {
       }
     }
     
+    // Exam type labels
+    const examTypeLabels: Record<string, string> = {
+      'HOMEWORK': 'Homework',
+      'CLASSWORK': 'Classwork',
+      'TEST': 'Test',
+      'QUIZ': 'Quiz',
+      'EXAM': 'Exam',
+      'CLASS_TEST': 'Class Test',
+      'MID_TERM': 'Mid-Term',
+      'END_OF_TERM': 'End of Term',
+      'ASSIGNMENT': 'Assignment',
+      'PROJECT': 'Project',
+    }
+    
+    // Exam type to weight key mapping
+    const examTypeToWeightKey: Record<string, string> = {
+      'HOMEWORK': 'homeworkWeight',
+      'CLASSWORK': 'classworkWeight',
+      'TEST': 'testWeight',
+      'QUIZ': 'quizWeight',
+      'EXAM': 'examWeight',
+      'CLASS_TEST': 'classTestWeight',
+      'MID_TERM': 'midTermWeight',
+      'END_OF_TERM': 'endOfTermWeight',
+      'ASSIGNMENT': 'assignmentWeight',
+      'PROJECT': 'projectWeight',
+    }
+    
+    // Calculate grade helper
+    const calculateGrade = (percentage: number): string => {
+      if (percentage >= 80) return "A"
+      if (percentage >= 70) return "B"
+      if (percentage >= 60) return "C"
+      if (percentage >= 50) return "D"
+      if (percentage >= 40) return "E"
+      return "F"
+    }
+    
     // Sort students by name
     const sortedStudents = studentProfiles.sort((a, b) => {
       const userA = userMap.get(a.userId)
@@ -1163,6 +1329,99 @@ export async function getMyClassGrades(periodId?: string) {
       const firstNameCompare = (userA?.firstName || "").localeCompare(userB?.firstName || "")
       if (firstNameCompare !== 0) return firstNameCompare
       return (userA?.lastName || "").localeCompare(userB?.lastName || "")
+    })
+    
+    // Build subjects with teacher info and weights
+    const subjectsWithInfo = classSubjects.map(cs => {
+      const subject = subjectMap.get(cs.subjectId)
+      const teacher = cs.teacherId ? teacherMap.get(cs.teacherId) : null
+      const weights = classSubjectWeights.get(cs.id)
+      
+      return {
+        id: cs.id,
+        name: subject?.name || "",
+        code: subject?.code || null,
+        teacherName: teacher ? `${teacher.firstName} ${teacher.lastName}` : null,
+        weights: weights || null,
+      }
+    })
+    
+    // Build comprehensive student data
+    const studentsWithGrades = sortedStudents.map(s => {
+      const user = userMap.get(s.userId)
+      const studentResults = allExamResults.filter(er => er.studentId === s.id)
+      const reportCard = reportCardsByStudent.get(s.id)
+      
+      // Group results by subject
+      const subjectGrades = subjectsWithInfo.map(subject => {
+        const subjectResults = studentResults.filter(r => r.classSubjectId === subject.id)
+        const weights = classSubjectWeights.get(subject.id)
+        
+        // Calculate weighted average for this subject
+        let weightedScore = 0
+        let totalWeight = 0
+        
+        // Group results by exam type with details
+        const examTypeResults = subjectResults.map(r => {
+          const weightKey = examTypeToWeightKey[r.examType] as keyof NonNullable<typeof weights>
+          const weight = weights && weightKey ? (weights[weightKey] || 0) : 0
+          
+          if (weight > 0 && r.maxScore > 0) {
+            const percentage = (r.score / r.maxScore) * 100
+            weightedScore += percentage * (weight / 100)
+            totalWeight += weight
+          }
+          
+          return {
+            examType: r.examType,
+            examTypeLabel: examTypeLabels[r.examType] || r.examType,
+            score: r.score,
+            maxScore: r.maxScore,
+            percentage: r.maxScore > 0 ? Math.round((r.score / r.maxScore) * 100) : 0,
+            grade: r.grade,
+            remarks: r.remarks,
+            weight: weight,
+          }
+        })
+        
+        // Calculate final weighted score
+        const finalScore = totalWeight > 0 
+          ? Math.round((weightedScore / totalWeight) * 100) 
+          : null
+        
+        return {
+          subjectId: subject.id,
+          subjectName: subject.name,
+          subjectCode: subject.code,
+          teacherName: subject.teacherName,
+          examResults: examTypeResults,
+          weightedScore: finalScore,
+          grade: finalScore !== null ? calculateGrade(finalScore) : null,
+          hasGrades: examTypeResults.length > 0,
+        }
+      })
+      
+      // Calculate overall average
+      const subjectsWithScores = subjectGrades.filter(sg => sg.weightedScore !== null)
+      const overallAverage = subjectsWithScores.length > 0
+        ? Math.round(subjectsWithScores.reduce((sum, sg) => sum + (sg.weightedScore || 0), 0) / subjectsWithScores.length)
+        : null
+      
+      return {
+        id: s.id,
+        firstName: user?.firstName || "",
+        lastName: user?.lastName || "",
+        studentId: s.studentId,
+        subjectGrades,
+        overallAverage,
+        overallGrade: overallAverage !== null ? calculateGrade(overallAverage) : null,
+        reportCard: reportCard ? {
+          totalScore: reportCard.totalScore,
+          averageScore: reportCard.averageScore,
+          position: reportCard.position,
+          passStatus: reportCard.passStatus,
+        } : null,
+      }
     })
     
     return {
@@ -1173,45 +1432,12 @@ export async function getMyClassGrades(periodId?: string) {
         name: ap.name,
       })),
       selectedPeriodId,
-      subjects: classSubjects.map(cs => {
-        const subject = subjectMap.get(cs.subjectId)
-        return {
-          id: cs.id,
-          name: subject?.name || "",
-          code: subject?.code || "",
-        }
-      }),
-      students: sortedStudents.map(s => {
-        const user = userMap.get(s.userId)
-        const grades = examResultsByStudent.get(s.id) || []
-        const reportCard = reportCardsByStudent.get(s.id)
-        
-        return {
-          id: s.id,
-          firstName: user?.firstName || "",
-          lastName: user?.lastName || "",
-          studentId: s.studentId,
-          grades: grades.map(g => {
-            const cs = classSubjects.find(cs => cs.id === g.classSubjectId)
-            const subject = cs ? subjectMap.get(cs.subjectId) : null
-            return {
-              subjectId: g.classSubjectId,
-              subjectName: subject?.name || "",
-              score: g.score || 0,
-              grade: g.grade,
-            }
-          }),
-          reportCard: reportCard ? {
-            totalScore: reportCard.totalScore || 0,
-            averageScore: reportCard.averageScore || 0,
-            position: reportCard.position,
-            passStatus: reportCard.passStatus,
-          } : null,
-        }
-      }),
+      subjects: subjectsWithInfo,
+      students: studentsWithGrades,
+      examTypeLabels,
     }
   } catch (error) {
-    console.error("Error fetching grades:", error)
+    console.error("Error fetching class grades:", error)
     return { success: false, error: "Failed to fetch grades" }
   }
 }

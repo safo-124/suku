@@ -44,6 +44,7 @@ export default async function StudentProfilePage({ params }: PageProps) {
         periods: gradesResult.periods!,
         selectedPeriodId: gradesResult.selectedPeriodId!,
         grades: gradesResult.grades!,
+        subjectSummaries: gradesResult.subjectSummaries!,
         reportCard: gradesResult.reportCard!,
       } : null}
     />

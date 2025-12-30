@@ -147,7 +147,7 @@ export function StudentsClient({
           </Button>
           <Button
             onClick={handleAddNew}
-            className="neu-convex hover:scale-[0.98] active:neu-inset rounded-xl gap-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white hover:scale-[0.98] rounded-xl gap-2"
           >
             <Plus className="h-4 w-4" />
             Add Student

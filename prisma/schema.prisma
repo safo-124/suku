@@ -547,6 +547,18 @@ model ClassSubject {
   // Weekly time allocation in hours (for timetable generation and salary calculations)
   hoursPerWeek Decimal @default(0) @db.Decimal(4, 2)
 
+  // Grade weight configuration (percentages must total 100)
+  homeworkWeight    Decimal @default(10) @db.Decimal(5, 2)
+  classworkWeight   Decimal @default(10) @db.Decimal(5, 2)
+  testWeight        Decimal @default(10) @db.Decimal(5, 2)
+  quizWeight        Decimal @default(10) @db.Decimal(5, 2)
+  examWeight        Decimal @default(10) @db.Decimal(5, 2)
+  classTestWeight   Decimal @default(10) @db.Decimal(5, 2)
+  midTermWeight     Decimal @default(15) @db.Decimal(5, 2)
+  endOfTermWeight   Decimal @default(15) @db.Decimal(5, 2)
+  assignmentWeight  Decimal @default(5) @db.Decimal(5, 2)
+  projectWeight     Decimal @default(5) @db.Decimal(5, 2)
+
   // Relations
   timetableSlots TimetableSlot[]
   assignments    Assignment[]

@@ -271,7 +271,7 @@ export async function getStudentAttendanceSummary(studentId: string, academicYea
   }
 }
 
-// Get student grades summary
+// Get comprehensive student grades with weights and comments
 export async function getStudentGradesSummary(studentId: string, periodId?: string) {
   const auth = await verifySchoolAccess([UserRole.SCHOOL_ADMIN, UserRole.TEACHER])
   
@@ -306,7 +306,7 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
     const selectedPeriodId = periodId || periods[0]?.id
 
     if (!selectedPeriodId) {
-      return { success: true, periods: [], grades: [], reportCard: null }
+      return { success: true, periods: [], grades: [], subjectSummaries: [], reportCard: null }
     }
 
     // Get exam results for the period
@@ -317,7 +317,7 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
       },
     })
 
-    // Get class subjects for grades
+    // Get class subjects with grade weights
     const classSubjectIds = [...new Set(examResults.map(e => e.classSubjectId))]
     const classSubjects = classSubjectIds.length > 0
       ? await prisma.classSubject.findMany({
@@ -325,6 +325,7 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
         })
       : []
     
+    // Get subject info
     const subjectIds = classSubjects.map(cs => cs.subjectId)
     const subjects = subjectIds.length > 0
       ? await prisma.subject.findMany({
@@ -332,19 +333,139 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
         })
       : []
     const subjectMap = new Map(subjects.map(s => [s.id, s]))
-    const classSubjectMap = new Map(classSubjects.map(cs => [cs.id, cs]))
+    
+    // Get teacher info
+    const teacherIds = classSubjects.map(cs => cs.teacherId).filter(Boolean) as string[]
+    const teachers = teacherIds.length > 0
+      ? await prisma.user.findMany({
+          where: { id: { in: teacherIds } },
+          select: { id: true, firstName: true, lastName: true },
+        })
+      : []
+    const teacherMap = new Map(teachers.map(t => [t.id, t]))
+    
+    // Create class subject map with weights
+    const classSubjectMap = new Map(classSubjects.map(cs => {
+      const subject = subjectMap.get(cs.subjectId)
+      const teacher = cs.teacherId ? teacherMap.get(cs.teacherId) : null
+      return [cs.id, {
+        subjectName: subject?.name || "Unknown",
+        subjectCode: subject?.code || null,
+        teacherName: teacher ? `${teacher.firstName} ${teacher.lastName}` : null,
+        weights: {
+          homeworkWeight: Number(cs.homeworkWeight),
+          classworkWeight: Number(cs.classworkWeight),
+          testWeight: Number(cs.testWeight),
+          quizWeight: Number(cs.quizWeight),
+          examWeight: Number(cs.examWeight),
+          classTestWeight: Number(cs.classTestWeight),
+          midTermWeight: Number(cs.midTermWeight),
+          endOfTermWeight: Number(cs.endOfTermWeight),
+          assignmentWeight: Number(cs.assignmentWeight),
+          projectWeight: Number(cs.projectWeight),
+        },
+      }]
+    }))
 
+    // Exam type labels and weight mapping
+    const examTypeLabels: Record<string, string> = {
+      'HOMEWORK': 'Homework',
+      'CLASSWORK': 'Classwork',
+      'TEST': 'Test',
+      'QUIZ': 'Quiz',
+      'EXAM': 'Exam',
+      'CLASS_TEST': 'Class Test',
+      'MID_TERM': 'Mid-Term',
+      'END_OF_TERM': 'End of Term',
+      'ASSIGNMENT': 'Assignment',
+      'PROJECT': 'Project',
+    }
+
+    const examTypeToWeightKey: Record<string, string> = {
+      'HOMEWORK': 'homeworkWeight',
+      'CLASSWORK': 'classworkWeight',
+      'TEST': 'testWeight',
+      'QUIZ': 'quizWeight',
+      'EXAM': 'examWeight',
+      'CLASS_TEST': 'classTestWeight',
+      'MID_TERM': 'midTermWeight',
+      'END_OF_TERM': 'endOfTermWeight',
+      'ASSIGNMENT': 'assignmentWeight',
+      'PROJECT': 'projectWeight',
+    }
+
+    // Build individual grades list
     const grades = examResults.map(er => {
-      const classSubject = classSubjectMap.get(er.classSubjectId)
-      const subject = classSubject ? subjectMap.get(classSubject.subjectId) : null
+      const csData = classSubjectMap.get(er.classSubjectId)
+      const weightKey = examTypeToWeightKey[er.examType] as keyof typeof csData.weights | undefined
+      const weight = csData && weightKey ? csData.weights[weightKey] : 0
+      
       return {
         id: er.id,
-        subjectName: subject?.name || "Unknown",
+        classSubjectId: er.classSubjectId,
+        subjectName: csData?.subjectName || "Unknown",
+        subjectCode: csData?.subjectCode || null,
+        teacherName: csData?.teacherName || null,
         examType: er.examType,
+        examTypeLabel: examTypeLabels[er.examType] || er.examType,
         score: Number(er.score),
         maxScore: Number(er.maxScore),
+        percentage: Number(er.maxScore) > 0 ? Math.round((Number(er.score) / Number(er.maxScore)) * 100) : 0,
         grade: er.grade,
         remarks: er.remarks,
+        weight,
+      }
+    })
+
+    // Calculate grade helper
+    const calculateGrade = (percentage: number): string => {
+      if (percentage >= 80) return "A"
+      if (percentage >= 70) return "B"
+      if (percentage >= 60) return "C"
+      if (percentage >= 50) return "D"
+      if (percentage >= 40) return "E"
+      return "F"
+    }
+
+    // Build subject summaries with weighted scores
+    const subjectSummaries = Array.from(classSubjectMap.entries()).map(([classSubjectId, csData]) => {
+      const subjectGrades = grades.filter(g => g.classSubjectId === classSubjectId)
+      
+      // Calculate weighted average
+      let weightedScore = 0
+      let totalWeight = 0
+      
+      for (const grade of subjectGrades) {
+        if (grade.weight > 0) {
+          weightedScore += grade.percentage * (grade.weight / 100)
+          totalWeight += grade.weight
+        }
+      }
+      
+      const finalScore = totalWeight > 0 ? Math.round((weightedScore / totalWeight) * 100) : null
+      
+      // Get active weights (non-zero)
+      const activeWeights = Object.entries(csData.weights)
+        .filter(([_, value]) => value > 0)
+        .map(([key, value]) => {
+          const examType = Object.entries(examTypeToWeightKey).find(([_, wKey]) => wKey === key)?.[0]
+          return {
+            examType: examType || key,
+            examTypeLabel: examType ? examTypeLabels[examType] : key,
+            weight: value as number,
+          }
+        })
+      
+      return {
+        classSubjectId,
+        subjectName: csData.subjectName,
+        subjectCode: csData.subjectCode,
+        teacherName: csData.teacherName,
+        examResults: subjectGrades,
+        activeWeights,
+        weightedScore: finalScore,
+        grade: finalScore !== null ? calculateGrade(finalScore) : null,
+        completedWeight: totalWeight,
       }
     })
 
@@ -361,6 +482,7 @@ export async function getStudentGradesSummary(studentId: string, periodId?: stri
       periods: periods.map(p => ({ id: p.id, name: p.name })),
       selectedPeriodId,
       grades,
+      subjectSummaries,
       reportCard: reportCard ? {
         totalScore: reportCard.totalScore ? Number(reportCard.totalScore) : null,
         averageScore: reportCard.averageScore ? Number(reportCard.averageScore) : null,

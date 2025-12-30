@@ -28,10 +28,30 @@ export type AggregateClassSubject = {
 
 export type ClassSubjectAvgAggregateOutputType = {
   hoursPerWeek: runtime.Decimal | null
+  homeworkWeight: runtime.Decimal | null
+  classworkWeight: runtime.Decimal | null
+  testWeight: runtime.Decimal | null
+  quizWeight: runtime.Decimal | null
+  examWeight: runtime.Decimal | null
+  classTestWeight: runtime.Decimal | null
+  midTermWeight: runtime.Decimal | null
+  endOfTermWeight: runtime.Decimal | null
+  assignmentWeight: runtime.Decimal | null
+  projectWeight: runtime.Decimal | null
 }
 
 export type ClassSubjectSumAggregateOutputType = {
   hoursPerWeek: runtime.Decimal | null
+  homeworkWeight: runtime.Decimal | null
+  classworkWeight: runtime.Decimal | null
+  testWeight: runtime.Decimal | null
+  quizWeight: runtime.Decimal | null
+  examWeight: runtime.Decimal | null
+  classTestWeight: runtime.Decimal | null
+  midTermWeight: runtime.Decimal | null
+  endOfTermWeight: runtime.Decimal | null
+  assignmentWeight: runtime.Decimal | null
+  projectWeight: runtime.Decimal | null
 }
 
 export type ClassSubjectMinAggregateOutputType = {
@@ -42,6 +62,16 @@ export type ClassSubjectMinAggregateOutputType = {
   subjectId: string | null
   teacherId: string | null
   hoursPerWeek: runtime.Decimal | null
+  homeworkWeight: runtime.Decimal | null
+  classworkWeight: runtime.Decimal | null
+  testWeight: runtime.Decimal | null
+  quizWeight: runtime.Decimal | null
+  examWeight: runtime.Decimal | null
+  classTestWeight: runtime.Decimal | null
+  midTermWeight: runtime.Decimal | null
+  endOfTermWeight: runtime.Decimal | null
+  assignmentWeight: runtime.Decimal | null
+  projectWeight: runtime.Decimal | null
 }
 
 export type ClassSubjectMaxAggregateOutputType = {
@@ -52,6 +82,16 @@ export type ClassSubjectMaxAggregateOutputType = {
   subjectId: string | null
   teacherId: string | null
   hoursPerWeek: runtime.Decimal | null
+  homeworkWeight: runtime.Decimal | null
+  classworkWeight: runtime.Decimal | null
+  testWeight: runtime.Decimal | null
+  quizWeight: runtime.Decimal | null
+  examWeight: runtime.Decimal | null
+  classTestWeight: runtime.Decimal | null
+  midTermWeight: runtime.Decimal | null
+  endOfTermWeight: runtime.Decimal | null
+  assignmentWeight: runtime.Decimal | null
+  projectWeight: runtime.Decimal | null
 }
 
 export type ClassSubjectCountAggregateOutputType = {
@@ -62,16 +102,46 @@ export type ClassSubjectCountAggregateOutputType = {
   subjectId: number
   teacherId: number
   hoursPerWeek: number
+  homeworkWeight: number
+  classworkWeight: number
+  testWeight: number
+  quizWeight: number
+  examWeight: number
+  classTestWeight: number
+  midTermWeight: number
+  endOfTermWeight: number
+  assignmentWeight: number
+  projectWeight: number
   _all: number
 }
 
 
 export type ClassSubjectAvgAggregateInputType = {
   hoursPerWeek?: true
+  homeworkWeight?: true
+  classworkWeight?: true
+  testWeight?: true
+  quizWeight?: true
+  examWeight?: true
+  classTestWeight?: true
+  midTermWeight?: true
+  endOfTermWeight?: true
+  assignmentWeight?: true
+  projectWeight?: true
 }
 
 export type ClassSubjectSumAggregateInputType = {
   hoursPerWeek?: true
+  homeworkWeight?: true
+  classworkWeight?: true
+  testWeight?: true
+  quizWeight?: true
+  examWeight?: true
+  classTestWeight?: true
+  midTermWeight?: true
+  endOfTermWeight?: true
+  assignmentWeight?: true
+  projectWeight?: true
 }
 
 export type ClassSubjectMinAggregateInputType = {
@@ -82,6 +152,16 @@ export type ClassSubjectMinAggregateInputType = {
   subjectId?: true
   teacherId?: true
   hoursPerWeek?: true
+  homeworkWeight?: true
+  classworkWeight?: true
+  testWeight?: true
+  quizWeight?: true
+  examWeight?: true
+  classTestWeight?: true
+  midTermWeight?: true
+  endOfTermWeight?: true
+  assignmentWeight?: true
+  projectWeight?: true
 }
 
 export type ClassSubjectMaxAggregateInputType = {
@@ -92,6 +172,16 @@ export type ClassSubjectMaxAggregateInputType = {
   subjectId?: true
   teacherId?: true
   hoursPerWeek?: true
+  homeworkWeight?: true
+  classworkWeight?: true
+  testWeight?: true
+  quizWeight?: true
+  examWeight?: true
+  classTestWeight?: true
+  midTermWeight?: true
+  endOfTermWeight?: true
+  assignmentWeight?: true
+  projectWeight?: true
 }
 
 export type ClassSubjectCountAggregateInputType = {
@@ -102,6 +192,16 @@ export type ClassSubjectCountAggregateInputType = {
   subjectId?: true
   teacherId?: true
   hoursPerWeek?: true
+  homeworkWeight?: true
+  classworkWeight?: true
+  testWeight?: true
+  quizWeight?: true
+  examWeight?: true
+  classTestWeight?: true
+  midTermWeight?: true
+  endOfTermWeight?: true
+  assignmentWeight?: true
+  projectWeight?: true
   _all?: true
 }
 
@@ -199,6 +299,16 @@ export type ClassSubjectGroupByOutputType = {
   subjectId: string
   teacherId: string | null
   hoursPerWeek: runtime.Decimal
+  homeworkWeight: runtime.Decimal
+  classworkWeight: runtime.Decimal
+  testWeight: runtime.Decimal
+  quizWeight: runtime.Decimal
+  examWeight: runtime.Decimal
+  classTestWeight: runtime.Decimal
+  midTermWeight: runtime.Decimal
+  endOfTermWeight: runtime.Decimal
+  assignmentWeight: runtime.Decimal
+  projectWeight: runtime.Decimal
   _count: ClassSubjectCountAggregateOutputType | null
   _avg: ClassSubjectAvgAggregateOutputType | null
   _sum: ClassSubjectSumAggregateOutputType | null
@@ -232,6 +342,16 @@ export type ClassSubjectWhereInput = {
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
   hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   teacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -248,6 +368,16 @@ export type ClassSubjectOrderByWithRelationInput = {
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrderInput | Prisma.SortOrder
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
   class?: Prisma.ClassOrderByWithRelationInput
   subject?: Prisma.SubjectOrderByWithRelationInput
   teacher?: Prisma.UserOrderByWithRelationInput
@@ -268,6 +398,16 @@ export type ClassSubjectWhereUniqueInput = Prisma.AtLeast<{
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
   hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.XOR<Prisma.ClassScalarRelationFilter, Prisma.ClassWhereInput>
   subject?: Prisma.XOR<Prisma.SubjectScalarRelationFilter, Prisma.SubjectWhereInput>
   teacher?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
@@ -284,6 +424,16 @@ export type ClassSubjectOrderByWithAggregationInput = {
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrderInput | Prisma.SortOrder
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
   _count?: Prisma.ClassSubjectCountOrderByAggregateInput
   _avg?: Prisma.ClassSubjectAvgOrderByAggregateInput
   _max?: Prisma.ClassSubjectMaxOrderByAggregateInput
@@ -302,6 +452,16 @@ export type ClassSubjectScalarWhereWithAggregatesInput = {
   subjectId?: Prisma.StringWithAggregatesFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableWithAggregatesFilter<"ClassSubject"> | string | null
   hoursPerWeek?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalWithAggregatesFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateInput = {
@@ -309,6 +469,16 @@ export type ClassSubjectCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -325,6 +495,16 @@ export type ClassSubjectUncheckedCreateInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -335,6 +515,16 @@ export type ClassSubjectUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -351,6 +541,16 @@ export type ClassSubjectUncheckedUpdateInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -364,6 +564,16 @@ export type ClassSubjectCreateManyInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateManyMutationInput = {
@@ -371,6 +581,16 @@ export type ClassSubjectUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUncheckedUpdateManyInput = {
@@ -381,6 +601,16 @@ export type ClassSubjectUncheckedUpdateManyInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectListRelationFilter = {
@@ -406,10 +636,30 @@ export type ClassSubjectCountOrderByAggregateInput = {
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
 }
 
 export type ClassSubjectAvgOrderByAggregateInput = {
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
 }
 
 export type ClassSubjectMaxOrderByAggregateInput = {
@@ -420,6 +670,16 @@ export type ClassSubjectMaxOrderByAggregateInput = {
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
 }
 
 export type ClassSubjectMinOrderByAggregateInput = {
@@ -430,10 +690,30 @@ export type ClassSubjectMinOrderByAggregateInput = {
   subjectId?: Prisma.SortOrder
   teacherId?: Prisma.SortOrder
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
 }
 
 export type ClassSubjectSumOrderByAggregateInput = {
   hoursPerWeek?: Prisma.SortOrder
+  homeworkWeight?: Prisma.SortOrder
+  classworkWeight?: Prisma.SortOrder
+  testWeight?: Prisma.SortOrder
+  quizWeight?: Prisma.SortOrder
+  examWeight?: Prisma.SortOrder
+  classTestWeight?: Prisma.SortOrder
+  midTermWeight?: Prisma.SortOrder
+  endOfTermWeight?: Prisma.SortOrder
+  assignmentWeight?: Prisma.SortOrder
+  projectWeight?: Prisma.SortOrder
 }
 
 export type ClassSubjectNullableScalarRelationFilter = {
@@ -621,6 +901,16 @@ export type ClassSubjectCreateWithoutTeacherInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -635,6 +925,16 @@ export type ClassSubjectUncheckedCreateWithoutTeacherInput = {
   classId: string
   subjectId: string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -677,6 +977,16 @@ export type ClassSubjectScalarWhereInput = {
   subjectId?: Prisma.StringFilter<"ClassSubject"> | string
   teacherId?: Prisma.StringNullableFilter<"ClassSubject"> | string | null
   hoursPerWeek?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFilter<"ClassSubject"> | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateWithoutClassInput = {
@@ -684,6 +994,16 @@ export type ClassSubjectCreateWithoutClassInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -698,6 +1018,16 @@ export type ClassSubjectUncheckedCreateWithoutClassInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -734,6 +1064,16 @@ export type ClassSubjectCreateWithoutSubjectInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
   timetableSlots?: Prisma.TimetableSlotCreateNestedManyWithoutClassSubjectInput
@@ -748,6 +1088,16 @@ export type ClassSubjectUncheckedCreateWithoutSubjectInput = {
   classId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
@@ -784,6 +1134,16 @@ export type ClassSubjectCreateWithoutTimetableSlotsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -799,6 +1159,16 @@ export type ClassSubjectUncheckedCreateWithoutTimetableSlotsInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -824,6 +1194,16 @@ export type ClassSubjectUpdateWithoutTimetableSlotsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -839,6 +1219,16 @@ export type ClassSubjectUncheckedUpdateWithoutTimetableSlotsInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -848,6 +1238,16 @@ export type ClassSubjectCreateWithoutAssignmentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -863,6 +1263,16 @@ export type ClassSubjectUncheckedCreateWithoutAssignmentsInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   examResults?: Prisma.ExamResultUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -888,6 +1298,16 @@ export type ClassSubjectUpdateWithoutAssignmentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -903,6 +1323,16 @@ export type ClassSubjectUncheckedUpdateWithoutAssignmentsInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -912,6 +1342,16 @@ export type ClassSubjectCreateWithoutExamResultsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   class: Prisma.ClassCreateNestedOneWithoutClassSubjectsInput
   subject: Prisma.SubjectCreateNestedOneWithoutClassSubjectsInput
   teacher?: Prisma.UserCreateNestedOneWithoutClassSubjectsInput
@@ -927,6 +1367,16 @@ export type ClassSubjectUncheckedCreateWithoutExamResultsInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedCreateNestedManyWithoutClassSubjectInput
   assignments?: Prisma.AssignmentUncheckedCreateNestedManyWithoutClassSubjectInput
 }
@@ -952,6 +1402,16 @@ export type ClassSubjectUpdateWithoutExamResultsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
@@ -967,6 +1427,16 @@ export type ClassSubjectUncheckedUpdateWithoutExamResultsInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
 }
@@ -978,6 +1448,16 @@ export type ClassSubjectCreateManyTeacherInput = {
   classId: string
   subjectId: string
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutTeacherInput = {
@@ -985,6 +1465,16 @@ export type ClassSubjectUpdateWithoutTeacherInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -999,6 +1489,16 @@ export type ClassSubjectUncheckedUpdateWithoutTeacherInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -1011,6 +1511,16 @@ export type ClassSubjectUncheckedUpdateManyWithoutTeacherInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateManyClassInput = {
@@ -1020,6 +1530,16 @@ export type ClassSubjectCreateManyClassInput = {
   subjectId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutClassInput = {
@@ -1027,6 +1547,16 @@ export type ClassSubjectUpdateWithoutClassInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   subject?: Prisma.SubjectUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -1041,6 +1571,16 @@ export type ClassSubjectUncheckedUpdateWithoutClassInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -1053,6 +1593,16 @@ export type ClassSubjectUncheckedUpdateManyWithoutClassInput = {
   subjectId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectCreateManySubjectInput = {
@@ -1062,6 +1612,16 @@ export type ClassSubjectCreateManySubjectInput = {
   classId: string
   teacherId?: string | null
   hoursPerWeek?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 export type ClassSubjectUpdateWithoutSubjectInput = {
@@ -1069,6 +1629,16 @@ export type ClassSubjectUpdateWithoutSubjectInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   class?: Prisma.ClassUpdateOneRequiredWithoutClassSubjectsNestedInput
   teacher?: Prisma.UserUpdateOneWithoutClassSubjectsNestedInput
   timetableSlots?: Prisma.TimetableSlotUpdateManyWithoutClassSubjectNestedInput
@@ -1083,6 +1653,16 @@ export type ClassSubjectUncheckedUpdateWithoutSubjectInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   timetableSlots?: Prisma.TimetableSlotUncheckedUpdateManyWithoutClassSubjectNestedInput
   assignments?: Prisma.AssignmentUncheckedUpdateManyWithoutClassSubjectNestedInput
   examResults?: Prisma.ExamResultUncheckedUpdateManyWithoutClassSubjectNestedInput
@@ -1095,6 +1675,16 @@ export type ClassSubjectUncheckedUpdateManyWithoutSubjectInput = {
   classId?: Prisma.StringFieldUpdateOperationsInput | string
   teacherId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hoursPerWeek?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  homeworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classworkWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  testWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  quizWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  examWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  classTestWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  midTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endOfTermWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  assignmentWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  projectWeight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
 }
 
 
@@ -1154,6 +1744,16 @@ export type ClassSubjectSelect<ExtArgs extends runtime.Types.Extensions.Internal
   subjectId?: boolean
   teacherId?: boolean
   hoursPerWeek?: boolean
+  homeworkWeight?: boolean
+  classworkWeight?: boolean
+  testWeight?: boolean
+  quizWeight?: boolean
+  examWeight?: boolean
+  classTestWeight?: boolean
+  midTermWeight?: boolean
+  endOfTermWeight?: boolean
+  assignmentWeight?: boolean
+  projectWeight?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1171,6 +1771,16 @@ export type ClassSubjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   subjectId?: boolean
   teacherId?: boolean
   hoursPerWeek?: boolean
+  homeworkWeight?: boolean
+  classworkWeight?: boolean
+  testWeight?: boolean
+  quizWeight?: boolean
+  examWeight?: boolean
+  classTestWeight?: boolean
+  midTermWeight?: boolean
+  endOfTermWeight?: boolean
+  assignmentWeight?: boolean
+  projectWeight?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1184,6 +1794,16 @@ export type ClassSubjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   subjectId?: boolean
   teacherId?: boolean
   hoursPerWeek?: boolean
+  homeworkWeight?: boolean
+  classworkWeight?: boolean
+  testWeight?: boolean
+  quizWeight?: boolean
+  examWeight?: boolean
+  classTestWeight?: boolean
+  midTermWeight?: boolean
+  endOfTermWeight?: boolean
+  assignmentWeight?: boolean
+  projectWeight?: boolean
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
   teacher?: boolean | Prisma.ClassSubject$teacherArgs<ExtArgs>
@@ -1197,9 +1817,19 @@ export type ClassSubjectSelectScalar = {
   subjectId?: boolean
   teacherId?: boolean
   hoursPerWeek?: boolean
+  homeworkWeight?: boolean
+  classworkWeight?: boolean
+  testWeight?: boolean
+  quizWeight?: boolean
+  examWeight?: boolean
+  classTestWeight?: boolean
+  midTermWeight?: boolean
+  endOfTermWeight?: boolean
+  assignmentWeight?: boolean
+  projectWeight?: boolean
 }
 
-export type ClassSubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "classId" | "subjectId" | "teacherId" | "hoursPerWeek", ExtArgs["result"]["classSubject"]>
+export type ClassSubjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "classId" | "subjectId" | "teacherId" | "hoursPerWeek" | "homeworkWeight" | "classworkWeight" | "testWeight" | "quizWeight" | "examWeight" | "classTestWeight" | "midTermWeight" | "endOfTermWeight" | "assignmentWeight" | "projectWeight", ExtArgs["result"]["classSubject"]>
 export type ClassSubjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   class?: boolean | Prisma.ClassDefaultArgs<ExtArgs>
   subject?: boolean | Prisma.SubjectDefaultArgs<ExtArgs>
@@ -1238,6 +1868,16 @@ export type $ClassSubjectPayload<ExtArgs extends runtime.Types.Extensions.Intern
     subjectId: string
     teacherId: string | null
     hoursPerWeek: runtime.Decimal
+    homeworkWeight: runtime.Decimal
+    classworkWeight: runtime.Decimal
+    testWeight: runtime.Decimal
+    quizWeight: runtime.Decimal
+    examWeight: runtime.Decimal
+    classTestWeight: runtime.Decimal
+    midTermWeight: runtime.Decimal
+    endOfTermWeight: runtime.Decimal
+    assignmentWeight: runtime.Decimal
+    projectWeight: runtime.Decimal
   }, ExtArgs["result"]["classSubject"]>
   composites: {}
 }
@@ -1674,6 +2314,16 @@ export interface ClassSubjectFieldRefs {
   readonly subjectId: Prisma.FieldRef<"ClassSubject", 'String'>
   readonly teacherId: Prisma.FieldRef<"ClassSubject", 'String'>
   readonly hoursPerWeek: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly homeworkWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly classworkWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly testWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly quizWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly examWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly classTestWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly midTermWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly endOfTermWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly assignmentWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
+  readonly projectWeight: Prisma.FieldRef<"ClassSubject", 'Decimal'>
 }
     
 

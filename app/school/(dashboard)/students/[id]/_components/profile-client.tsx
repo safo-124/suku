@@ -23,6 +23,11 @@ import {
   Hash,
   School,
   TrendingUp,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Weight,
+  Percent,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -102,12 +107,36 @@ interface AttendanceData {
 
 interface Grade {
   id: string
+  classSubjectId: string
   subjectName: string
+  subjectCode: string | null
+  teacherName: string | null
   examType: string
+  examTypeLabel: string
   score: number
   maxScore: number
+  percentage: number
   grade: string | null
   remarks: string | null
+  weight: number
+}
+
+interface ActiveWeight {
+  examType: string
+  examTypeLabel: string
+  weight: number
+}
+
+interface SubjectSummary {
+  classSubjectId: string
+  subjectName: string
+  subjectCode: string | null
+  teacherName: string | null
+  examResults: Grade[]
+  activeWeights: ActiveWeight[]
+  weightedScore: number | null
+  grade: string | null
+  completedWeight: number
 }
 
 interface ReportCard {
@@ -122,6 +151,7 @@ interface GradesData {
   periods: { id: string; name: string }[]
   selectedPeriodId: string
   grades: Grade[]
+  subjectSummaries: SubjectSummary[]
   reportCard: ReportCard | null
 }
 
@@ -133,8 +163,33 @@ interface ProfileClientProps {
 
 export function ProfileClient({ student, attendance, grades }: ProfileClientProps) {
   const [activeTab, setActiveTab] = useState("overview")
+  const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set())
   
   const initials = `${student.firstName[0]}${student.lastName[0]}`.toUpperCase()
+  
+  const toggleSubjectExpand = (classSubjectId: string) => {
+    setExpandedSubjects(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(classSubjectId)) {
+        newSet.delete(classSubjectId)
+      } else {
+        newSet.add(classSubjectId)
+      }
+      return newSet
+    })
+  }
+  
+  const getGradeColor = (grade: string | null) => {
+    switch (grade) {
+      case "A": return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+      case "B": return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
+      case "C": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+      case "D": return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400"
+      case "E": return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+      case "F": return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+      default: return "bg-gray-100 text-gray-800"
+    }
+  }
   
   const formatDate = (date: Date | null) => {
     if (!date) return "N/A"
@@ -480,7 +535,7 @@ export function ProfileClient({ student, attendance, grades }: ProfileClientProp
 
         {/* Grades Tab */}
         <TabsContent value="grades" className="space-y-6 mt-6">
-          {grades && grades.grades.length > 0 ? (
+          {grades && grades.subjectSummaries && grades.subjectSummaries.length > 0 ? (
             <>
               {/* Report Card Summary */}
               {grades.reportCard && (
@@ -524,39 +579,148 @@ export function ProfileClient({ student, attendance, grades }: ProfileClientProp
                 </div>
               )}
 
-              {/* Grades List */}
-              <div className="neu-flat rounded-2xl overflow-hidden">
-                <div className="p-4 border-b">
-                  <h3 className="font-semibold">Subject Grades</h3>
+              {/* Subject Summaries with Expandable Details */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-lg">Subject Breakdown</h3>
+                  <Badge variant="outline" className="text-xs">
+                    {grades.subjectSummaries.length} Subjects
+                  </Badge>
                 </div>
-                <div className="divide-y">
-                  {grades.grades.map((grade) => (
-                    <div
-                      key={grade.id}
-                      className="flex items-center justify-between p-4 hover:bg-accent/50"
+
+                {grades.subjectSummaries.map((subject) => (
+                  <div
+                    key={subject.classSubjectId}
+                    className="neu-flat rounded-2xl overflow-hidden"
+                  >
+                    {/* Subject Header - Clickable */}
+                    <button
+                      onClick={() => toggleSubjectExpand(subject.classSubjectId)}
+                      className="w-full p-4 flex items-center justify-between hover:bg-accent/50 transition-colors"
                     >
-                      <div>
-                        <p className="font-medium">{grade.subjectName}</p>
-                        <p className="text-sm text-muted-foreground">{grade.examType}</p>
+                      <div className="flex items-center gap-4">
+                        <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                          <BookOpen className="h-6 w-6 text-primary" />
+                        </div>
+                        <div className="text-left">
+                          <h4 className="font-semibold">{subject.subjectName}</h4>
+                          {subject.teacherName && (
+                            <p className="text-sm text-muted-foreground">
+                              Teacher: {subject.teacherName}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <p className="font-bold">
-                            {grade.score}/{grade.maxScore}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            {((grade.score / grade.maxScore) * 100).toFixed(0)}%
-                          </p>
+                          {subject.weightedScore !== null ? (
+                            <>
+                              <p className="text-xl font-bold">{subject.weightedScore}%</p>
+                              <p className="text-xs text-muted-foreground">Weighted Average</p>
+                            </>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">No score</p>
+                          )}
                         </div>
-                        {grade.grade && (
-                          <Badge className="bg-primary/10 text-primary">
-                            {grade.grade}
+                        {subject.grade && (
+                          <Badge className={cn("text-sm", getGradeColor(subject.grade))}>
+                            {subject.grade}
                           </Badge>
                         )}
+                        {expandedSubjects.has(subject.classSubjectId) ? (
+                          <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                        ) : (
+                          <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                        )}
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    </button>
+
+                    {/* Expanded Details */}
+                    {expandedSubjects.has(subject.classSubjectId) && (
+                      <div className="border-t p-4 space-y-4 bg-accent/30">
+                        {/* Grade Weights */}
+                        {subject.activeWeights.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                              <Weight className="h-4 w-4" />
+                              Grade Weight Configuration
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              {subject.activeWeights.map((w) => (
+                                <Badge
+                                  key={w.examType}
+                                  variant="outline"
+                                  className="text-xs"
+                                >
+                                  {w.examTypeLabel}: {w.weight}%
+                                </Badge>
+                              ))}
+                            </div>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Percent className="h-3 w-3" />
+                              Weight completed: {subject.completedWeight}% of 100%
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Exam Results */}
+                        {subject.examResults.length > 0 && (
+                          <div className="space-y-2">
+                            <div className="text-sm font-medium text-muted-foreground">
+                              Assessment Results
+                            </div>
+                            <div className="space-y-2">
+                              {subject.examResults.map((result) => (
+                                <div
+                                  key={result.id}
+                                  className="bg-background rounded-xl p-3 space-y-2"
+                                >
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                      <Badge variant="secondary" className="text-xs">
+                                        {result.examTypeLabel}
+                                      </Badge>
+                                      {result.weight > 0 && (
+                                        <span className="text-xs text-muted-foreground">
+                                          ({result.weight}% weight)
+                                        </span>
+                                      )}
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                      <div className="text-right">
+                                        <p className="font-bold">
+                                          {result.score}/{result.maxScore}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {result.percentage}%
+                                        </p>
+                                      </div>
+                                      {result.grade && (
+                                        <Badge className={cn("text-xs", getGradeColor(result.grade))}>
+                                          {result.grade}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Teacher Comments */}
+                                  {result.remarks && (
+                                    <div className="flex items-start gap-2 pt-2 border-t mt-2">
+                                      <MessageSquare className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                                      <p className="text-sm text-muted-foreground italic">
+                                        &ldquo;{result.remarks}&rdquo;
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </>
           ) : (
