@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -286,9 +287,9 @@ export function UnifiedLoginForm({ school, subdomain }: UnifiedLoginFormProps) {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Password</Label>
-            <a href="#" className="text-xs text-muted-foreground hover:text-foreground">
+            <Link href={`/school/login/forgot-password?subdomain=${subdomain}`} className="text-xs text-muted-foreground hover:text-foreground">
               Forgot password?
-            </a>
+            </Link>
           </div>
           <div className="relative">
             <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

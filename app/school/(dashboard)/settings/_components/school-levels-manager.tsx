@@ -11,7 +11,8 @@ import {
   Layers,
   BookOpen,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  Sparkles
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { toast } from "sonner"
@@ -23,6 +24,7 @@ import {
   updateLevelSubject,
   removeSubjectFromLevel,
   getAvailableSubjectsForLevel,
+  bulkCreateSchoolLevelsWithGrades,
 } from "../_actions/settings-actions"
 import {
   Dialog,
@@ -51,6 +53,165 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
+
+// Preset templates for school levels with their associated grades
+const LEVEL_PRESETS = {
+  ghana: {
+    name: "Ghana Education System",
+    levels: [
+      {
+        name: "Kindergarten",
+        shortName: "KG",
+        description: "Pre-primary education",
+        allowElectives: false,
+        grades: [
+          { name: "Kindergarten 1", shortName: "KG1" },
+          { name: "Kindergarten 2", shortName: "KG2" },
+        ],
+      },
+      {
+        name: "Primary",
+        shortName: "Primary",
+        description: "Primary school education",
+        allowElectives: false,
+        grades: [
+          { name: "Class 1", shortName: "C1" },
+          { name: "Class 2", shortName: "C2" },
+          { name: "Class 3", shortName: "C3" },
+          { name: "Class 4", shortName: "C4" },
+          { name: "Class 5", shortName: "C5" },
+          { name: "Class 6", shortName: "C6" },
+        ],
+      },
+      {
+        name: "Junior High School",
+        shortName: "JHS",
+        description: "Junior secondary education",
+        allowElectives: false,
+        grades: [
+          { name: "JHS 1", shortName: "JHS1" },
+          { name: "JHS 2", shortName: "JHS2" },
+          { name: "JHS 3", shortName: "JHS3" },
+        ],
+      },
+      {
+        name: "Senior High School",
+        shortName: "SHS",
+        description: "Senior secondary education with electives",
+        allowElectives: true,
+        grades: [
+          { name: "SHS 1", shortName: "SHS1" },
+          { name: "SHS 2", shortName: "SHS2" },
+          { name: "SHS 3", shortName: "SHS3" },
+        ],
+      },
+    ],
+  },
+  us: {
+    name: "US Education System",
+    levels: [
+      {
+        name: "Elementary School",
+        shortName: "Elementary",
+        description: "Grades K-5",
+        allowElectives: false,
+        grades: [
+          { name: "Kindergarten", shortName: "K" },
+          { name: "Grade 1", shortName: "G1" },
+          { name: "Grade 2", shortName: "G2" },
+          { name: "Grade 3", shortName: "G3" },
+          { name: "Grade 4", shortName: "G4" },
+          { name: "Grade 5", shortName: "G5" },
+        ],
+      },
+      {
+        name: "Middle School",
+        shortName: "Middle",
+        description: "Grades 6-8",
+        allowElectives: true,
+        grades: [
+          { name: "Grade 6", shortName: "G6" },
+          { name: "Grade 7", shortName: "G7" },
+          { name: "Grade 8", shortName: "G8" },
+        ],
+      },
+      {
+        name: "High School",
+        shortName: "High",
+        description: "Grades 9-12 with electives",
+        allowElectives: true,
+        grades: [
+          { name: "Grade 9", shortName: "G9" },
+          { name: "Grade 10", shortName: "G10" },
+          { name: "Grade 11", shortName: "G11" },
+          { name: "Grade 12", shortName: "G12" },
+        ],
+      },
+    ],
+  },
+  uk: {
+    name: "UK Education System",
+    levels: [
+      {
+        name: "Primary School",
+        shortName: "Primary",
+        description: "Reception to Year 6",
+        allowElectives: false,
+        grades: [
+          { name: "Reception", shortName: "R" },
+          { name: "Year 1", shortName: "Y1" },
+          { name: "Year 2", shortName: "Y2" },
+          { name: "Year 3", shortName: "Y3" },
+          { name: "Year 4", shortName: "Y4" },
+          { name: "Year 5", shortName: "Y5" },
+          { name: "Year 6", shortName: "Y6" },
+        ],
+      },
+      {
+        name: "Secondary School",
+        shortName: "Secondary",
+        description: "Year 7 to Year 11 (GCSE)",
+        allowElectives: true,
+        grades: [
+          { name: "Year 7", shortName: "Y7" },
+          { name: "Year 8", shortName: "Y8" },
+          { name: "Year 9", shortName: "Y9" },
+          { name: "Year 10", shortName: "Y10" },
+          { name: "Year 11", shortName: "Y11" },
+        ],
+      },
+      {
+        name: "Sixth Form",
+        shortName: "6th Form",
+        description: "Year 12-13 (A-Levels)",
+        allowElectives: true,
+        grades: [
+          { name: "Year 12", shortName: "Y12" },
+          { name: "Year 13", shortName: "Y13" },
+        ],
+      },
+    ],
+  },
+  simple: {
+    name: "Simple (Primary & Secondary)",
+    levels: [
+      {
+        name: "Primary School",
+        shortName: "Primary",
+        description: "Lower grades",
+        allowElectives: false,
+        grades: [],
+      },
+      {
+        name: "Secondary School",
+        shortName: "Secondary",
+        description: "Upper grades with electives",
+        allowElectives: true,
+        grades: [],
+      },
+    ],
+  },
+}
 
 interface LevelSubject {
   id: string
@@ -101,6 +262,11 @@ export function SchoolLevelsManager({ levels, subjects }: SchoolLevelsManagerPro
   const [deletingLevel, setDeletingLevel] = useState<SchoolLevel | null>(null)
   const [expandedLevels, setExpandedLevels] = useState<Set<string>>(new Set())
   
+  // Preset dialog state
+  const [showPresetDialog, setShowPresetDialog] = useState(false)
+  const [selectedPreset, setSelectedPreset] = useState<string>("")
+  const [excludedLevels, setExcludedLevels] = useState<Set<string>>(new Set())
+  
   // Subject assignment state
   const [showSubjectForm, setShowSubjectForm] = useState(false)
   const [targetLevel, setTargetLevel] = useState<SchoolLevel | null>(null)
@@ -126,6 +292,51 @@ export function SchoolLevelsManager({ levels, subjects }: SchoolLevelsManagerPro
     subjectType: "CORE",
     isCompulsory: true,
   })
+
+  // Get filtered preset levels (excluding deselected ones)
+  const getFilteredPresetLevels = () => {
+    if (!selectedPreset) return []
+    const preset = LEVEL_PRESETS[selectedPreset as keyof typeof LEVEL_PRESETS]
+    if (!preset) return []
+    return preset.levels.filter(l => !excludedLevels.has(l.shortName))
+  }
+
+  const toggleLevelExclusion = (shortName: string) => {
+    setExcludedLevels(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(shortName)) {
+        newSet.delete(shortName)
+      } else {
+        newSet.add(shortName)
+      }
+      return newSet
+    })
+  }
+
+  const handleApplyPreset = () => {
+    if (!selectedPreset) {
+      toast.error("Please select a preset")
+      return
+    }
+
+    const filteredLevels = getFilteredPresetLevels()
+    if (filteredLevels.length === 0) {
+      toast.error("Please select at least one level")
+      return
+    }
+
+    startTransition(async () => {
+      const result = await bulkCreateSchoolLevelsWithGrades({ levels: filteredLevels })
+      if (result.success) {
+        toast.success(`Created ${result.levelsCreated} levels and ${result.gradesCreated} grades`)
+        setShowPresetDialog(false)
+        setSelectedPreset("")
+        setExcludedLevels(new Set())
+      } else {
+        toast.error(result.error || "Something went wrong")
+      }
+    })
+  }
 
   const toggleLevel = (levelId: string) => {
     setExpandedLevels(prev => {
@@ -290,13 +501,22 @@ export function SchoolLevelsManager({ levels, subjects }: SchoolLevelsManagerPro
             Define grade levels and assign subjects with core/elective configuration
           </p>
         </div>
-        <button
-          onClick={() => setShowLevelForm(true)}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
-        >
-          <Plus className="h-4 w-4" />
-          Add Level
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowPresetDialog(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
+          >
+            <Sparkles className="h-4 w-4" />
+            Use Preset
+          </button>
+          <button
+            onClick={() => setShowLevelForm(true)}
+            className="flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
+          >
+            <Plus className="h-4 w-4" />
+            Add Level
+          </button>
+        </div>
       </div>
 
       {/* Levels List */}
@@ -307,13 +527,22 @@ export function SchoolLevelsManager({ levels, subjects }: SchoolLevelsManagerPro
           <p className="text-sm text-muted-foreground mb-4">
             Create school levels like Primary, Junior High, Senior High to organize your classes
           </p>
-          <button
-            onClick={() => setShowLevelForm(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
-          >
-            <Plus className="h-4 w-4" />
-            Create First Level
-          </button>
+          <div className="flex justify-center gap-3">
+            <button
+              onClick={() => setShowPresetDialog(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
+            >
+              <Sparkles className="h-4 w-4" />
+              Use Preset
+            </button>
+            <button
+              onClick={() => setShowLevelForm(true)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium"
+            >
+              <Plus className="h-4 w-4" />
+              Create Custom
+            </button>
+          </div>
         </div>
       ) : (
         <div className="space-y-3">
@@ -756,6 +985,128 @@ export function SchoolLevelsManager({ levels, subjects }: SchoolLevelsManagerPro
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Preset Dialog */}
+      <Dialog open={showPresetDialog} onOpenChange={setShowPresetDialog}>
+        <DialogContent className="sm:max-w-[550px]">
+          <DialogHeader>
+            <DialogTitle>Use School Level Preset</DialogTitle>
+            <DialogDescription>
+              Quickly set up school levels and grades using a standard education system template
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Select Education System</label>
+              <Select 
+                value={selectedPreset} 
+                onValueChange={(value) => {
+                  setSelectedPreset(value)
+                  setExcludedLevels(new Set())
+                }}
+              >
+                <SelectTrigger className="neu-inset">
+                  <SelectValue placeholder="Choose a preset..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ghana">Ghana (KG, Primary, JHS, SHS)</SelectItem>
+                  <SelectItem value="us">US (Elementary, Middle, High)</SelectItem>
+                  <SelectItem value="uk">UK (Primary, Secondary, 6th Form)</SelectItem>
+                  <SelectItem value="simple">Simple (Primary & Secondary)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedPreset && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium">Preview:</p>
+                  <p className="text-xs text-muted-foreground">
+                    {getFilteredPresetLevels().length} of {LEVEL_PRESETS[selectedPreset as keyof typeof LEVEL_PRESETS]?.levels.length || 0} levels selected
+                  </p>
+                </div>
+                
+                <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                  {LEVEL_PRESETS[selectedPreset as keyof typeof LEVEL_PRESETS]?.levels.map((level) => {
+                    const isExcluded = excludedLevels.has(level.shortName)
+                    return (
+                      <div
+                        key={level.shortName}
+                        className={cn(
+                          "p-3 rounded-xl transition-all cursor-pointer",
+                          isExcluded 
+                            ? "bg-muted/30 opacity-50" 
+                            : "bg-muted/50 hover:bg-muted/70"
+                        )}
+                        onClick={() => toggleLevelExclusion(level.shortName)}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className={cn("font-medium", isExcluded && "line-through")}>
+                              {level.name}
+                            </span>
+                            <Badge variant="secondary" className="text-xs">
+                              {level.shortName}
+                            </Badge>
+                            {level.allowElectives && (
+                              <Badge variant="outline" className="text-xs">
+                                Electives
+                              </Badge>
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground">
+                            {isExcluded ? "Click to include" : "Click to exclude"}
+                          </span>
+                        </div>
+                        {level.grades.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {level.grades.map((g) => (
+                              <span
+                                key={g.shortName}
+                                className={cn(
+                                  "px-1.5 py-0.5 rounded text-[10px] bg-background/50",
+                                  isExcluded && "line-through"
+                                )}
+                              >
+                                {g.shortName}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+
+                <p className="text-xs text-muted-foreground">
+                  Note: Existing levels and grades with the same name will be skipped.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <DialogFooter>
+            <button
+              onClick={() => {
+                setShowPresetDialog(false)
+                setSelectedPreset("")
+                setExcludedLevels(new Set())
+              }}
+              className="px-4 py-2 rounded-xl hover:neu-inset transition-all text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleApplyPreset}
+              disabled={isPending || !selectedPreset || getFilteredPresetLevels().length === 0}
+              className="px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium disabled:opacity-50"
+            >
+              {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply Preset"}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

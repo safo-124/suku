@@ -1470,3 +1470,89 @@ export async function bulkCreateGradeDefinitions(grades: {
     return { success: false, error: "Failed to create grades" }
   }
 }
+
+// Bulk create school levels with associated grade definitions
+export async function bulkCreateSchoolLevelsWithGrades(data: {
+  levels: {
+    name: string
+    shortName: string
+    description?: string | null
+    allowElectives: boolean
+    grades: { name: string; shortName: string }[]
+  }[]
+}) {
+  const { success, school, error } = await verifySchoolAccess([UserRole.SCHOOL_ADMIN])
+  
+  if (!success || !school) {
+    return { success: false, error: error || "Unauthorized" }
+  }
+
+  try {
+    // Get current max orders
+    const lastLevel = await prisma.schoolLevel.findFirst({
+      where: { schoolId: school.id },
+      orderBy: { order: "desc" },
+    })
+    let levelOrder = lastLevel?.order ?? 0
+
+    const lastGrade = await prisma.gradeDefinition.findFirst({
+      where: { schoolId: school.id },
+      orderBy: { order: "desc" },
+    })
+    let gradeOrder = lastGrade?.order ?? 0
+
+    let levelsCreated = 0
+    let gradesCreated = 0
+
+    for (const levelData of data.levels) {
+      // Check if level already exists
+      let level = await prisma.schoolLevel.findFirst({
+        where: { schoolId: school.id, name: levelData.name },
+      })
+
+      if (!level) {
+        // Create new level
+        levelOrder++
+        level = await prisma.schoolLevel.create({
+          data: {
+            schoolId: school.id,
+            name: levelData.name,
+            shortName: levelData.shortName,
+            description: levelData.description,
+            allowElectives: levelData.allowElectives,
+            order: levelOrder,
+          },
+        })
+        levelsCreated++
+      }
+
+      // Create grades under this level
+      for (const gradeData of levelData.grades) {
+        const existingGrade = await prisma.gradeDefinition.findFirst({
+          where: { schoolId: school.id, name: gradeData.name },
+        })
+
+        if (!existingGrade) {
+          gradeOrder++
+          await prisma.gradeDefinition.create({
+            data: {
+              schoolId: school.id,
+              name: gradeData.name,
+              shortName: gradeData.shortName,
+              order: gradeOrder,
+              schoolLevelId: level.id,
+            },
+          })
+          gradesCreated++
+        }
+      }
+    }
+
+    revalidatePath("/school/settings")
+    revalidatePath("/school/classes")
+    return { success: true, levelsCreated, gradesCreated }
+  } catch (err) {
+    console.error("Failed to bulk create levels with grades:", err)
+    return { success: false, error: "Failed to create school levels" }
+  }
+}

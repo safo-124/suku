@@ -90,6 +90,7 @@ export const ModelName = {
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken',
+  PasswordResetToken: 'PasswordResetToken',
   PlatformSettings: 'PlatformSettings'
 } as const
 
@@ -706,6 +707,18 @@ export const VerificationTokenScalarFieldEnum = {
 } as const
 
 export type VerificationTokenScalarFieldEnum = (typeof VerificationTokenScalarFieldEnum)[keyof typeof VerificationTokenScalarFieldEnum]
+
+
+export const PasswordResetTokenScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  token: 'token',
+  email: 'email',
+  expires: 'expires',
+  used: 'used'
+} as const
+
+export type PasswordResetTokenScalarFieldEnum = (typeof PasswordResetTokenScalarFieldEnum)[keyof typeof PasswordResetTokenScalarFieldEnum]
 
 
 export const PlatformSettingsScalarFieldEnum = {

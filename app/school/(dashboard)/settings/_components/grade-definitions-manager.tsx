@@ -136,6 +136,7 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
   const [deletingGrade, setDeletingGrade] = useState<GradeDefinition | null>(null)
   const [showPresetDialog, setShowPresetDialog] = useState(false)
   const [selectedPreset, setSelectedPreset] = useState<string>("")
+  const [excludedGrades, setExcludedGrades] = useState<Set<string>>(new Set())
 
   const [formData, setFormData] = useState({
     name: "",
@@ -144,6 +145,25 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
     order: 1,
     schoolLevelId: "",
   })
+
+  // Get the filtered preset grades (excluding deselected ones)
+  const getFilteredPresetGrades = () => {
+    if (!selectedPreset) return []
+    const presetGrades = GRADE_PRESETS[selectedPreset as keyof typeof GRADE_PRESETS] || []
+    return presetGrades.filter(g => !excludedGrades.has(g.shortName))
+  }
+
+  const toggleGradeExclusion = (shortName: string) => {
+    setExcludedGrades(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(shortName)) {
+        newSet.delete(shortName)
+      } else {
+        newSet.add(shortName)
+      }
+      return newSet
+    })
+  }
 
   const resetForm = () => {
     setFormData({
@@ -221,15 +241,19 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
       return
     }
 
-    const presetGrades = GRADE_PRESETS[selectedPreset as keyof typeof GRADE_PRESETS]
-    if (!presetGrades) return
+    const filteredGrades = getFilteredPresetGrades()
+    if (filteredGrades.length === 0) {
+      toast.error("Please select at least one grade")
+      return
+    }
 
     startTransition(async () => {
-      const result = await bulkCreateGradeDefinitions(presetGrades)
+      const result = await bulkCreateGradeDefinitions(filteredGrades)
       if (result.success) {
         toast.success(`Created ${result.count} grades from preset`)
         setShowPresetDialog(false)
         setSelectedPreset("")
+        setExcludedGrades(new Set())
       } else {
         toast.error(result.error || "Something went wrong")
       }
@@ -469,7 +493,13 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Select Preset</label>
-              <Select value={selectedPreset} onValueChange={setSelectedPreset}>
+              <Select 
+                value={selectedPreset} 
+                onValueChange={(value) => {
+                  setSelectedPreset(value)
+                  setExcludedGrades(new Set()) // Reset exclusions when preset changes
+                }}
+              >
                 <SelectTrigger className="neu-inset">
                   <SelectValue placeholder="Choose a preset..." />
                 </SelectTrigger>
@@ -484,14 +514,35 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
 
             {selectedPreset && (
               <div className="p-3 rounded-xl bg-muted/30">
-                <p className="text-sm font-medium mb-2">Preview:</p>
-                <div className="flex flex-wrap gap-1">
-                  {GRADE_PRESETS[selectedPreset as keyof typeof GRADE_PRESETS]?.map((g) => (
-                    <Badge key={g.shortName} variant="secondary" className="text-xs">
-                      {g.shortName}
-                    </Badge>
-                  ))}
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium">Preview:</p>
+                  <p className="text-xs text-muted-foreground">
+                    {getFilteredPresetGrades().length} of {GRADE_PRESETS[selectedPreset as keyof typeof GRADE_PRESETS]?.length || 0} selected
+                  </p>
                 </div>
+                <div className="flex flex-wrap gap-1">
+                  {GRADE_PRESETS[selectedPreset as keyof typeof GRADE_PRESETS]?.map((g) => {
+                    const isExcluded = excludedGrades.has(g.shortName)
+                    return (
+                      <button
+                        key={g.shortName}
+                        type="button"
+                        onClick={() => toggleGradeExclusion(g.shortName)}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs transition-all ${
+                          isExcluded
+                            ? "bg-muted/50 text-muted-foreground line-through opacity-50"
+                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                        }`}
+                      >
+                        {g.shortName}
+                        {!isExcluded && <span className="text-[10px] opacity-60">×</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Click on a grade to exclude it from the preset.
+                </p>
               </div>
             )}
 
@@ -505,6 +556,7 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
               onClick={() => {
                 setShowPresetDialog(false)
                 setSelectedPreset("")
+                setExcludedGrades(new Set())
               }}
               className="px-4 py-2 rounded-xl hover:neu-inset transition-all text-sm"
             >
@@ -512,7 +564,7 @@ export function GradeDefinitionsManager({ grades, schoolLevels }: GradeDefinitio
             </button>
             <button
               onClick={handleApplyPreset}
-              disabled={isPending || !selectedPreset}
+              disabled={isPending || !selectedPreset || getFilteredPresetGrades().length === 0}
               className="px-4 py-2 rounded-xl neu-sm hover:neu-inset transition-all text-sm font-medium disabled:opacity-50"
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Apply Preset"}

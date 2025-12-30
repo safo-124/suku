@@ -1043,6 +1043,18 @@ model VerificationToken {
   @@map("verificationtokens")
 }
 
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  
+  token     String   @unique
+  email     String
+  expires   DateTime
+  used      Boolean  @default(false)
+
+  @@map("password_reset_tokens")
+}
+
 // ============================================
 // PLATFORM SETTINGS (Super Admin)
 // ============================================

@@ -10,6 +10,7 @@ import {
   getSession,
   type AuthResult,
 } from "@/lib/auth"
+import { sendEmail, emailTemplates, generateToken } from "@/lib/email"
 import { UserRole } from "@/app/generated/prisma/client"
 
 // Get school info by slug (for login page display)
@@ -270,14 +271,150 @@ export async function requestPasswordReset(
       return { success: true }
     }
 
-    // In a real app, generate reset token and send email
-    // For now, just return success
-    // TODO: Implement email sending with reset token
+    // Generate reset token
+    const token = generateToken(48)
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+
+    // Delete any existing tokens for this email
+    await prisma.passwordResetToken.deleteMany({
+      where: { email: email.toLowerCase() },
+    })
+
+    // Create new token
+    await prisma.passwordResetToken.create({
+      data: {
+        token,
+        email: email.toLowerCase(),
+        expires: expiresAt,
+      },
+    })
+
+    // Build reset link
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+    const resetLink = `${baseUrl}/${schoolSlug}/reset-password?token=${token}`
+
+    // Send email
+    const emailContent = emailTemplates.passwordReset({
+      userName: user.firstName,
+      resetLink,
+      schoolName: school.name,
+      expiresIn: "1 hour",
+    })
+
+    const result = await sendEmail({
+      to: user.email,
+      subject: emailContent.subject,
+      html: emailContent.html,
+      text: emailContent.text,
+    })
+
+    if (!result.success) {
+      console.error("Failed to send password reset email:", result.error)
+      // Still return success to not reveal if email was sent
+    }
 
     return { success: true }
   } catch (error) {
     console.error("Password reset request error:", error)
     return { success: false, error: "Failed to process request" }
+  }
+}
+
+// Verify password reset token
+export async function verifyResetToken(
+  token: string
+): Promise<{ success: boolean; email?: string; error?: string }> {
+  try {
+    const resetToken = await prisma.passwordResetToken.findUnique({
+      where: { token },
+    })
+
+    if (!resetToken) {
+      return { success: false, error: "Invalid or expired reset link" }
+    }
+
+    if (resetToken.used) {
+      return { success: false, error: "This reset link has already been used" }
+    }
+
+    if (new Date() > resetToken.expires) {
+      return { success: false, error: "This reset link has expired" }
+    }
+
+    return { success: true, email: resetToken.email }
+  } catch (error) {
+    console.error("Verify reset token error:", error)
+    return { success: false, error: "Failed to verify reset link" }
+  }
+}
+
+// Reset password with token
+export async function resetPasswordWithToken(
+  token: string,
+  newPassword: string,
+  schoolSlug: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    if (!newPassword || newPassword.length < 8) {
+      return { success: false, error: "Password must be at least 8 characters" }
+    }
+
+    const resetToken = await prisma.passwordResetToken.findUnique({
+      where: { token },
+    })
+
+    if (!resetToken) {
+      return { success: false, error: "Invalid or expired reset link" }
+    }
+
+    if (resetToken.used) {
+      return { success: false, error: "This reset link has already been used" }
+    }
+
+    if (new Date() > resetToken.expires) {
+      return { success: false, error: "This reset link has expired" }
+    }
+
+    const school = await prisma.school.findUnique({
+      where: { slug: schoolSlug.toLowerCase() },
+    })
+
+    if (!school) {
+      return { success: false, error: "School not found" }
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        email: resetToken.email,
+        schoolId: school.id,
+      },
+    })
+
+    if (!user) {
+      return { success: false, error: "User not found" }
+    }
+
+    // Hash new password and update user
+    const hashedPassword = await hashPassword(newPassword)
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { id: user.id },
+        data: { 
+          passwordHash: hashedPassword,
+          mustResetPassword: false,
+        },
+      }),
+      prisma.passwordResetToken.update({
+        where: { token },
+        data: { used: true },
+      }),
+    ])
+
+    return { success: true }
+  } catch (error) {
+    console.error("Reset password error:", error)
+    return { success: false, error: "Failed to reset password" }
   }
 }
 
